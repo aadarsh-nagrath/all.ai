@@ -4,6 +4,7 @@ import {
   AudioWaveform,
   BookOpen,
   Bot,
+  Brain,
   Command,
   Frame,
   GalleryVerticalEnd,
@@ -23,6 +24,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+
 // This is sample data.
 const data = {
   user: {
@@ -32,38 +34,39 @@ const data = {
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: "Gemini",
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      version: "Enterprise",
     },
     {
-      name: "Acme Corp.",
+      name: "ChatGPT",
       logo: AudioWaveform,
-      plan: "Startup",
+      version: "Startup",
     },
     {
-      name: "Evil Corp.",
+      name: "DeevSeek-r1",
       logo: Command,
-      plan: "Free",
+      version: "Free",
+    },
+    {
+      name: "Perplexity",
+      logo: PieChart,
+      version: "Free",
     },
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Plugins & Themes",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
+          title: "Plugins",
           url: "#",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
+          title: "Theme",
           url: "#",
         },
       ],
@@ -74,38 +77,45 @@ const data = {
       icon: Bot,
       items: [
         {
-          title: "Genesis",
+          title: "Text Generation",
           url: "#",
         },
         {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
+          title: "Image Generation",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "AI Agents",
+      url: "#",
+      icon: Brain,
+      items: [
+        {
+          title: "Browse Agents",
+          url: "#",
+        },
+        {
+          title: "Create Agents",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Prompt Library & Notes",
       url: "#",
       icon: BookOpen,
       items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
         {
           title: "Get Started",
           url: "#",
         },
         {
-          title: "Tutorials",
+          title: "Prompt Library",
           url: "#",
         },
         {
-          title: "Changelog",
+          title: "Notes",
           url: "#",
         },
       ],
@@ -116,11 +126,7 @@ const data = {
       icon: Settings2,
       items: [
         {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
+          title: "Account",
           url: "#",
         },
         {
@@ -128,7 +134,7 @@ const data = {
           url: "#",
         },
         {
-          title: "Limits",
+          title: "General Settings",
           url: "#",
         },
       ],
