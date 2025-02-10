@@ -24,6 +24,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { ModeToggle } from "./mode-change"
 
 export function NavProjects({
   projects,
@@ -83,6 +84,7 @@ export function NavProjects({
             <span>More</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
+        <ModeToggle />
       </SidebarMenu>
     </SidebarGroup>
   )
