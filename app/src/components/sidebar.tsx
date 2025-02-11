@@ -226,10 +226,10 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
+      <SidebarHeader className="flex-2">
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
-      <SidebarContent className="overflow-hidden">
+      <SidebarContent className="overflow-hidden flex-1">
         <NavMain items={data.navMain} />
         <NavProjects chatmod={data.chatmod} />
       </SidebarContent>
