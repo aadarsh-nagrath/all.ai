@@ -14,6 +14,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import DefaultTheme from "../../themes/Default/default"
+import { ThemeBadge } from "@/components/theme-badge"
 export default function Home() {
   return (
     <SidebarProvider>
@@ -35,6 +36,7 @@ export default function Home() {
                   <BreadcrumbPage>theme.name</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
+              <ThemeBadge />
             </Breadcrumb>
           </div>
         </header>
