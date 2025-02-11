@@ -38,7 +38,7 @@ export function NavProjects({
   const { isMobile } = useSidebar()
 
   return (
-    <SidebarGroup className="group-data-[collapsible=icon] ">
+    <SidebarGroup className="group-data-[collapsible=icon] h-full ">
       <SidebarGroupLabel>Chats</SidebarGroupLabel>
       {/* Ensure only this section scrolls */}
       <div className="max-h-[300px] overflow-y-auto">  
