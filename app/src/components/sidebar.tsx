@@ -140,11 +140,81 @@ const data = {
       ],
     },
   ],
-  projects: [
+  chatmod: [
     {
       name: "Design Engineering",
       url: "#",
       icon: Frame,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Sales",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Saeting",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
     },
     {
       name: "Sales & Marketing",
@@ -159,9 +229,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="overflow-hidden">
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavProjects chatmod={data.chatmod} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

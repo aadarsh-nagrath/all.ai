@@ -5,6 +5,22 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
+/* Hide scrollbar by default */
+.scrollbar-hide::-webkit-scrollbar {
+  width: 6px;
+  background: transparent;
+}
+
+.scrollbar-hide::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Show scrollbar on hover */
+.scrollbar-show:hover::-webkit-scrollbar-thumb {
+  background: #555; /* Customize scrollbar color */
+  border-radius: 6px;
+}
+
 
 @layer base {
   :root {
