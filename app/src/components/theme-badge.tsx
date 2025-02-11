@@ -45,11 +45,11 @@ export function ThemeBadge() {
         <Button variant="outline">Select Theme</Button>
       </DialogTrigger>
       <DialogContent className="p-0">
-      <VisuallyHidden>
-      <DialogHeader>
-          <DialogTitle>Select a Theme</DialogTitle>
-      </DialogHeader>
-      </VisuallyHidden>
+        <VisuallyHidden>
+          <DialogHeader>
+            <DialogTitle>Select a Theme</DialogTitle>
+          </DialogHeader>
+        </VisuallyHidden>
         <Command className="rounded-lg border shadow-md">
           <CommandInput placeholder="Search themes..." />
           <CommandList>
@@ -57,14 +57,31 @@ export function ThemeBadge() {
             <CommandSeparator />
             <CommandGroup heading="Themes">
               {themes.map((theme) => (
-                <CommandItem key={theme.name} value={theme.name}>
-                  <span>{theme.name}</span>
-                  <Badge variant="outline" className="ml-auto">
+                <CommandItem
+                key={theme.name}
+                value={theme.name}
+                className="cursor-pointer transition-colors hover:bg-[theme.subColor]"
+                style={{
+                  transition: "background-color 0.2s ease-in-out",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = theme.subColor)}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "")}
+              >
+                  <span  >{theme.name}</span>
+                  <Badge variant="outline" className="ml-auto" style={{ backgroundColor: theme.bgColor }}>
                     <div className="flex space-x-1">
-                      <Circle className="h-3 w-3" style={{ color: theme.bgColor }} />
-                      <Circle className="h-3 w-3" style={{ color: theme.mainColor }} />
-                      <Circle className="h-3 w-3" style={{ color: theme.subColor }} />
-                      <Circle className="h-3 w-3" style={{ color: theme.textColor }} />
+                      <Circle
+                        className="h-3 w-3"
+                        style={{ color: theme.mainColor, fill: theme.mainColor }}
+                      />
+                      <Circle
+                        className="h-3 w-3"
+                        style={{ color: theme.subColor, fill: theme.subColor }}
+                      />
+                      <Circle
+                        className="h-3 w-3"
+                        style={{ color: theme.textColor, fill: theme.textColor }}
+                      />
                     </div>
                   </Badge>
                 </CommandItem>
