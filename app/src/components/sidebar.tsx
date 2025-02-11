@@ -151,85 +151,15 @@ const data = {
       url: "#",
       icon: PieChart,
     },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Sales",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Saeting",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
   ],
 }
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="flex-2">
+      <SidebarHeader className="flex">
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
-      <SidebarContent className="overflow-hidden flex-1">
+      <SidebarContent className="overflow-hidden">
         <NavMain items={data.navMain} />
         <NavProjects chatmod={data.chatmod} />
       </SidebarContent>
