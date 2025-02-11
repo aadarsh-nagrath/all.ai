@@ -38,11 +38,11 @@ export function NavProjects({
   const { isMobile } = useSidebar()
 
   return (
-    <SidebarGroup className="group-data-[collapsible=icon] h-full ">
+    <SidebarGroup className="group-data-[collapsible=icon] h-full flex-2 ">
       <SidebarGroupLabel>Chats</SidebarGroupLabel>
       {/* Ensure only this section scrolls */}
-      <div className="max-h-[300px] overflow-y-auto">  
-        <SidebarMenu className="max-h-[300px] overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent scrollbar-hide hover:scrollbar-show" >
+      <div className="h-full overflow-y-auto">  
+        <SidebarMenu className="h-[80%] overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent scrollbar-hide hover:scrollbar-show" >
           {chatmod.map((item) => (
             <SidebarMenuItem key={item.name}>
               <SidebarMenuButton asChild>

@@ -33,7 +33,7 @@ export function NavMain({
   }[]
 }) {
   return (
-    <SidebarGroup>
+    <SidebarGroup className="flex-1">
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible
