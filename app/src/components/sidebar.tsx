@@ -28,9 +28,9 @@ import {
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Login",
+    email: "anagrath1@gmail.com",
+    avatar: "https://i.pinimg.com/736x/46/42/6d/46426d4d7b3f760caa2bde62dc8e8923.jpg",
   },
   teams: [
     {
@@ -140,7 +140,7 @@ const data = {
       ],
     },
   ],
-  projects: [
+  chatmod: [
     {
       name: "Design Engineering",
       url: "#",
@@ -151,22 +151,17 @@ const data = {
       url: "#",
       icon: PieChart,
     },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
   ],
 }
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
+      <SidebarHeader className="flex">
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="overflow-hidden">
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavProjects chatmod={data.chatmod} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
