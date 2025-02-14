@@ -14,7 +14,7 @@ export function ThemeProvider({
   }, [])
 
   if (!mounted) {
-    return <>{children}</> // Render nothing on the server side until mounted on the client
+    return <>{children}</>
   }
 
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>

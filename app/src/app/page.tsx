@@ -13,8 +13,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import DefaultTheme from "../../themes/Default/default"
+// import DefaultTheme from "../../themes/Default/default"
 import { ThemeBadge } from "@/components/theme-badge"
+import Workplace from "@/components/workplace"
 export default function Home() {
   return (
     <SidebarProvider>
@@ -40,7 +41,7 @@ export default function Home() {
             </Breadcrumb>
           </div>
         </header>
-        <DefaultTheme/>
+        <Workplace/>
       </SidebarInset>
     </SidebarProvider>
   )
