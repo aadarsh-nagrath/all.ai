@@ -29,8 +29,8 @@ interface TextRotateProps {
   staggerDuration?: number
   staggerFrom?: "first" | "last" | "center" | number | "random"
   transition?: Transition
-  loop?: boolean // Whether to start from the first text when the last one is reached
-  auto?: boolean // Whether to start the animation automatically
+  loop?: boolean 
+  auto?: boolean
   splitBy?: "words" | "characters" | "lines" | string
   onNext?: (index: number) => void
   mainClassName?: string
