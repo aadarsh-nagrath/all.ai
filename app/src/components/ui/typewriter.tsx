@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { motion, Variants } from "framer-motion"
 
 import { cn } from "@/lib/utils"
@@ -51,7 +51,8 @@ const Typewriter = ({
   const [isDeleting, setIsDeleting] = useState(false)
   const [currentTextIndex, setCurrentTextIndex] = useState(0)
 
-  const texts = Array.isArray(text) ? text : [text]
+  // Memoize the texts array to avoid unnecessary re-renders
+  const texts = useMemo(() => (Array.isArray(text) ? text : [text]), [text])
 
   useEffect(() => {
     let timeout: NodeJS.Timeout
@@ -104,6 +105,7 @@ const Typewriter = ({
     waitTime,
     texts,
     currentTextIndex,
+    initialDelay,
     loop,
   ])
 

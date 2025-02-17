@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import SessionWrapper from "@/components/session-wrapper";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,14 +16,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "All.Ai",
-  description: "Multi modal ai app client",
+  description: "Multi modal AI app client",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body
@@ -34,7 +33,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <SessionWrapper>
+            {children}
+          </SessionWrapper>
         </ThemeProvider>
       </body>
     </html>
