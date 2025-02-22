@@ -1,22 +1,29 @@
-"use client"
+"use client";
 
-import { LayoutGroup, motion } from "motion/react"
-import { TextRotate } from "@/components/ui/text-rotate"
-import { useState } from "react"
+import { LayoutGroup, motion } from "motion/react";
+import { TextRotate } from "@/components/ui/text-rotate";
+import { useState, useEffect } from "react";
 
 export default function Headline() {
-  // Defineing rotating texts with their corresponding colors
+  // Define rotating texts with their corresponding colors
   const textColors: Record<string, string> = {
     "ChatGPT": "#149880",
     "DeepSeek ✽": "#0163f8",
     "Gemini": "hsl(345, 83%, 41%)",
-    "Perplexity": "#000000"
+    "Perplexity": "#000000",
   };
 
   const texts = Object.keys(textColors);
 
   // Tracking current text for dynamic sizing & color
   const [currentText, setCurrentText] = useState(texts[0]);
+
+  // Track if the component has mounted (client-side)
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true); // Set mounted to true after hydration
+  }, []);
 
   return (
     <div className="text-xl sm:text-2xl md:text-4xl flex flex-row items-center justify-center font-overusedGrotesk dark:text-muted text-foreground font-light overflow-hidden p-1 sm:p-1 md:p-1 max-w-2xl mx-auto">
@@ -33,19 +40,24 @@ export default function Headline() {
             layout // Enables smooth width animation
             transition={{ type: "spring", damping: 20, stiffness: 300 }}
           >
-            <TextRotate
-              texts={texts}
-              mainClassName="text-white px-1 sm:px-2 md:px-3"
-              staggerFrom={"last"}
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "-120%" }}
-              staggerDuration={0.025}
-              splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
-              transition={{ type: "spring", damping: 30, stiffness: 400 }}
-              rotationInterval={2000}
-              onNext={(index) => setCurrentText(texts[index])}
-            />
+            {isMounted ? ( // Render TextRotate only after mounting (client-side)
+              <TextRotate
+                texts={texts}
+                mainClassName="text-white px-1 sm:px-2 md:px-3"
+                staggerFrom={"last"}
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "-120%" }}
+                staggerDuration={0.025}
+                splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
+                transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                rotationInterval={2000}
+                onNext={(index) => setCurrentText(texts[index])}
+              />
+            ) : (
+              // Render a static version of the text during SSR
+              <span className="text-white px-1 sm:px-2 md:px-3">{currentText}</span>
+            )}
           </motion.div>
         </div>
       </LayoutGroup>
