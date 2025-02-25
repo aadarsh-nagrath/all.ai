@@ -4,6 +4,10 @@ import { ThemeProvider } from "@/components/theme-provider";
 import SessionWrapper from "@/components/session-wrapper";
 import "./globals.css";
 
+// mondogb setup
+import { connectDB } from "@/db/connect";
+connectDB();
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
