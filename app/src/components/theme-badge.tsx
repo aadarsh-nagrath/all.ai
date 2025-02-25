@@ -42,7 +42,7 @@ export function ThemeBadge() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Select Theme</Button>
+      <Button variant="outline" className="px-2 py-1 text-sm">theme.name</Button>
       </DialogTrigger>
       <DialogContent className="p-0">
         <VisuallyHidden>

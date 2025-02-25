@@ -1,12 +1,34 @@
 "use client";
-
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 import Headline from "@/pages/workplace/headline";
 import SearchInput from "@/pages/workplace/searchbox";
 import Subheadline from "@/pages/workplace/subheadline";
+import { ThemeBadge } from "@/components/theme-badge"
+
 
 export default function Workplace() {
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="#">
+                    Theme
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <ThemeBadge />
+                </BreadcrumbItem>
+              </BreadcrumbList>
+              
+            </Breadcrumb>
         <Headline />
         <Subheadline />
         <SearchInput />
