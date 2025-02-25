@@ -1,22 +1,26 @@
-import { AppSidebar } from "@/components/sidebar"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
+"use client";
+
+import dynamic from "next/dynamic";
+import { AppSidebar } from "@/components/sidebar";
+import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-// import DefaultTheme from "../../themes/Default/default"
-import { ThemeBadge } from "@/components/theme-badge"
-import Workplace from "@/components/workplace"
+} from "@/components/ui/sidebar";
+import Workplace from "@/pages/workplace/workplace";
+
+// Dynamic import for pages
+const DynamicPage = ({ page }: { page: string }) => {
+  const PageComponent = dynamic(() => import(`@/pages/${page}`).catch(() => Workplace), {
+    ssr: false,
+  });
+  return <PageComponent />;
+};
+
 export default function Home() {
+  const currentPath = typeof window !== "undefined" ? window.location.pathname.replace("/", "") : "";
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -25,24 +29,10 @@ export default function Home() {
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Theme
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>theme.name</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-              <ThemeBadge />
-            </Breadcrumb>
           </div>
         </header>
-        <Workplace/>
+        <DynamicPage page={currentPath || "workplace"} />
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }

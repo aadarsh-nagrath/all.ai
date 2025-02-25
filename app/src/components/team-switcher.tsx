@@ -20,16 +20,16 @@ import {
 } from "@/components/ui/sidebar"
 
 export function TeamSwitcher({
-  teams,
+  models,
 }: {
-  teams: {
+  models: {
     name: string
     logo: React.ElementType
     version: string
   }[]
 }) {
   const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
+  const [activeTeam, setActiveTeam] = React.useState(models[0])
 
   return (
     <SidebarMenu>
@@ -61,16 +61,16 @@ export function TeamSwitcher({
             <DropdownMenuLabel className="text-xs text-muted-foreground">
               AI models
             </DropdownMenuLabel>
-            {teams.map((team, index) => (
+            {models.map((m, index) => (
               <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
+                key={m.name}
+                onClick={() => setActiveTeam(m)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <team.logo className="size-4 shrink-0" />
+                  <m.logo className="size-4 shrink-0" />
                 </div>
-                {team.name}
+                {m.name}
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
