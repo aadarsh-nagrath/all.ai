@@ -6,9 +6,9 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import Headline from "@/pages/workplace/headline";
-import SearchInput from "@/pages/workplace/searchbox";
-import Subheadline from "@/pages/workplace/subheadline";
+import Headline from "./headline";
+import SearchInput from "./searchbox";
+import Subheadline from "./subheadline";
 import { ThemeBadge } from "@/components/theme-badge"
 
 
