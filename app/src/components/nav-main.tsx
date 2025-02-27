@@ -25,16 +25,17 @@ type NavMainProps = {
     items?: {
       title: string;
       url: string;
+      key: string; // Add a unique key for each sub-item
     }[];
   }[];
-  onSelectScreen: (value: number) => void;
+  onSelectScreen: (key: string) => void; // Change to string
 };
 
 export function NavMain({ items, onSelectScreen }: NavMainProps) {
   return (
     <SidebarGroup className="flex-1">
       <SidebarMenu>
-        {items.map((item, index) => (
+        {items.map((item) => (
           <Collapsible
             key={item.title}
             asChild
@@ -45,7 +46,7 @@ export function NavMain({ items, onSelectScreen }: NavMainProps) {
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
                   tooltip={item.title}
-                  onClick={() => onSelectScreen(index)} // Pass the index to onSelectScreen
+                  onClick={() => onSelectScreen("workplace")} // Always show Workplace for top-level items
                 >
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
@@ -54,13 +55,13 @@ export function NavMain({ items, onSelectScreen }: NavMainProps) {
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub>
-                  {item.items?.map((subItem, subIndex) => (
-                    <SidebarMenuSubItem key={subItem.title}>
+                  {item.items?.map((subItem) => (
+                    <SidebarMenuSubItem key={subItem.key}>
                       <SidebarMenuSubButton
                         asChild
-                        onClick={() => onSelectScreen(index + subIndex + 1)} // Adjust index for sub-items
+                        onClick={() => onSelectScreen(subItem.key)} // Use the unique key for sub-items
                       >
-                          <span>{subItem.title}</span>
+                        <span>{subItem.title}</span>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}

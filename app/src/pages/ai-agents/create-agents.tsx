@@ -1,4 +1,4 @@
-export default function Theme() {
+export default function CreateAgents() {
     return (
       <div>
         <h1>Agents</h1>

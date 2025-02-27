@@ -1,4 +1,4 @@
-export default function Theme() {
+export default function Notes() {
     return (
       <div>
         <h1>DOC</h1>

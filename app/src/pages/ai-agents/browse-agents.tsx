@@ -1,4 +1,4 @@
-export default function Theme() {
+export default function BrowseAgents() {
     return (
       <div>
         <h1>Agents</h1>
