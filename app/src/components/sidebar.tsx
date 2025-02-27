@@ -15,7 +15,7 @@ import {
 import { sidebarcontent } from "@/lib/data/sidebar-contents";
 
 type OnSelectType = {
-  onSelectScreen: (value: number) => void;
+  onSelectScreen: (value: string) => void; // Change to string
 };
 
 export function AppSidebar({ onSelectScreen, ...props }: OnSelectType & React.ComponentProps<typeof Sidebar>) {

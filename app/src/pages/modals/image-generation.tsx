@@ -1,4 +1,4 @@
-export default function Theme() {
+export default function ImageGen() {
     return (
       <div>
         <h1>Modal</h1>
