@@ -46,8 +46,8 @@ export const sidebarcontent = {
       icon: SquareTerminal,
       isActive: true,
       items: [
-        { title: "Plugins", url: "p&t/plugins" },
-        { title: "Theme", url: "p&t/theme" },
+        { title: "Plugins", url: "/#" },
+        { title: "Theme", url: "/#" },
       ],
     },
     {

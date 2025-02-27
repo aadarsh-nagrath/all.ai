@@ -1,6 +1,5 @@
 "use client";
-
-import dynamic from "next/dynamic";
+import { useState } from "react";
 import { AppSidebar } from "@/components/sidebar";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -8,22 +7,41 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import Workplace from "@/pages/workplace/workplace";
+import  Workplace  from "@/pages/workplace/workplace";
+import Plugins from "@/pages/plugins";
+import Theme from "@/pages/theme";
+import TextGen from "@/pages/text-generation";
 
-// Dynamic import for pages
-const DynamicPage = ({ page }: { page: string }) => {
-  const PageComponent = dynamic(() => import(`@/pages/${page}`).catch(() => Workplace), {
-    ssr: false,
-  });
-  return <PageComponent />;
+interface ActiveSType {
+  activeScreen: number;
+}
+
+// Define Screen outside of Home
+export const Screen = ({ activeScreen }: ActiveSType) => {
+  const renderScreen = () => {
+    switch (activeScreen) {
+      case 0:
+        return <Workplace />;
+      case 1:
+        return <Plugins />;
+      case 2:
+        return <Theme />;
+      case 3:
+        return <TextGen />;
+      default:
+        return <Workplace />;
+    }
+  };
+
+  return <div>{renderScreen()}</div>;
 };
 
 export default function Home() {
-  const currentPath = typeof window !== "undefined" ? window.location.pathname.replace("/", "") : "";
+  const [activeScreen, setActiveScreen] = useState(0);
 
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar onSelectScreen={setActiveScreen} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
@@ -31,7 +49,7 @@ export default function Home() {
             <Separator orientation="vertical" className="mr-2 h-4" />
           </div>
         </header>
-        <DynamicPage page={currentPath || "workplace"} />
+        <Screen activeScreen={activeScreen} />
       </SidebarInset>
     </SidebarProvider>
   );

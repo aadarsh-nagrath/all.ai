@@ -12,9 +12,13 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import {sidebarcontent} from "@/lib/data/sidebar-contents";
+import { sidebarcontent } from "@/lib/data/sidebar-contents";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type OnSelectType = {
+  onSelectScreen: (value: number) => void;
+};
+
+export function AppSidebar({ onSelectScreen, ...props }: OnSelectType & React.ComponentProps<typeof Sidebar>) {
   const [isClient, setIsClient] = React.useState(false);
 
   React.useEffect(() => {
@@ -32,7 +36,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher models={sidebarcontent.models} />
       </SidebarHeader>
       <SidebarContent className="overflow-hidden">
-        <NavMain items={sidebarcontent.navMain} />
+        <NavMain items={sidebarcontent.navMain} onSelectScreen={onSelectScreen} />
         <NavProjects chatmod={sidebarcontent.chatmod} />
       </SidebarContent>
       <SidebarFooter>
