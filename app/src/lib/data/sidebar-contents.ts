@@ -20,22 +20,27 @@ export const sidebarcontent = {
   models: [
     {
       name: "Gemini",
-      logo: GalleryVerticalEnd,
+      logo: "https://th.bing.com/th/id/OIP.Bqw6FHMHNiPMibmTbRm38AAAAA?w=133&h=159&c=7&r=0&o=5&dpr=1.4&pid=1.7",
       version: "Enterprise",
     },
     {
       name: "ChatGPT",
-      logo: AudioWaveform,
+      logo: "https://th.bing.com/th/id/OIP.z1E8uxTDBci7RVDO5ZX6SQHaHa?w=171&h=180&c=7&r=0&o=5&dpr=1.4&pid=1.7",
       version: "Startup",
     },
     {
       name: "DeevSeek-r1",
-      logo: Command,
+      logo: "https://www.mx-xz.com/ai-xzs/data-images/deepseek.png",
       version: "Free",
     },
     {
       name: "Perplexity",
-      logo: PieChart,
+      logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4eO4Crj6yrRt9eT-3bFIzdd0ANK_KdbcCxBbiFAcGFtRnWxjZOqVJIXZY_RZTIA47bVE&usqp=CAU",
+      version: "Free",
+    },
+    {
+      name: "Grok",
+      logo: "https://logosandtypes.com/wp-content/uploads/2025/02/Grok.png",
       version: "Free",
     },
   ],
