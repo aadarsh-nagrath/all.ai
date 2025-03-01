@@ -2,7 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  // other config options here
+  images: {
+    domains: ['images.pexels.com', "blog.knitto.co.id"],
+  },
 };
 
 export default nextConfig;
