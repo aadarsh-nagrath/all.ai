@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { useState } from "react";
+import Image from "next/image";
 
 // Mock Data
 const user = {
@@ -46,7 +47,7 @@ const AccountAndBilling = () => {
           </CardHeader>
           <CardContent>
             <div className="flex items-center space-x-6">
-              <img
+              <Image
                 src={user.profilePicture}
                 alt="Profile Picture"
                 className="w-16 h-16 rounded-full border-2 border-primary"

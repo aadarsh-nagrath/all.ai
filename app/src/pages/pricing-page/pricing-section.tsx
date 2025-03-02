@@ -1,32 +1,35 @@
 "use client"
 
 import * as React from "react"
-import { PricingCard, type PricingTier } from "./pricing-card"
-import { Tab } from "./pricing-tab"
-import confetti from "canvas-confetti";
+import PricingCard from "./pricing-card"
+import Tab from "./pricing-tab"
+import confetti from "canvas-confetti"
+import { PricingTier } from "./pricing-card"
 
 interface PricingSectionProps {
   title: string
   subtitle: string
-  tiers: PricingTier[]
-  frequencies: string[]
+  tiers?: PricingTier[] // Make tiers optional
+  frequencies?: string[] // Make frequencies optional
 }
 
-export function PricingSection({
+export default function PricingSection({
   title,
   subtitle,
-  tiers,
-  frequencies,
+  tiers = [], // Default value for tiers
+  frequencies = ["monthly", "yearly"], // Default value for frequencies
 }: PricingSectionProps) {
-  const [selectedFrequency, setSelectedFrequency] = React.useState(frequencies[0]);
-  const switchRef = React.useRef<HTMLDivElement>(null);
+  const [selectedFrequency, setSelectedFrequency] = React.useState(
+    frequencies[0] || "monthly" // Fallback if frequencies[0] is undefined
+  )
+  const switchRef = React.useRef<HTMLDivElement>(null)
 
   const handleToggle = (freq: string) => {
-    setSelectedFrequency(freq);
+    setSelectedFrequency(freq)
     if (freq === "yearly" && switchRef.current) {
-      const rect = switchRef.current.getBoundingClientRect();
-      const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 2;
+      const rect = switchRef.current.getBoundingClientRect()
+      const x = rect.left + rect.width / 2
+      const y = rect.top + rect.height / 2
 
       confetti({
         particleCount: 50,
@@ -46,9 +49,24 @@ export function PricingSection({
         decay: 0.94,
         startVelocity: 30,
         shapes: ["circle"],
-      });
+      })
     }
-  };
+  }
+
+  // If tiers or frequencies are empty, show a fallback UI
+  if (!tiers.length || !frequencies.length) {
+    return (
+      <section className="flex flex-col items-center gap-10 py-10">
+        <div className="space-y-7 text-center">
+          <div className="space-y-4">
+            <h1 className="text-4xl font-medium md:text-5xl">{title}</h1>
+            <p className="text-muted-foreground">{subtitle}</p>
+          </div>
+          <p className="text-muted-foreground">No pricing plans available.</p>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="flex flex-col items-center gap-10 py-10">
@@ -80,5 +98,5 @@ export function PricingSection({
         ))}
       </div>
     </section>
-  );
+  )
 }
