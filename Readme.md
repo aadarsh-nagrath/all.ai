@@ -7,10 +7,23 @@ https://www.shadcn-svelte.com/blocks
 https://21st.dev/aceternity/background-beams/default
 https://21st.dev/kokonutd/bento-grid/default
 https://awesome-shadcn-ui.vercel.app
-https://www.shadcnui-blocks.com/blocks -->
+https://www.shadcnui-blocks.com/blocks
+ -->
+
+Usefull components -
+<!-- https://21st.dev/originui/dialog/onboardin-dialog
+https://21st.dev/kokonutd/v0-ai-chat/default
+https://21st.dev/kokonutd/action-search-bar/default
+ -->
 
 <!-- Theme idea -
-https://21st.dev/aceternity/stars-background/default -->
+https://21st.dev/aceternity/stars-background/default
+https://21st.dev/kokonutd/action-search-bar/default
+ -->
+
+
+sidebar mode : or Dialog mode 
+<!-- https://ui.shadcn.com/view/styles/new-york/sidebar-13# -->
 
 Handling Global State in a Next.js Application
 
