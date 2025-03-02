@@ -13,7 +13,7 @@ interface TabProps {
   discount?: boolean
 }
 
-export function Tab({
+export default function Tab({
   text,
   selected,
   setSelected,

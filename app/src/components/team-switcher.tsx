@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image";
 import { ChevronsUpDown, Plus } from "lucide-react"
 
 import {
@@ -42,7 +43,7 @@ export function TeamSwitcher({
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 {/* Image with object-fit cover */}
-                <img
+                <Image
                   src={activeTeam.logo}
                   alt={activeTeam.name}
                   className="w-full h-full object-cover rounded-lg"
@@ -74,7 +75,7 @@ export function TeamSwitcher({
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
                   {/* Image with object-fit cover */}
-                  <img
+                  <Image
                     src={m.logo}
                     alt={m.name}
                     className="w-full h-full object-cover rounded-sm"

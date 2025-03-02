@@ -20,11 +20,21 @@ export interface PricingTier {
 }
 
 interface PricingCardProps {
-  tier: PricingTier
+  tier: PricingTier | undefined // Allow tier to be undefined
   paymentFrequency: string
 }
 
-export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
+export default function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
+  // Add a fallback for tier
+  if (!tier) {
+    return (
+      <Card className="flex flex-col gap-8 p-6 bg-background text-foreground">
+        <h2 className="text-xl font-medium">No Plan Available</h2>
+        <p className="text-muted-foreground">Please check back later.</p>
+      </Card>
+    );
+  }
+
   const price = tier.price[paymentFrequency]
   const isHighlighted = tier.highlighted
   const isPopular = tier.popular

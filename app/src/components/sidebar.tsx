@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
@@ -14,11 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import { sidebarcontent } from "@/lib/data/sidebar-contents";
 
-type OnSelectType = {
-  onSelectScreen: (value: string) => void; // Change to string
-};
-
-export function AppSidebar({ onSelectScreen, ...props }: OnSelectType & React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const [isClient, setIsClient] = React.useState(false);
 
   React.useEffect(() => {
@@ -36,7 +31,7 @@ export function AppSidebar({ onSelectScreen, ...props }: OnSelectType & React.Co
         <TeamSwitcher models={sidebarcontent.models} />
       </SidebarHeader>
       <SidebarContent className="overflow-hidden">
-        <NavMain items={sidebarcontent.navMain} onSelectScreen={onSelectScreen} />
+        <NavMain items={sidebarcontent.navMain} />
         <NavProjects chatmod={sidebarcontent.chatmod} />
       </SidebarContent>
       <SidebarFooter>

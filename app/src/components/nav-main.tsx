@@ -1,6 +1,6 @@
 "use client";
-
 import { ChevronRight, type LucideIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   Collapsible,
   CollapsibleContent,
@@ -28,10 +28,11 @@ type NavMainProps = {
       key: string; // Add a unique key for each sub-item
     }[];
   }[];
-  onSelectScreen: (key: string) => void; // Change to string
 };
 
-export function NavMain({ items, onSelectScreen }: NavMainProps) {
+export function NavMain({ items }: NavMainProps) {
+  const navigate = useNavigate();
+
   return (
     <SidebarGroup className="flex-1">
       <SidebarMenu>
@@ -46,7 +47,7 @@ export function NavMain({ items, onSelectScreen }: NavMainProps) {
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
                   tooltip={item.title}
-                  onClick={() => onSelectScreen("workplace")} // Always show Workplace for top-level items
+                  onClick={() => navigate("/workplace")} // Always navigate to Workplace for top-level items
                 >
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
@@ -59,7 +60,7 @@ export function NavMain({ items, onSelectScreen }: NavMainProps) {
                     <SidebarMenuSubItem key={subItem.key}>
                       <SidebarMenuSubButton
                         asChild
-                        onClick={() => onSelectScreen(subItem.key)} // Use the unique key for sub-items
+                        onClick={() => navigate(`/${subItem.key}`)} // Navigate to the sub-item's route
                       >
                         <span>{subItem.title}</span>
                       </SidebarMenuSubButton>

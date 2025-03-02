@@ -4,21 +4,20 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 
-const models = [
-  {
-    name: "Model 1",
-    logo: "https://example.com/logo1.png",
-    version: "1.0",
-  },
-  {
-    name: "Model 2",
-    logo: "https://example.com/logo2.png",
-    version: "2.0",
-  },
-]
+// const models = [
+//   {
+//     name: "Model 1",
+//     logo: "https://example.com/logo1.png",
+//     version: "1.0",
+//   },
+//   {
+//     name: "Model 2",
+//     logo: "https://example.com/logo2.png",
+//     version: "2.0",
+//   },
+// ]
 
 export default function Settings() {
-  const [activeTeam, setActiveTeam] = React.useState(models[0])
   const [storeName, setStoreName] = React.useState("")
 
   const handleStoreNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
