@@ -46,6 +46,9 @@ export function TeamSwitcher({
                 <Image
                   src={activeTeam.logo}
                   alt={activeTeam.name}
+                  width={32} // Explicit width
+                  height={32} // Explicit height
+                  unoptimized
                   className="w-full h-full object-cover rounded-lg"
                 />
               </div>
@@ -78,6 +81,9 @@ export function TeamSwitcher({
                   <Image
                     src={m.logo}
                     alt={m.name}
+                    width={32} // Explicit width
+                    height={32} // Explicit height
+                    unoptimized
                     className="w-full h-full object-cover rounded-sm"
                   />
                 </div>
