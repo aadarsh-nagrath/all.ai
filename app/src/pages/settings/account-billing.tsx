@@ -50,6 +50,8 @@ const AccountAndBilling = () => {
               <Image
                 src={user.profilePicture}
                 alt="Profile Picture"
+                width={32}
+                height={32}
                 className="w-16 h-16 rounded-full border-2 border-primary"
               />
               <div>
