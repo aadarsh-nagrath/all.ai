@@ -5,6 +5,11 @@ import User from "@/db/models/user";
 import { type AdapterUser } from "next-auth/adapters";
 import { type Session } from "next-auth";
 import { type Profile } from "next-auth";
+import { type Profile as DefaultProfile } from "next-auth";
+
+interface CustomProfile extends DefaultProfile {
+  picture?: string; // Add the `picture` property
+}
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -14,21 +19,24 @@ const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }: { user: NextAuthUser | AdapterUser; account: any; profile?: Profile }) {
+    async signIn({ user, account, profile }: { user: NextAuthUser | AdapterUser; account: any; profile?: CustomProfile }) {
       await connectDB();
-
+    
+      console.log("Profile:", profile); // Log the profile object for debugging
+    
       // Ensure profile has the required properties
-      if (!profile || !profile.email || !profile.name || !profile.image) {
+      if (!profile || !profile.email || !profile.name || !profile.picture) {
+        console.error("Profile data is incomplete");
         return false; // Deny sign-in if profile data is incomplete
       }
-
+    
       const existingUser = await User.findOne({ email: profile.email });
-
+    
       if (!existingUser) {
         await User.create({
           name: profile.name,
           email: profile.email,
-          image: profile.image,
+          image: profile.picture, // Use `picture` instead of `image`
           active_subscription: {
             plan: "Basic",
             date: new Date(),
@@ -37,7 +45,7 @@ const authOptions: NextAuthOptions = {
           subscription_history: [],
         });
       }
-
+    
       return true;
     },
     async session({ session, user }: { session: Session; user: NextAuthUser | AdapterUser }) {
@@ -49,7 +57,7 @@ const authOptions: NextAuthOptions = {
             id: dbUser._id.toString(), // Ensure `id` is a string
             name: dbUser.name,
             email: dbUser.email,
-            image: dbUser.image,
+            image: dbUser.picture,
             active_subscription: dbUser.active_subscription,
             subscription_history: dbUser.subscription_history,
           };
