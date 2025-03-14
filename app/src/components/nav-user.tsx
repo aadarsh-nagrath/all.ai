@@ -10,6 +10,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation"; // Use next/navigation for App Router
 
 import {
   Avatar,
@@ -43,6 +44,7 @@ export function NavUser({
 }) {
   const { data: session } = useSession();
   const { isMobile } = useSidebar();
+  const router = useRouter(); // Initialize useRouter from next/navigation
 
   const [isClient, setIsClient] = useState(false);
 
@@ -57,6 +59,13 @@ export function NavUser({
 
   const currentUser = session?.user || user;
 
+  // Function to handle navigation to the login page
+  const handleLoginNavigation = () => {
+    if (!session) {
+      router.push("/login");
+    }
+  };
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -64,7 +73,7 @@ export function NavUser({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              onClick={!session ? () => signIn("google") : undefined}
+              onClick={handleLoginNavigation} // Use the navigation function
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
