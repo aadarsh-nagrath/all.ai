@@ -1,11 +1,12 @@
-import LoginPage from "../../pages/auth-screen/auth";
+import NotFoundPage from "@/pages/misc/404";
+import LoginPage from "@/pages/auth-screen/auth";
 
-export default function DynamicRoute({ params }: { params: { route: string } }) {
-  const { route } = params;
+export default async function DynamicRoute({ params }: { params: { route: string } }) {
+  const { route } = await params;
 
   if (route === "login") {
     return <LoginPage />;
   }
 
-  return <div>404 - Page Not Found</div>;
+  return <div><NotFoundPage/></div>;
 }

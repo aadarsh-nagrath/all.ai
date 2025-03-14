@@ -27,7 +27,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.4",
     "eslint-plugin-react": "^7.37.4",
-    "framer-motion": "^12.4.2",
+    "framer-motion": "^12.5.0",
     "lucide-react": "^0.474.0",
     "mongoose": "^8.10.2",
     "motion": "^12.4.2",
