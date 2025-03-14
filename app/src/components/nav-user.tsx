@@ -9,7 +9,7 @@ import {
   LogOut,
   Sparkles,
 } from "lucide-react";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation"; // Use next/navigation for App Router
 
 import {
