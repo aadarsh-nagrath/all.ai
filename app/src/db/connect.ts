@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://root:example@localhost:27017";
+const MONGO_URI = process.env.MONGO_URI || "";
 
 export const connectDB = async () => {
   try {
     await mongoose.connect(MONGO_URI, {
-      dbName: "mydatabase",
+      dbName: process.env.DATABASE_NAME,
     });
     console.log("MongoDB Connected");
   } catch (error) {

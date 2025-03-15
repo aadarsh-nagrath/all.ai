@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface ISubscription {
   plan: string;
@@ -28,4 +28,10 @@ const UserSchema = new Schema<IUser>({
   subscription_history: { type: [SubscriptionSchema], default: [] },
 });
 
-export default mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+// ✅ Fix: Ensure models object is always defined before accessing properties
+const User: Model<IUser> = 
+  mongoose.models && mongoose.models.User
+    ? (mongoose.models.User as Model<IUser>)
+    : mongoose.model<IUser>("User", UserSchema);
+
+export default User;
