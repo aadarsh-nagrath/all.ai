@@ -1,5 +1,5 @@
-import NotFoundPage from "@/pages/misc/404";
-import LoginPage from "@/pages/auth-screen/auth";
+import NotFoundPage from "@/components/pages/misc/404";
+import LoginPage from "@/components/pages/auth-screen/auth";
 
 export default async function DynamicRoute({ params }: { params: Promise<{ route: string }> }) {
   const { route } = await params; // ✅ Explicitly await params inside function
