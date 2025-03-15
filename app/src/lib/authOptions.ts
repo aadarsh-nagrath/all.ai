@@ -47,12 +47,9 @@ export const authOptions: NextAuthOptions = {
         if (dbUser) {
           session.user = {
             ...session.user,
-            id: dbUser._id.toString(),
             name: dbUser.name,
             email: dbUser.email,
             image: dbUser.image,
-            active_subscription: dbUser.active_subscription,
-            subscription_history: dbUser.subscription_history,
           };
         }
       }

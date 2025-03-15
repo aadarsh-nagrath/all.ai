@@ -1,17 +1,17 @@
 "use client";
 import { Routes, Route } from "react-router-dom";
-import Workplace from "@/pages/workplace/workplace";
-import Plugins from "@/pages/plugin-theme/plugins";
-import Theme from "@/pages/plugin-theme/theme";
-import TextGen from "@/pages/modals/text-generation";
-import CreateAgents from "@/pages/ai-agents/create-agents";
-import Notes from "@/pages/promptlib-notes/notes";
-import PromptLib from "@/pages/promptlib-notes/prompt-lib";
-import BrowseAgents from "@/pages/ai-agents/browse-agents";
-import ImageGen from "@/pages/modals/image-generation";
-import GetStarted from "@/pages/promptlib-notes/get-started";
-import Account from "@/pages/settings/account-billing";
-import GeneralSettings from "@/pages/settings/general-settings";
+import Workplace from "@/components/pages/workplace/workplace";
+import Plugins from "@/components/pages/plugin-theme/plugins";
+import Theme from "@/components/pages/plugin-theme/theme";
+import TextGen from "@/components/pages/modals/text-generation";
+import CreateAgents from "@/components/pages/ai-agents/create-agents";
+import Notes from "@/components/pages/promptlib-notes/notes";
+import PromptLib from "@/components/pages/promptlib-notes/prompt-lib";
+import BrowseAgents from "@/components/pages/ai-agents/browse-agents";
+import ImageGen from "@/components/pages/modals/image-generation";
+import GetStarted from "@/components/pages/promptlib-notes/get-started";
+import Account from "@/components/pages/settings/account-billing";
+import GeneralSettings from "@/components/pages/settings/general-settings";
 
 export function RoutesComponent() {
   return (

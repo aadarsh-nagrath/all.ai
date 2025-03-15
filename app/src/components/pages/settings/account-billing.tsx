@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -7,10 +7,9 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 
-// Define types for the user data
 type Subscription = {
   plan: string;
-  date: string;
+  date: Date;
   status: boolean;
   _id: string;
 };
@@ -46,12 +45,12 @@ const AccountAndBilling = () => {
         try {
           const response = await fetch(`/api/user`);
           if (!response.ok) {
-            throw new Error('Failed to fetch user data');
+            throw new Error("Failed to fetch user data");
           }
           const data: User = await response.json();
           setUser(data);
         } catch (error) {
-          setError(error instanceof Error ? error.message : 'An unknown error occurred');
+          setError(error instanceof Error ? error.message : "An unknown error occurred");
         } finally {
           setLoading(false);
         }
@@ -61,7 +60,7 @@ const AccountAndBilling = () => {
     };
 
     fetchUserData();
-  }, [session, status]);
+  }, [session, status]); // ✅ Only runs when session/status change
 
   if (loading) {
     return <div>Loading...</div>;
