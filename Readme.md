@@ -14,6 +14,10 @@ Usefull components -
 <!-- https://21st.dev/originui/dialog/onboardin-dialog
 https://21st.dev/kokonutd/v0-ai-chat/default
 https://21st.dev/kokonutd/action-search-bar/default
+https://21st.dev/aceternity/sidebar/default
+https://21st.dev/originui/tabs/with-scroll-and-icons
+Privacy policy 
+https://21st.dev/originui/dialog/scrollable-sticky-header
  -->
 
 <!-- Theme idea -
