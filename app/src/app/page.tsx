@@ -1,6 +1,5 @@
-import Screen from '@/components/screen';
+import { redirect } from "next/navigation";
+
 export default function Home() {
-  return (
-  <Screen/>
-  );
+  redirect("/workplace");
 }
