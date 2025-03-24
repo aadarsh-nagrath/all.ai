@@ -1,7 +1,6 @@
-// components/ui/sticky-scroll-reveal.tsx
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -26,14 +25,13 @@ export const StickyScroll = ({
   activeCard: number;
   setActiveCard: (index: number) => void;
 }) => {
-  const ref = useRef<HTMLDivElement>(null); // Fixed: Replaced `any` with `HTMLDivElement`
+  const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     container: ref,
     offset: ["start start", "end start"],
   });
   const cardLength = content.length;
 
-  // Update activeCard based on scroll position
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const cardsBreakpoints = content.map((_, index) => index / cardLength);
     const closestBreakpointIndex = cardsBreakpoints.reduce(
@@ -57,13 +55,13 @@ export const StickyScroll = ({
     "rgb(17 24 39)", // gray-900
   ];
 
-  const linearGradients = [
+  const linearGradients = useMemo(() => [
     "linear-gradient(to bottom right, rgb(15 23 42), rgb(0 0 0))", // Dark & Moody
     "linear-gradient(to bottom right, rgb(255 255 255), rgb(243 244 246))", // Light & Airy
     "linear-gradient(to bottom right, rgb(249 115 22), rgb(251 146 60))", // Sunset Vibes
     "linear-gradient(to bottom right, rgb(96 165 250), rgb(59 130 246))", // Ocean Breeze
     "linear-gradient(to bottom right, rgb(168 85 247), rgb(236 72 153))", // Neon Dreams
-  ];
+  ], []);
 
   const [backgroundGradient, setBackgroundGradient] = useState(
     linearGradients[0]
@@ -71,7 +69,7 @@ export const StickyScroll = ({
 
   useEffect(() => {
     setBackgroundGradient(linearGradients[activeCard % linearGradients.length]);
-  }, [activeCard, linearGradients]); // Fixed: Added `linearGradients` to dependency array
+  }, [activeCard, linearGradients]);
 
   return (
     <motion.div
@@ -87,7 +85,7 @@ export const StickyScroll = ({
             <div
               key={item.title + index}
               className="my-20"
-              style={{ height: "100vh" }} // Ensure each theme takes full viewport height
+              style={{ height: "100vh" }}
             >
               <motion.h2
                 initial={{
