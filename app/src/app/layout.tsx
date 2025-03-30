@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import SessionWrapper from "@/components/session-wrapper";
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster"
 
 // mondogb setup
 import { connectDB } from "@/db/connect";
@@ -40,6 +41,7 @@ export default function RootLayout({
           <SessionWrapper>
             {children}
           </SessionWrapper>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
