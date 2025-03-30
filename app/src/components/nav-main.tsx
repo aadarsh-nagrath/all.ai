@@ -1,6 +1,6 @@
 "use client";
 import { ChevronRight, type LucideIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import {
   Collapsible,
   CollapsibleContent,
@@ -31,7 +31,7 @@ type NavMainProps = {
 };
 
 export function NavMain({ items }: NavMainProps) {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <SidebarGroup className="flex-1">
@@ -47,7 +47,7 @@ export function NavMain({ items }: NavMainProps) {
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
                   tooltip={item.title}
-                  onClick={() => navigate("/workplace")} // Always navigate to Workplace for top-level items
+                  onClick={() => router.push("/workplace")} // Always navigate to Workplace for top-level items
                 >
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
@@ -60,7 +60,7 @@ export function NavMain({ items }: NavMainProps) {
                     <SidebarMenuSubItem key={subItem.key}>
                       <SidebarMenuSubButton
                         asChild
-                        onClick={() => navigate(`/${subItem.key}`)} // Navigate to the sub-item's route
+                        onClick={() => router.push(`/${subItem.key}`)} // Navigate to the sub-item's route
                       >
                         <span>{subItem.title}</span>
                       </SidebarMenuSubButton>
