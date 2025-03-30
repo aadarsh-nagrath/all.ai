@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Credenza, CredenzaBody, CredenzaContent, CredenzaHeader, CredenzaTitle, CredenzaTrigger } from '@/components/ui/credenza';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion} from 'framer-motion';
 import { Trash2 } from 'lucide-react'; // For delete icon
 
 interface Prompt {
@@ -174,7 +174,7 @@ function PromptCard({ prompt, onDelete }: { prompt: Prompt, onDelete: () => void
 
         <div className="flex justify-between items-center">
           <div className="text-sm text-muted-foreground">
-            Category: <code className="px-2 py-0.5 bg-muted rounded">{prompt.category}</code>
+            <code className="px-2 py-0.5 bg-muted rounded">{prompt.category}</code>
           </div>
           <Button
             variant="destructive"
