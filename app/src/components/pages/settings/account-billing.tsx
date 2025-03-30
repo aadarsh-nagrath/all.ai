@@ -60,7 +60,7 @@ const AccountAndBilling = () => {
     };
 
     fetchUserData();
-  }, [session, status]); // ✅ Only runs when session/status change
+  }, [session, status]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -109,6 +109,7 @@ const AccountAndBilling = () => {
                 width={32}
                 height={32}
                 className="w-16 h-16 rounded-full border-2 border-primary"
+                unoptimized={true} 
               />
               <div>
                 <h2 className="text-2xl font-semibold">{user.name}</h2>
