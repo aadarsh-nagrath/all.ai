@@ -7,12 +7,9 @@ import { useSession } from "next-auth/react";
 
 export default function SearchInput() {
   const [input, setInput] = useState("");
-  const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<Array<{role: string, content: string}>>([]);
   const wsRef = useRef<WebSocket | null>(null);
   const { data: session } = useSession();
-  const reconnectAttempts = useRef(0);
-  const reconnectTimer = useRef<NodeJS.Timeout | null>(null);
   
 
   useEffect(() => {
