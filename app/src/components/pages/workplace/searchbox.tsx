@@ -15,33 +15,21 @@ export default function SearchInput() {
   const reconnectTimer = useRef<NodeJS.Timeout | null>(null);
   
 
-  const [socketKey, setSocketKey] = useState(0);
-  
-  const setupWebSocket = useCallback(() => {
+  useEffect(() => {
       if (!session?.user?.email) return;
-  
-      // Clear any existing connection and timer
-      if (wsRef.current) {
-          wsRef.current.close();
-      }
-      if (reconnectTimer.current) {
-          clearTimeout(reconnectTimer.current);
-      }
   
       const wsUrl = `ws://localhost:8000/ws/${encodeURIComponent(session.user.email)}`;
       const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
   
       ws.onopen = () => {
-          reconnectAttempts.current = 0;
-          setIsConnected(true);
-          console.log("WebSocket connected");
+          console.log("Persistent WebSocket connection established");
       };
   
       ws.onmessage = (event) => {
           try {
               const data = JSON.parse(event.data);
-              if (data.message) {
+              if (data.message) {  // Ignore ping messages
                   setMessages(prev => [...prev, {
                       role: 'assistant',
                       content: data.message
@@ -53,62 +41,34 @@ export default function SearchInput() {
       };
   
       ws.onclose = (event) => {
-          setIsConnected(false);
-          console.log(`WebSocket closed: ${event.code} - ${event.reason}`);
-          
-          if (event.code !== 1000 && reconnectAttempts.current < 5) {
-              const delay = Math.min(1000 * (reconnectAttempts.current + 1), 5000);
-              console.log(`Attempting reconnect in ${delay}ms`);
-              reconnectTimer.current = setTimeout(() => {
-                  setSocketKey(prev => prev + 1); // Force new connection
-              }, delay);
-              reconnectAttempts.current += 1;
-          }
+          console.log("WebSocket closed unexpectedly", event);
       };
   
       ws.onerror = (error) => {
           console.error("WebSocket error:", error);
-          setIsConnected(false);
       };
-  }, [session]);
   
-  useEffect(() => {
-      setupWebSocket();
-      
       return () => {
           if (wsRef.current) {
               wsRef.current.close();
           }
-          if (reconnectTimer.current) {
-              clearTimeout(reconnectTimer.current);
-          }
       };
-  }, [setupWebSocket, socketKey]);
+  }, [session?.user?.email]);
   
-  const handleSend = useCallback(async () => {
-      if (!input.trim() || !wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
-          console.error("WebSocket not ready");
-          return;
+  const handleSend = useCallback(() => {
+      if (!input.trim() || !wsRef.current) return;
+  
+      const message = {
+          message: input,
+          conversation_id: null
+      };
+  
+      if (wsRef.current.readyState === WebSocket.OPEN) {
+          wsRef.current.send(JSON.stringify(message));
+          setMessages(prev => [...prev, {role: 'user', content: input}]);
+          setInput("");
       }
-  
-      const userMessage = { role: 'user', content: input };
-      setMessages(prev => [...prev, userMessage]);
-      setInput("");
-  
-      try {
-          wsRef.current.send(JSON.stringify({
-              message: input,
-              conversation_id: null
-          }));
-      } catch (error) {
-          console.error("Error sending message:", error);
-          setMessages(prev => [...prev, {
-              role: 'system',
-              content: 'Failed to send message. Reconnecting...'
-          }]);
-          setSocketKey(prev => prev + 1); // Force reconnect
-      }
-  }, [input, setupWebSocket]);
+  }, [input]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {

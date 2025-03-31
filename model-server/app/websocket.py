@@ -5,49 +5,27 @@ import logging
 from .crud import db 
 from .ai import chat_with_ai
 from datetime import datetime
-from fastapi.encoders import jsonable_encoder
-from typing import Dict
+import asyncio
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
-class ConnectionManager:
-    def __init__(self):
-        self.active_connections: Dict[str, WebSocket] = {}
+active_connections = {}
 
-    async def connect(self, websocket: WebSocket, user_id: str):
-        await websocket.accept()
-        # Close existing connection if it exists
-        if user_id in self.active_connections:
-            old_ws = self.active_connections[user_id]
-            try:
-                await old_ws.close()
-            except:
-                pass
-        self.active_connections[user_id] = websocket
-        logger.info(f"User {user_id} connected. Total connections: {len(self.active_connections)}")
-
-    def disconnect(self, user_id: str):
-        if user_id in self.active_connections:
-            del self.active_connections[user_id]
-            logger.info(f"User {user_id} disconnected. Total connections: {len(self.active_connections)}")
-
-    async def send_message(self, message: dict, user_id: str):
-        if user_id in self.active_connections:
-            try:
-                await self.active_connections[user_id].send_json(jsonable_encoder(message))
-            except Exception as e:
-                logger.error(f"Error sending message to {user_id}: {str(e)}")
-                self.disconnect(user_id)
-
-manager = ConnectionManager()
+async def keep_connection_alive(websocket: WebSocket):
+    while True:
+        try:
+            await asyncio.sleep(15)  # Send ping every 15 seconds
+            if websocket.client_state == "connected":
+                await websocket.send_json({"type": "ping"})
+        except Exception as e:
+            logger.warning(f"Keepalive error: {e}")
+            break
 
 async def process_message(user_id: str, message: str):
     try:
-        # Get AI response first
         ai_response = await chat_with_ai([{"role": "user", "content": message}])
         
-        # Store conversation
         conv_data = {
             "user_id": user_id,
             "title": message[:30],
@@ -61,42 +39,47 @@ async def process_message(user_id: str, message: str):
         }
         
         result = await db.conversations.insert_one(conv_data)
-        
         return {
             "conversation_id": str(result.inserted_id),
             "message": ai_response
         }
     except Exception as e:
-        logger.error(f"Error processing message: {str(e)}")
+        logger.error(f"Error processing message: {e}")
         return {"error": "Failed to process message"}
 
 @router.websocket("/ws/{user_id}")
 async def websocket_endpoint(websocket: WebSocket, user_id: str):
-    await manager.connect(websocket, user_id)
+    await websocket.accept()
+    active_connections[user_id] = websocket
+    logger.info(f"User {user_id} connected - maintaining persistent connection")
+    
+    # Start keepalive task
+    keepalive_task = asyncio.create_task(keep_connection_alive(websocket))
     
     try:
         while True:
+            data = await websocket.receive_text()
+            
             try:
-                data = await websocket.receive_text()
-                logger.info(f"Received message from {user_id}")
-                
-                try:
-                    message_data = json.loads(data)
-                    if "message" not in message_data:
-                        continue
-                        
-                    response = await process_message(user_id, message_data["message"])
-                    await manager.send_message(response, user_id)
+                message_data = json.loads(data)
+                if "message" not in message_data:
+                    continue
                     
-                except json.JSONDecodeError:
-                    await manager.send_message({"error": "Invalid JSON format"}, user_id)
-                    
-            except WebSocketDisconnect:
-                logger.info(f"Client {user_id} disconnected normally")
-                break
-            except Exception as e:
-                logger.error(f"Connection error for {user_id}: {str(e)}")
-                break
+                response = await process_message(user_id, message_data["message"])
+                await websocket.send_json(response)
                 
+            except json.JSONDecodeError:
+                await websocket.send_json({"error": "Invalid JSON"})
+                
+    except WebSocketDisconnect:
+        logger.info(f"Client {user_id} disconnected")
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
     finally:
-        manager.disconnect(user_id)
+        keepalive_task.cancel()
+        try:
+            await keepalive_task
+        except:
+            pass
+        if user_id in active_connections:
+            del active_connections[user_id]
