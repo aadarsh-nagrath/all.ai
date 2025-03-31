@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./app
+    container_name: nextjs_app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://root:example@mongodb:27017/allai?authSource=admin
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_WS_URL=ws://localhost:8000/ws
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+  model-server:
+    build: ./model-server
+    container_name: model_server
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGODB_URI=mongodb://root:example@mongodb:27017/allai?authSource=admin
+      - REDIS_URL=redis://redis:6379
+      - QWIN_API_KEY=${QWIN_API_KEY}
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - app-network
+
+  mongodb:
+    image: mongo:6
+    container_name: mongodb_container
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-network
+
+  redis:
+    image: redis:alpine
+    container_name: redis_container
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
+volumes:
+  mongodb_data:
+  redis_data:
+
+networks:
+  app-network:
+    driver: bridge
+    attachable: true
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
