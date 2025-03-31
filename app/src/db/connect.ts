@@ -1,9 +1,9 @@
 import mongoose, { Mongoose } from "mongoose";
 
-const MONGO_URI = process.env.MONGO_URI || "";
+const MONGODB_URI = process.env.MONGODB_URI || "";
 
-if (!MONGO_URI) {
-  throw new Error("Please define MONGO_URI environment variable");
+if (!MONGODB_URI) {
+  throw new Error("Please define MONGODB_URI environment variable");
 }
 
 // Type for our cached connection
@@ -38,7 +38,7 @@ export const connectDB = async (): Promise<Mongoose> => {
       socketTimeoutMS: 45000,
     };
 
-    cached.promise = mongoose.connect(MONGO_URI, opts)
+    cached.promise = mongoose.connect(MONGODB_URI, opts)
       .then((mongooseInstance) => {
         console.log("MongoDB Connected");
         return mongooseInstance;
