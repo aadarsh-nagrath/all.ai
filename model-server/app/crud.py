@@ -6,9 +6,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Determine if running in Docker or locally
-MONGODB_HOST = "mongodb" if os.getenv("DOCKER") == "true" else "localhost"
-MONGODB_URI = f"mongodb://root:example@{MONGODB_HOST}:27017/allai?authSource=admin"
+# Get MongoDB URI from environment variable
+MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://root:example@mongodb:27017/allai?authSource=admin")
 
 class MongoDB:
     def __init__(self):
