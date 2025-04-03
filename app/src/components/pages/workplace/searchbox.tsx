@@ -15,6 +15,43 @@ import {
     Globe,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
+import javascript from 'react-syntax-highlighter/dist/esm/languages/prism/javascript';
+import typescript from 'react-syntax-highlighter/dist/esm/languages/prism/typescript';
+import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
+import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash';
+import css from 'react-syntax-highlighter/dist/esm/languages/prism/css';
+import html from 'react-syntax-highlighter/dist/esm/languages/prism/markup';
+import java from 'react-syntax-highlighter/dist/esm/languages/prism/java';
+import jsx from 'react-syntax-highlighter/dist/esm/languages/prism/jsx';
+import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
+import markdown from 'react-syntax-highlighter/dist/esm/languages/prism/markdown';
+import yaml from 'react-syntax-highlighter/dist/esm/languages/prism/yaml';
+import "../../../styles/markdown.css";
+
+// Register languages
+SyntaxHighlighter.registerLanguage('python', python);
+SyntaxHighlighter.registerLanguage('javascript', javascript);
+SyntaxHighlighter.registerLanguage('typescript', typescript);
+SyntaxHighlighter.registerLanguage('json', json);
+SyntaxHighlighter.registerLanguage('bash', bash);
+SyntaxHighlighter.registerLanguage('css', css);
+SyntaxHighlighter.registerLanguage('html', html);
+SyntaxHighlighter.registerLanguage('java', java);
+SyntaxHighlighter.registerLanguage('jsx', jsx);
+SyntaxHighlighter.registerLanguage('sql', sql);
+SyntaxHighlighter.registerLanguage('markdown', markdown);
+SyntaxHighlighter.registerLanguage('yaml', yaml);
+SyntaxHighlighter.registerLanguage('js', javascript);
+SyntaxHighlighter.registerLanguage('ts', typescript);
+SyntaxHighlighter.registerLanguage('shell', bash);
+SyntaxHighlighter.registerLanguage('sh', bash);
+SyntaxHighlighter.registerLanguage('md', markdown);
+SyntaxHighlighter.registerLanguage('yml', yaml);
 
 interface UseAutoResizeTextareaProps {
     minHeight: number;
@@ -147,13 +184,11 @@ export default function SearchInput() {
                 const data = JSON.parse(event.data);
                 if (data.message) {
                     if (data.is_final) {
-                        // For final message, add directly without streaming
                         setMessages(prev => [...prev, {
                             role: 'assistant',
                             content: data.message
                         }]);
                     } else {
-                        // For streaming chunks
                         setCurrentStream(prev => prev + data.message);
                         setIsStreaming(true);
                     }
@@ -201,6 +236,55 @@ export default function SearchInput() {
         }
     }, [handleSend]);
 
+    const renderMarkdown = (content: string) => (
+        <div className="prose dark:prose-invert prose-pre:p-0 prose-pre:bg-transparent max-w-none">
+            <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                    code: ({node, inline, className, children, ...props}: {
+                        node?: any;
+                        inline?: boolean;
+                        className?: string;
+                        children?: React.ReactNode;
+                    } & React.HTMLAttributes<HTMLElement>) => {
+                        const match = /language-(\w+)/.exec(className || '');
+                        return !inline && match ? (
+                            <SyntaxHighlighter
+                                style={oneDark as any}
+                                language={match[1]}
+                                PreTag="div"
+                                customStyle={{
+                                    borderRadius: '6px',
+                                    padding: '1rem',
+                                    margin: '1rem 0',
+                                    backgroundColor: '#1e293b',
+                                    border: '1px solid #334155'
+                                }}
+                                codeTagProps={{
+                                    style: {
+                                        fontFamily: 'Menlo, Monaco, Courier New, monospace',
+                                        fontSize: '0.9em',
+                                    }
+                                }}
+                                showLineNumbers={match[1] !== 'bash' && match[1] !== 'shell'}
+                                wrapLines={true}
+                                {...props}
+                            >
+                                {String(children).replace(/\n$/, '')}
+                            </SyntaxHighlighter>
+                        ) : (
+                            <code className={cn("px-1.5 py-0.5 rounded-md bg-gray-200 dark:bg-gray-700", className)} {...props}>
+                                {children}
+                            </code>
+                        );
+                    }
+                }}
+            >
+                {content}
+            </ReactMarkdown>
+        </div>
+    );
+
     return (
         <div className="flex flex-col items-center w-full max-w-4xl mx-auto p-4 space-y-8">
             <h1 className="text-4xl font-bold text-black dark:text-white">
@@ -215,12 +299,18 @@ export default function SearchInput() {
                             "p-4 rounded-lg",
                             msg.role === 'user' 
                                 ? "bg-blue-100 dark:bg-blue-900 ml-auto max-w-[80%]" 
-                                : "bg-gray-100 dark:bg-gray-800 mr-auto max-w-[80%]"
+                                : "bg-gray-100 dark:bg-[#171717] mr-auto max-w-[80%]"
                         )}
                     >
-                        {msg.content}
-                        {i === messages.length - 1 && msg.role === 'assistant' && isStreaming && (
-                            <span className="ml-1 inline-block h-4 w-1 bg-gray-500 animate-pulse"></span>
+                        {msg.role === 'assistant' ? (
+                            <div className="markdown-content">
+                                {renderMarkdown(msg.content)}
+                                {i === messages.length - 1 && isStreaming && (
+                                    <span className="ml-1 inline-block h-4 w-1 bg-gray-500 animate-pulse"></span>
+                                )}
+                            </div>
+                        ) : (
+                            <p className="whitespace-pre-wrap">{msg.content}</p>
                         )}
                     </div>
                 ))}
