@@ -1,0 +1,246 @@
+/* Markdown Content Styling */
+.markdown-content {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+}
+
+.markdown-content h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #374151;
+  padding-bottom: 0.5rem;
+}
+
+.markdown-content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.8rem;
+}
+
+.markdown-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.markdown-content p {
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.markdown-content ul {
+  list-style-type: disc;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+}
+
+.markdown-content li {
+  margin-bottom: 0.25rem;
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid #6B7280;
+  padding-left: 1rem;
+  margin-left: 0;
+  color: #6B7280;
+  font-style: italic;
+}
+
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.markdown-content th,
+.markdown-content td {
+  padding: 0.5rem;
+  border: 1px solid #4B5563;
+}
+
+.markdown-content th {
+  background-color: #374151;
+  font-weight: 600;
+}
+
+.markdown-content tr:nth-child(even) {
+  background-color: #2D3748;
+}
+
+.markdown-content code:not([class*="language-"]) {
+  background-color: #1e293b;
+  color: #f87171;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.markdown-content pre {
+  background-color: #1e293b !important;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #334155;
+}
+
+.markdown-content pre code {
+  background-color: transparent !important;
+  color: #e2e8f0;
+  padding: 0;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+/* Syntax highlighting colors */
+.markdown-content .token.comment,
+.markdown-content .token.prolog,
+.markdown-content .token.doctype,
+.markdown-content .token.cdata {
+  color: #8b9cb5;
+}
+
+.markdown-content .token.punctuation {
+  color: #e2e8f0;
+}
+
+.markdown-content .token.namespace {
+  opacity: 0.7;
+}
+
+.markdown-content .token.property,
+.markdown-content .token.tag,
+.markdown-content .token.boolean,
+.markdown-content .token.number,
+.markdown-content .token.constant,
+.markdown-content .token.symbol,
+.markdown-content .token.deleted {
+  color: #f87171;
+}
+
+.markdown-content .token.selector,
+.markdown-content .token.attr-name,
+.markdown-content .token.string,
+.markdown-content .token.char,
+.markdown-content .token.builtin,
+.markdown-content .token.inserted {
+  color: #4ade80;
+}
+
+.markdown-content .token.operator,
+.markdown-content .token.entity,
+.markdown-content .token.url,
+.markdown-content .language-css .token.string,
+.markdown-content .style .token.string {
+  color: #d1d5db;
+}
+
+.markdown-content .token.atrule,
+.markdown-content .token.attr-value,
+.markdown-content .token.keyword {
+  color: #60a5fa;
+}
+
+.markdown-content .token.function,
+.markdown-content .token.class-name {
+  color: #f59e0b;
+}
+
+.markdown-content .token.regex,
+.markdown-content .token.important,
+.markdown-content .token.variable {
+  color: #ec4899;
+}
+
+.markdown-content .token.important,
+.markdown-content .token.bold {
+  font-weight: bold;
+}
+
+.markdown-content .token.italic {
+  font-style: italic;
+}
+
+.markdown-content .token.entity {
+  cursor: help;
+}
+
+.markdown-content a {
+  color: #3B82F6;
+  text-decoration: underline;
+}
+
+.markdown-content a:hover {
+  color: #2563EB;
+}
+
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.375rem;
+  margin: 1rem 0;
+}
+
+.markdown-content hr {
+  border: 0;
+  height: 1px;
+  background-color: #4B5563;
+  margin: 1.5rem 0;
+}
+
+/* For light mode */
+@media (prefers-color-scheme: light) {
+  .markdown-content {
+    color: #1f2937;
+  }
+  
+  .markdown-content blockquote {
+    border-left-color: #9CA3AF;
+    color: #4B5563;
+  }
+
+  .markdown-content th,
+  .markdown-content td {
+    border-color: #D1D5DB;
+  }
+
+  .markdown-content th {
+    background-color: #F3F4F6;
+  }
+
+  .markdown-content tr:nth-child(even) {
+    background-color: #F9FAFB;
+  }
+
+  .markdown-content code:not([class*="language-"]) {
+    background-color: #f1f5f9;
+    color: #ef4444;
+  }
+
+  .markdown-content pre {
+    background-color: #f1f5f9 !important;
+    border: 1px solid #e2e8f0;
+  }
+
+  .markdown-content pre code {
+    color: #1f2937;
+  }
+
+  .markdown-content hr {
+    background-color: #E5E7EB;
+  }
+} 
