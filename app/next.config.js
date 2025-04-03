@@ -3,17 +3,15 @@ const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   images: {
-    domains: [
-      'lh3.googleusercontent.com',
-    ],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: '**', // Allow all HTTPS image sources
         port: '',
         pathname: '/**',
       },
     ],
   },
-  // Remove all experimental flags
 };
+
+module.exports = nextConfig;
