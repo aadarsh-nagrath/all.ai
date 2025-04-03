@@ -32,6 +32,7 @@ import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
 import markdown from 'react-syntax-highlighter/dist/esm/languages/prism/markdown';
 import yaml from 'react-syntax-highlighter/dist/esm/languages/prism/yaml';
 import "../../../styles/markdown.css";
+import { redirect } from "next/navigation";
 
 // Register languages
 SyntaxHighlighter.registerLanguage('python', python);
@@ -203,6 +204,7 @@ export default function SearchInput() {
         };
     
         ws.onerror = (error) => {
+            redirect("/workplace");
             console.error("WebSocket error:", error);
         };
     
