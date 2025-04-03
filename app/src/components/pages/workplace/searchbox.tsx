@@ -37,10 +37,7 @@ function useAutoResizeTextarea({
                 return;
             }
 
-            // Temporarily shrink to get the right scrollHeight
             textarea.style.height = `${minHeight}px`;
-
-            // Calculate new height
             const newHeight = Math.max(
                 minHeight,
                 Math.min(
@@ -48,21 +45,18 @@ function useAutoResizeTextarea({
                     maxHeight ?? Number.POSITIVE_INFINITY
                 )
             );
-
             textarea.style.height = `${newHeight}px`;
         },
         [minHeight, maxHeight]
     );
 
     useEffect(() => {
-        // Set initial height
         const textarea = textareaRef.current;
         if (textarea) {
             textarea.style.height = `${minHeight}px`;
         }
     }, [minHeight]);
 
-    // Adjust height on window resize
     useEffect(() => {
         const handleResize = () => adjustHeight();
         window.addEventListener("resize", handleResize);
@@ -92,12 +86,50 @@ function ActionButton({ icon, label }: ActionButtonProps) {
 export default function SearchInput() {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<Array<{role: string, content: string}>>([]);
+    const [currentStream, setCurrentStream] = useState("");
+    const [isStreaming, setIsStreaming] = useState(false);
     const wsRef = useRef<WebSocket | null>(null);
     const { data: session } = useSession();
     const { textareaRef, adjustHeight } = useAutoResizeTextarea({
         minHeight: 60,
         maxHeight: 200,
     });
+
+    // Fast typewriter effect
+    useEffect(() => {
+        if (!isStreaming || !currentStream) return;
+
+        let index = 0;
+        const streamingMessageIndex = messages.length;
+        
+        const typeNextCharacter = () => {
+            if (index < currentStream.length) {
+                setMessages(prev => {
+                    const newMessages = [...prev];
+                    if (!newMessages[streamingMessageIndex]) {
+                        newMessages.push({
+                            role: 'assistant',
+                            content: currentStream.substring(0, index + 1)
+                        });
+                    } else {
+                        newMessages[streamingMessageIndex] = {
+                            ...newMessages[streamingMessageIndex],
+                            content: currentStream.substring(0, index + 1)
+                        };
+                    }
+                    return newMessages;
+                });
+                index++;
+                requestAnimationFrame(typeNextCharacter);
+            } else {
+                setCurrentStream("");
+                setIsStreaming(false);
+            }
+        };
+
+        const frameId = requestAnimationFrame(typeNextCharacter);
+        return () => cancelAnimationFrame(frameId);
+    }, [isStreaming, currentStream]);
 
     useEffect(() => {
         if (!session?.user?.email) return;
@@ -107,17 +139,24 @@ export default function SearchInput() {
         wsRef.current = ws;
     
         ws.onopen = () => {
-            console.log("Persistent WebSocket connection established");
+            console.log("WebSocket connection established");
         };
     
         ws.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
-                if (data.message) {  // Ignore ping messages
-                    setMessages(prev => [...prev, {
-                        role: 'assistant',
-                        content: data.message
-                    }]);
+                if (data.message) {
+                    if (data.is_final) {
+                        // For final message, add directly without streaming
+                        setMessages(prev => [...prev, {
+                            role: 'assistant',
+                            content: data.message
+                        }]);
+                    } else {
+                        // For streaming chunks
+                        setCurrentStream(prev => prev + data.message);
+                        setIsStreaming(true);
+                    }
                 }
             } catch (error) {
                 console.error("Error parsing message:", error);
@@ -125,7 +164,7 @@ export default function SearchInput() {
         };
     
         ws.onclose = (event) => {
-            console.log("WebSocket closed unexpectedly", event);
+            console.log("WebSocket closed", event);
         };
     
         ws.onerror = (error) => {
@@ -168,7 +207,6 @@ export default function SearchInput() {
                 What can I help you with?
             </h1>
 
-            {/* Messages Display */}
             <div className="w-full space-y-4">
                 {messages.map((msg, i) => (
                     <div 
@@ -181,6 +219,9 @@ export default function SearchInput() {
                         )}
                     >
                         {msg.content}
+                        {i === messages.length - 1 && msg.role === 'assistant' && isStreaming && (
+                            <span className="ml-1 inline-block h-4 w-1 bg-gray-500 animate-pulse"></span>
+                        )}
                     </div>
                 ))}
             </div>
@@ -227,7 +268,7 @@ export default function SearchInput() {
                             </button>
                             <button
                                 className="h-8 w-8 flex items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-800 hover:text-zinc-300"
-                                >
+                            >
                                 <Globe className="h-4 w-4" />
                             </button>
                         </div>
