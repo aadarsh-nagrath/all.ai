@@ -7,7 +7,7 @@ import { ReactNode } from "react";
 
 export default function Screen({ children }: { children: ReactNode }) {
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       <div className="flex w-screen h-screen overflow-hidden">
         <AppSidebar />
         <SidebarInset className="flex flex-col flex-1 h-full w-full overflow-hidden">
