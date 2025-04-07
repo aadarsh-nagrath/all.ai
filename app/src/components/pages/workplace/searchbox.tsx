@@ -167,7 +167,7 @@ export default function SearchInput() {
 
         const frameId = requestAnimationFrame(typeNextCharacter);
         return () => cancelAnimationFrame(frameId);
-    }, [isStreaming, currentStream]);
+    }, [isStreaming, currentStream, messages.length]);
 
     useEffect(() => {
         if (!session?.user?.email) return;
@@ -243,8 +243,7 @@ export default function SearchInput() {
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
-                    code: ({node, inline, className, children, ...props}: {
-                        node?: any;
+                    code: ({inline, className, children, ...props}: {
                         inline?: boolean;
                         className?: string;
                         children?: React.ReactNode;
@@ -252,6 +251,7 @@ export default function SearchInput() {
                         const match = /language-(\w+)/.exec(className || '');
                         return !inline && match ? (
                             <SyntaxHighlighter
+                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                 style={oneDark as any}
                                 language={match[1]}
                                 PreTag="div"
