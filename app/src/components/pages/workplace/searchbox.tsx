@@ -167,7 +167,7 @@ export default function SearchInput() {
 
         const frameId = requestAnimationFrame(typeNextCharacter);
         return () => cancelAnimationFrame(frameId);
-    }, [isStreaming, currentStream, messages.length]);
+    }, [isStreaming, currentStream]);
 
     useEffect(() => {
         if (!session?.user?.email) return;
