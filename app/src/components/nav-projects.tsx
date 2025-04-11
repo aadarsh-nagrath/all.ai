@@ -5,6 +5,7 @@ import {
   Forward,
   MoreHorizontal,
   Trash2,
+  Plus,
   type LucideIcon,
 } from "lucide-react"
 
@@ -25,6 +26,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { ModeToggle } from "./mode-change"
+import { Button } from "@/components/ui/button"
 
 export function NavProjects({
   chatmod,
@@ -40,6 +42,19 @@ export function NavProjects({
   return (
     <SidebarGroup className="group-data-[collapsible=icon] h-full flex-2 ">
       <SidebarGroupLabel>Chats</SidebarGroupLabel>
+      <div className="px-2 mb-2">
+        <Button
+          variant="outline"
+          className="w-full justify-start gap-2"
+          onClick={() => {
+            // Add your new chat creation logic here
+            window.location.href = "/workplace"
+          }}
+        >
+          <Plus className="h-4 w-4" />
+          <span>New Chat</span>
+        </Button>
+      </div>
       {/* Ensure only this section scrolls */}
       <div className="h-full overflow-y-auto">  
         <SidebarMenu className="h-[80%] overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent scrollbar-hide hover:scrollbar-show" >
