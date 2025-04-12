@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
-import { useState } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import {
@@ -15,6 +14,44 @@ import {
     PlusIcon,
     Globe,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
+import javascript from 'react-syntax-highlighter/dist/esm/languages/prism/javascript';
+import typescript from 'react-syntax-highlighter/dist/esm/languages/prism/typescript';
+import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
+import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash';
+import css from 'react-syntax-highlighter/dist/esm/languages/prism/css';
+import html from 'react-syntax-highlighter/dist/esm/languages/prism/markup';
+import java from 'react-syntax-highlighter/dist/esm/languages/prism/java';
+import jsx from 'react-syntax-highlighter/dist/esm/languages/prism/jsx';
+import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
+import markdown from 'react-syntax-highlighter/dist/esm/languages/prism/markdown';
+import yaml from 'react-syntax-highlighter/dist/esm/languages/prism/yaml';
+import "../../../styles/markdown.css";
+
+// Register languages
+SyntaxHighlighter.registerLanguage('python', python);
+SyntaxHighlighter.registerLanguage('javascript', javascript);
+SyntaxHighlighter.registerLanguage('typescript', typescript);
+SyntaxHighlighter.registerLanguage('json', json);
+SyntaxHighlighter.registerLanguage('bash', bash);
+SyntaxHighlighter.registerLanguage('css', css);
+SyntaxHighlighter.registerLanguage('html', html);
+SyntaxHighlighter.registerLanguage('java', java);
+SyntaxHighlighter.registerLanguage('jsx', jsx);
+SyntaxHighlighter.registerLanguage('sql', sql);
+SyntaxHighlighter.registerLanguage('markdown', markdown);
+SyntaxHighlighter.registerLanguage('yaml', yaml);
+SyntaxHighlighter.registerLanguage('js', javascript);
+SyntaxHighlighter.registerLanguage('ts', typescript);
+SyntaxHighlighter.registerLanguage('shell', bash);
+SyntaxHighlighter.registerLanguage('sh', bash);
+SyntaxHighlighter.registerLanguage('md', markdown);
+SyntaxHighlighter.registerLanguage('yml', yaml);
 
 interface UseAutoResizeTextareaProps {
     minHeight: number;
@@ -37,10 +74,7 @@ function useAutoResizeTextarea({
                 return;
             }
 
-            // Temporarily shrink to get the right scrollHeight
             textarea.style.height = `${minHeight}px`;
-
-            // Calculate new height
             const newHeight = Math.max(
                 minHeight,
                 Math.min(
@@ -48,21 +82,18 @@ function useAutoResizeTextarea({
                     maxHeight ?? Number.POSITIVE_INFINITY
                 )
             );
-
             textarea.style.height = `${newHeight}px`;
         },
         [minHeight, maxHeight]
     );
 
     useEffect(() => {
-        // Set initial height
         const textarea = textareaRef.current;
         if (textarea) {
             textarea.style.height = `${minHeight}px`;
         }
     }, [minHeight]);
 
-    // Adjust height on window resize
     useEffect(() => {
         const handleResize = () => adjustHeight();
         window.addEventListener("resize", handleResize);
@@ -72,22 +103,186 @@ function useAutoResizeTextarea({
     return { textareaRef, adjustHeight };
 }
 
-export default function  SearchInput() {
-    const [value, setValue] = useState("");
+interface ActionButtonProps {
+    icon: React.ReactNode;
+    label: string;
+}
+
+function ActionButton({ icon, label }: ActionButtonProps) {
+    return (
+        <button
+            type="button"
+            className="flex items-center gap-2 px-4 py-2 bg-neutral-900 hover:bg-neutral-800 rounded-full border border-neutral-800 text-neutral-400 hover:text-white transition-colors"
+        >
+            {icon}
+            <span className="text-xs">{label}</span>
+        </button>
+    );
+}
+
+export default function SearchInput() {
+    const [input, setInput] = useState("");
+    const [messages, setMessages] = useState<Array<{role: string, content: string}>>([]);
+    const [currentStream, setCurrentStream] = useState("");
+    const [isStreaming, setIsStreaming] = useState(false);
+    const wsRef = useRef<WebSocket | null>(null);
+    const { data: session } = useSession();
     const { textareaRef, adjustHeight } = useAutoResizeTextarea({
         minHeight: 60,
         maxHeight: 200,
     });
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    useEffect(() => {
+        if (!session?.user?.email) return;
+
+        const wsUrl = `ws://localhost:8000/ws/${encodeURIComponent(session.user.email)}`;
+        const ws = new WebSocket(wsUrl);
+        wsRef.current = ws;
+
+        ws.onopen = () => {
+            console.log("WebSocket connection established");
+        };
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.message) {
+                setIsStreaming(true);
+                setCurrentStream(data.message);
+            }
+        };
+
+        ws.onclose = (event) => {
+            console.log("WebSocket closed", event);
+            if (event.code === 1000) {
+                console.log("Normal closure");
+            } else {
+                console.log("Abnormal closure");
+            }
+        };
+
+        ws.onerror = (error) => {
+            console.error("WebSocket error:", error);
+        };
+
+        return () => {
+            if (wsRef.current) {
+                wsRef.current.close();
+            }
+        };
+    }, [session?.user?.email]);
+
+    const messagesRef = useRef(messages);
+    messagesRef.current = messages;
+
+    // Fast typewriter effect
+    useEffect(() => {
+        if (!isStreaming || !currentStream) return;
+
+        let index = 0;
+        const streamingMessageIndex = messagesRef.current.length;
+        
+        const typeNextCharacter = () => {
+            if (index < currentStream.length) {
+                setMessages(prev => {
+                    const newMessages = [...prev];
+                    if (!newMessages[streamingMessageIndex]) {
+                        newMessages.push({
+                            role: 'assistant',
+                            content: currentStream.substring(0, index + 1)
+                        });
+                    } else {
+                        newMessages[streamingMessageIndex] = {
+                            ...newMessages[streamingMessageIndex],
+                            content: currentStream.substring(0, index + 1)
+                        };
+                    }
+                    return newMessages;
+                });
+                index++;
+                requestAnimationFrame(typeNextCharacter);
+            } else {
+                setCurrentStream("");
+                setIsStreaming(false);
+            }
+        };
+
+        const frameId = requestAnimationFrame(typeNextCharacter);
+        return () => cancelAnimationFrame(frameId);
+    }, [isStreaming, currentStream]);
+
+    const handleSend = useCallback(() => {
+        if (!input.trim() || !wsRef.current) return;
+    
+        const message = {
+            message: input,
+            conversation_id: null
+        };
+    
+        if (wsRef.current.readyState === WebSocket.OPEN) {
+            wsRef.current.send(JSON.stringify(message));
+            setMessages(prev => [...prev, {role: 'user', content: input}]);
+            setInput("");
+            adjustHeight(true);
+        } else {
+            console.error("WebSocket is not open");
+        }
+    }, [input, adjustHeight]);
+
+    const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            if (value.trim()) {
-                setValue("");
-                adjustHeight(true);
-            }
+            handleSend();
         }
-    };
+    }, [handleSend]);
+
+    const renderMarkdown = (content: string) => (
+        <div className="prose dark:prose-invert prose-pre:p-0 prose-pre:bg-transparent max-w-none">
+            <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                    code: ({inline, className, children, ...props}: {
+                        inline?: boolean;
+                        className?: string;
+                        children?: React.ReactNode;
+                    } & React.HTMLAttributes<HTMLElement>) => {
+                        const match = /language-(\w+)/.exec(className || '');
+                        return !inline && match ? (
+                            <SyntaxHighlighter
+                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                style={oneDark as any}
+                                language={match[1]}
+                                PreTag="div"
+                                customStyle={{
+                                    borderRadius: '6px',
+                                    padding: '1rem',
+                                    margin: '1rem 0',
+                                    backgroundColor: '#1e293b',
+                                    border: '1px solid #334155'
+                                }}
+                                codeTagProps={{
+                                    style: {
+                                        fontFamily: 'Menlo, Monaco, Courier New, monospace',
+                                        fontSize: '0.9em',
+                                    }
+                                }}
+                                showLineNumbers={match[1] !== 'bash' && match[1] !== 'shell'}
+                                wrapLines={true}
+                                {...props}
+                            >
+                                {String(children).replace(/\n$/, '')}
+                            </SyntaxHighlighter>
+                        ) : (
+                            <code className={cn("px-1.5 py-0.5 rounded-md bg-gray-200 dark:bg-gray-700", className)} {...props}>
+                                {children}
+                            </code>
+                        );
+                    }
+                }}
+            >
+                {content}
+            </ReactMarkdown>
+        </div>
+    );
 
     return (
         <div className="flex flex-col items-center w-full max-w-4xl mx-auto p-4 space-y-8">
@@ -95,14 +290,39 @@ export default function  SearchInput() {
                 What can I help you with?
             </h1>
 
+            <div className="w-full space-y-4">
+                {messages.map((msg, i) => (
+                    <div 
+                        key={i} 
+                        className={cn(
+                            "p-4 rounded-lg",
+                            msg.role === 'user' 
+                                ? "bg-blue-100 dark:bg-blue-900 ml-auto max-w-[80%]" 
+                                : "bg-gray-100 dark:bg-[#171717] mr-auto max-w-[80%]"
+                        )}
+                    >
+                        {msg.role === 'assistant' ? (
+                            <div className="markdown-content">
+                                {renderMarkdown(msg.content)}
+                                {i === messages.length - 1 && isStreaming && (
+                                    <span className="ml-1 inline-block h-4 w-1 bg-gray-500 animate-pulse"></span>
+                                )}
+                            </div>
+                        ) : (
+                            <p className="whitespace-pre-wrap">{msg.content}</p>
+                        )}
+                    </div>
+                ))}
+            </div>
+
             <div className="w-full">
                 <div className="relative bg-neutral-900 rounded-xl border border-neutral-800">
                     <div className="overflow-y-auto">
                         <Textarea
                             ref={textareaRef}
-                            value={value}
+                            value={input}
                             onChange={(e) => {
-                                setValue(e.target.value);
+                                setInput(e.target.value);
                                 adjustHeight();
                             }}
                             onKeyDown={handleKeyDown}
@@ -137,7 +357,7 @@ export default function  SearchInput() {
                             </button>
                             <button
                                 className="h-8 w-8 flex items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-800 hover:text-zinc-300"
-                                >
+                            >
                                 <Globe className="h-4 w-4" />
                             </button>
                         </div>
@@ -151,9 +371,11 @@ export default function  SearchInput() {
                             </button>
                             <button
                                 type="button"
+                                onClick={handleSend}
+                                disabled={!input.trim()}
                                 className={cn(
                                     "px-1.5 py-1.5 rounded-lg text-sm transition-colors border border-zinc-700 hover:border-zinc-600 hover:bg-zinc-800 flex items-center justify-between gap-1",
-                                    value.trim()
+                                    input.trim()
                                         ? "bg-white text-black"
                                         : "text-zinc-400"
                                 )}
@@ -161,7 +383,7 @@ export default function  SearchInput() {
                                 <ArrowUpIcon
                                     className={cn(
                                         "w-4 h-4",
-                                        value.trim()
+                                        input.trim()
                                             ? "text-black"
                                             : "text-zinc-400"
                                     )}
@@ -198,22 +420,3 @@ export default function  SearchInput() {
         </div>
     );
 }
-
-interface ActionButtonProps {
-    icon: React.ReactNode;
-    label: string;
-}
-
-function ActionButton({ icon, label }: ActionButtonProps) {
-    return (
-        <button
-            type="button"
-            className="flex items-center gap-2 px-4 py-2 bg-neutral-900 hover:bg-neutral-800 rounded-full border border-neutral-800 text-neutral-400 hover:text-white transition-colors"
-        >
-            {icon}
-            <span className="text-xs">{label}</span>
-        </button>
-    );
-}
-
-
