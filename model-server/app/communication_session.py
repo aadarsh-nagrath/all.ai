@@ -2,6 +2,10 @@ from datetime import datetime
 from .crud import db
 import uuid
 
+def is_empty_session(messages: list) -> bool:
+    """Check if a session is empty (only contains system message)"""
+    return len(messages) == 1 and messages[0]["role"] == "system"
+
 async def create_communication_session(user_id: str):
     """Create a new communication session for a user"""
     # First, deactivate any existing active sessions for this user
@@ -67,8 +71,24 @@ async def get_active_session(user_id: str):
     })
 
 async def deactivate_communication_session(communication_id: str):
-    """Mark a communication session as inactive"""
-    await db.communication_sessions.update_one(
-        {"communication_id": communication_id},
-        {"$set": {"is_active": False}}
-    ) 
+    """Mark a communication session as inactive or delete if empty"""
+    # Get the session first
+    session = await db.communication_sessions.find_one({
+        "communication_id": communication_id
+    })
+    
+    if not session:
+        return
+        
+    # Check if the session is empty (only system message)
+    if is_empty_session(session.get("messages", [])):
+        # Delete the empty session
+        await db.communication_sessions.delete_one({
+            "communication_id": communication_id
+        })
+    else:
+        # Just deactivate non-empty sessions
+        await db.communication_sessions.update_one(
+            {"communication_id": communication_id},
+            {"$set": {"is_active": False}}
+        ) 
