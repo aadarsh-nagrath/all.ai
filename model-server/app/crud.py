@@ -14,13 +14,15 @@ class MongoDB:
         self.client = None
         self.db = None
         self.conversations = None
-        self._connect()
+        self.communication_sessions = None
 
-    def _connect(self):
+    async def connect(self):
         try:
             self.client = AsyncIOMotorClient(MONGODB_URI)
             self.db = self.client.get_default_database()
             self.conversations = self.db.conversations
+            self.communication_sessions = self.db.communication_sessions
+            await self.test_connection()
             logger.info("MongoDB client initialized")
         except Exception as e:
             logger.error(f"Failed to initialize MongoDB client: {str(e)}")
