@@ -132,6 +132,45 @@ export default function SearchInput() {
         maxHeight: 200,
     });
 
+    useEffect(() => {
+        if (!session?.user?.email) return;
+
+        const wsUrl = `ws://localhost:8000/ws/${encodeURIComponent(session.user.email)}`;
+        const ws = new WebSocket(wsUrl);
+        wsRef.current = ws;
+
+        ws.onopen = () => {
+            console.log("WebSocket connection established");
+        };
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.message) {
+                setIsStreaming(true);
+                setCurrentStream(data.message);
+            }
+        };
+
+        ws.onclose = (event) => {
+            console.log("WebSocket closed", event);
+            if (event.code === 1000) {
+                console.log("Normal closure");
+            } else {
+                console.log("Abnormal closure");
+            }
+        };
+
+        ws.onerror = (error) => {
+            console.error("WebSocket error:", error);
+        };
+
+        return () => {
+            if (wsRef.current) {
+                wsRef.current.close();
+            }
+        };
+    }, [session?.user?.email]);
+
     // Fast typewriter effect
     useEffect(() => {
         if (!isStreaming || !currentStream) return;
@@ -166,59 +205,8 @@ export default function SearchInput() {
 
         const frameId = requestAnimationFrame(typeNextCharacter);
         return () => cancelAnimationFrame(frameId);
-    }, [isStreaming, currentStream, messages.length]);
+    }, [isStreaming, currentStream]);
 
-    useEffect(() => {
-        if (!session?.user?.email) return;
-    
-        const wsUrl = `ws://localhost:8000/ws/${encodeURIComponent(session.user.email)}`;
-        const ws = new WebSocket(wsUrl);
-        wsRef.current = ws;
-    
-        ws.onopen = () => {
-            console.log("WebSocket connection established");
-        };
-    
-        ws.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                
-                if (data.message) {
-                    if (data.is_final) {
-                        setMessages(prev => [...prev, {
-                            role: 'assistant',
-                            content: data.message
-                        }]);
-                    } else {
-                        setCurrentStream(prev => prev + data.message);
-                        setIsStreaming(true);
-                    }
-                }
-            } catch (error) {
-                console.error("Error parsing message:", error);
-            }
-        };
-    
-        ws.onclose = (event) => {
-            console.log("WebSocket closed", event);
-            if (event.code === 1000) {
-                console.log("Normal closure");
-            } else {
-                console.log("Abnormal closure");
-            }
-        };
-    
-        ws.onerror = (error) => {
-            console.error("WebSocket error:", error);
-        };
-    
-        return () => {
-            if (wsRef.current) {
-                wsRef.current.close();
-            }
-        };
-    }, [session?.user?.email]);
-    
     const handleSend = useCallback(() => {
         if (!input.trim() || !wsRef.current) return;
     
