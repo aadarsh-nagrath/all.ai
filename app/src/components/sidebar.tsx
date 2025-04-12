@@ -32,7 +32,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent className="overflow-hidden">
         <NavMain items={sidebarcontent.navMain} />
-        <NavProjects chatmod={sidebarcontent.chatmod} />
+        <NavProjects />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={sidebarcontent.user} />
