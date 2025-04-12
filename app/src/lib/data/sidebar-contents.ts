@@ -2,8 +2,6 @@ import {
   BookOpen,
   Bot,
   Brain,
-  Frame,
-  PieChart,
   Settings2,
   SquareTerminal,
 } from "lucide-react";
@@ -88,18 +86,6 @@ export const sidebarcontent = {
         { title: "Account & Billing", url: "#", key: "account" },
         { title: "General Settings", url: "#", key: "general-settings" },
       ],
-    },
-  ],
-  chatmod: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
     },
   ],
 };
