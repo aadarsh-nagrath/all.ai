@@ -20,6 +20,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Circle } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTheme } from "@/components/theme-provider";
 
 interface Theme {
   name: string;
@@ -31,6 +32,8 @@ interface Theme {
 
 export function ThemeBadge() {
   const [themes, setThemes] = useState<Theme[]>([]);
+  const [selectedTheme, setSelectedTheme] = useState<string>("");
+  const { setCustomTheme } = useTheme();
 
   useEffect(() => {
     fetch("/color-theme/list.json")
@@ -39,10 +42,17 @@ export function ThemeBadge() {
       .catch((error) => console.error("Error loading themes:", error));
   }, []);
 
+  const handleThemeClick = (theme: Theme) => {
+    setSelectedTheme(theme.name);
+    setCustomTheme(theme);
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-      <Button variant="outline" className="px-2 py-1 text-sm">theme.name</Button>
+        <Button variant="outline" className="px-2 py-1 text-sm">
+          {selectedTheme || "Select Theme"}
+        </Button>
       </DialogTrigger>
       <DialogContent className="p-0">
         <VisuallyHidden>
@@ -58,16 +68,17 @@ export function ThemeBadge() {
             <CommandGroup heading="Themes">
               {themes.map((theme) => (
                 <CommandItem
-                key={theme.name}
-                value={theme.name}
-                className="cursor-pointer transition-colors hover:bg-[theme.subColor]"
-                style={{
-                  transition: "background-color 0.2s ease-in-out",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = theme.subColor)}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "")}
-              >
-                  <span  >{theme.name}</span>
+                  key={theme.name}
+                  value={theme.name}
+                  className="cursor-pointer transition-colors hover:bg-[theme.subColor]"
+                  style={{
+                    transition: "background-color 0.2s ease-in-out",
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = theme.subColor)}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "")}
+                  onSelect={() => handleThemeClick(theme)}
+                >
+                  <span>{theme.name}</span>
                   <Badge variant="outline" className="ml-auto" style={{ backgroundColor: theme.bgColor }}>
                     <div className="flex space-x-1">
                       <Circle
