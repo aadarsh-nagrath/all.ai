@@ -171,12 +171,14 @@ export default function SearchInput() {
         };
     }, [session?.user?.email]);
 
+    const msglen = messages.length;
+
     // Fast typewriter effect
     useEffect(() => {
         if (!isStreaming || !currentStream) return;
 
         let index = 0;
-        const streamingMessageIndex = messages.length;
+        const streamingMessageIndex = msglen;
         
         const typeNextCharacter = () => {
             if (index < currentStream.length) {

@@ -1,15 +1,17 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from .websocket import router as ws_router
 import redis
 import asyncio
 from .crud import db
+from typing import List
+from datetime import datetime
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=["*"],  # Allow all origins during development
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -30,3 +32,32 @@ async def startup_event():
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
+
+@app.get("/api/chats/{user_id}")
+async def get_user_chats(user_id: str):
+    try:
+        # Get all communication sessions for the user
+        sessions = await db.communication_sessions.find(
+            {"user_id": user_id},
+            {"_id": 0, "communication_id": 1, "messages": 1, "created_at": 1, "updated_at": 1}
+        ).to_list(length=None)
+        
+        # Format the sessions to include the first user message as title
+        formatted_sessions = []
+        for session in sessions:
+            # Find the first user message
+            first_user_message = next(
+                (msg["content"] for msg in session["messages"] if msg["role"] == "user"),
+                "New Chat"
+            )
+            
+            formatted_sessions.append({
+                "id": session["communication_id"],
+                "title": first_user_message,
+                "created_at": session["created_at"],
+                "updated_at": session["updated_at"]
+            })
+        
+        return formatted_sessions
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
