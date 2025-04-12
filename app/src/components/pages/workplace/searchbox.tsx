@@ -32,7 +32,6 @@ import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
 import markdown from 'react-syntax-highlighter/dist/esm/languages/prism/markdown';
 import yaml from 'react-syntax-highlighter/dist/esm/languages/prism/yaml';
 import "../../../styles/markdown.css";
-import { redirect } from "next/navigation";
 
 // Register languages
 SyntaxHighlighter.registerLanguage('python', python);
@@ -167,7 +166,7 @@ export default function SearchInput() {
 
         const frameId = requestAnimationFrame(typeNextCharacter);
         return () => cancelAnimationFrame(frameId);
-    }, [isStreaming, currentStream]);
+    }, [isStreaming, currentStream, messages.length]);
 
     useEffect(() => {
         if (!session?.user?.email) return;
@@ -183,6 +182,7 @@ export default function SearchInput() {
         ws.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
+                
                 if (data.message) {
                     if (data.is_final) {
                         setMessages(prev => [...prev, {
@@ -201,10 +201,14 @@ export default function SearchInput() {
     
         ws.onclose = (event) => {
             console.log("WebSocket closed", event);
+            if (event.code === 1000) {
+                console.log("Normal closure");
+            } else {
+                console.log("Abnormal closure");
+            }
         };
     
         ws.onerror = (error) => {
-            redirect("/workplace");
             console.error("WebSocket error:", error);
         };
     
@@ -228,6 +232,8 @@ export default function SearchInput() {
             setMessages(prev => [...prev, {role: 'user', content: input}]);
             setInput("");
             adjustHeight(true);
+        } else {
+            console.error("WebSocket is not open");
         }
     }, [input, adjustHeight]);
 
