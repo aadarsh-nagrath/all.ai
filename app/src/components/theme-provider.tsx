@@ -73,7 +73,7 @@ export function ThemeProvider({
       document.documentElement.style.setProperty('--sidebar-primary-foreground', `${bgColor.h} ${bgColor.s}% ${bgColor.l}%`)
       document.documentElement.style.setProperty('--sidebar-accent', `${subColor.h} ${subColor.s}% ${subColor.l}%`)
       document.documentElement.style.setProperty('--sidebar-accent-foreground', `${textColor.h} ${textColor.s}% ${textColor.l}%`)
-      document.documentElement.style.setProperty('--sidebar-border', `${subColor.h} ${subColor.s}% ${subColor.l}%`)
+      document.documentElement.style.setProperty('--sidebar-border', `${mainColor.h} ${mainColor.s}% ${mainColor.l}%`)
       document.documentElement.style.setProperty('--sidebar-ring', `${mainColor.h} ${mainColor.s}% ${mainColor.l}%`)
     }
   }, [customTheme])
