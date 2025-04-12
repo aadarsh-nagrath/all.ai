@@ -48,7 +48,6 @@ body::-webkit-scrollbar {
   -ms-overflow-style: none;
 }
 
-
 @layer base {
   :root {
     --background: 0 0% 100%; /* White */
