@@ -298,7 +298,7 @@ export default function SearchInput() {
                             "p-4 rounded-lg",
                             msg.role === 'user' 
                                 ? "bg-primary/10 ml-auto max-w-[80%]" 
-                                : "bg-secondary mr-auto max-w-[80%]"
+                                : "bg-transparent mr-auto max-w-[80%]"
                         )}
                     >
                         {msg.role === 'assistant' ? (
