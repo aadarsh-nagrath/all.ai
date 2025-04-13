@@ -78,7 +78,7 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
-                  src={(currentUser as { avatar?: string }).avatar}
+                  src={session?.user?.image || user.avatar}
                   alt={currentUser.name || ""}
                 />
                 <AvatarFallback className="rounded-lg">AI</AvatarFallback>
