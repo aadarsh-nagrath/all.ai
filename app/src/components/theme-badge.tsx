@@ -33,7 +33,6 @@ interface Theme {
 export function ThemeBadge() {
   const [themes, setThemes] = useState<Theme[]>([]);
   const [selectedTheme, setSelectedTheme] = useState<string>("");
-  const [previewTheme, setPreviewTheme] = useState<Theme | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const { setCustomTheme } = useTheme();
 
@@ -47,12 +46,10 @@ export function ThemeBadge() {
   const handleThemeClick = (theme: Theme) => {
     setSelectedTheme(theme.name);
     setCustomTheme(theme);
-    setPreviewTheme(null);
     setIsOpen(false);
   };
 
   const handleThemeHover = (theme: Theme) => {
-    setPreviewTheme(theme);
     // Convert hex colors to HSL values
     const bgColor = hexToHsl(theme.bgColor);
     const mainColor = hexToHsl(theme.mainColor);
@@ -95,7 +92,6 @@ export function ThemeBadge() {
   };
 
   const handleThemeLeave = () => {
-    setPreviewTheme(null);
     // Remove preview class and reset preview variables
     document.body.classList.remove('preview-theme');
     // Reset all preview variables
