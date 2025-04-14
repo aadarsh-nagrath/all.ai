@@ -79,17 +79,20 @@ export function NavProjects() {
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon] h-full flex-2 ">
-      <SidebarGroupLabel>Chats</SidebarGroupLabel>
+      <SidebarGroupLabel className="text-xl font-bold tracking-tight relative group mb-2">
+        Chats
+        <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary/50 to-primary/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+      </SidebarGroupLabel>
       <div className="px-2 mb-2">
         <Button
           variant="outline"
-          className="w-full justify-start gap-2"
+          className="w-full justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-4 group-data-[collapsible=icon]:mx-[-8px]"
           onClick={() => {
             window.location.href = "/workplace"
           }}
         >
           <Plus className="h-4 w-4" />
-          <span>New Chat</span>
+          <span className="group-data-[collapsible=icon]:hidden">New Chat</span>
         </Button>
       </div>
       <div className="h-full overflow-y-auto">  
@@ -97,7 +100,7 @@ export function NavProjects() {
           {status === "loading" ? (
             <div className="px-4 py-2 text-sm text-muted-foreground">Loading...</div>
           ) : status !== "authenticated" ? (
-            <div className="px-4 py-2 text-sm text-muted-foreground">Please sign in to view your chats</div>
+            <div className="px-4 py-2 text-sm text-muted-foreground group-data-[collapsible=icon]:hidden">Please sign in to view your chats</div>
           ) : loading ? (
             <div className="px-4 py-2 text-sm text-muted-foreground">Loading chats...</div>
           ) : error ? (
@@ -105,11 +108,12 @@ export function NavProjects() {
           ) : chats.length === 0 ? (
             <div className="px-4 py-2 text-sm text-muted-foreground">No chats yet</div>
           ) : (
-            chats.map((chat) => (
+            chats.map((chat, index) => (
               <SidebarMenuItem key={chat.id}>
                 <SidebarMenuButton asChild>
-                  <a href={`/chat/${chat.id}`}>
-                    <span> # {chat.title}</span>
+                  <a href={`/chat/${chat.id}`} className="flex items-center gap-2">
+                    <span className="text-muted-foreground text-sm">#{index + 1}</span>
+                    <span className="font-medium text-base truncate">{chat.title}</span>
                   </a>
                 </SidebarMenuButton>
                 <DropdownMenu>
@@ -126,7 +130,7 @@ export function NavProjects() {
                   >
                     <DropdownMenuItem>
                       <Folder className="text-muted-foreground" />
-                      <span>View Chats</span>
+                      <span>Highlight Chat</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <Forward className="text-muted-foreground" />
