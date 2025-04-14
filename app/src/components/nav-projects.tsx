@@ -8,7 +8,7 @@ import {
   Plus,
 } from "lucide-react"
 import { useEffect, useState } from "react"
-import { getUserChats } from "@/lib/api"
+import { getUserChats, deleteChat } from "@/lib/api"
 import { useSession } from "next-auth/react"
 
 import {
@@ -43,6 +43,16 @@ export function NavProjects() {
   const [chats, setChats] = useState<ChatSession[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const handleDeleteChat = async (chatId: string) => {
+    try {
+      await deleteChat(chatId)
+      setChats(chats.filter(chat => chat.id !== chatId))
+    } catch (error) {
+      console.error('Error deleting chat:', error)
+      setError(error instanceof Error ? error.message : 'Failed to delete chat')
+    }
+  }
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -99,7 +109,7 @@ export function NavProjects() {
               <SidebarMenuItem key={chat.id}>
                 <SidebarMenuButton asChild>
                   <a href={`/chat/${chat.id}`}>
-                    <span>{chat.title}</span>
+                    <span> # {chat.title}</span>
                   </a>
                 </SidebarMenuButton>
                 <DropdownMenu>
@@ -123,9 +133,12 @@ export function NavProjects() {
                       <span>Share Chats</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <Trash2 className="text-muted-foreground" />
-                      <span>Delete Chats</span>
+                    <DropdownMenuItem
+                      className="text-red-600 focus:text-red-600 focus:bg-red-100"
+                      onClick={() => handleDeleteChat(chat.id)}
+                    >
+                      <Trash2 className="text-red-600 mr-2 h-4 w-4" />
+                      <span>Delete Chat</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
