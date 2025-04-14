@@ -29,7 +29,7 @@ export default function LoginPage() {
       </div>
       <div className="relative hidden bg-muted lg:block">
         <Image
-          src="https://assets.grok.com/users/e94bb7b9-f5a7-4355-b4aa-6825d16b551f/generated/py6d0czXrcILrjB4/image.jpg"
+          src="/images/panda-login.jpg"
           alt="Image"
           width={500}
           height={1000}
