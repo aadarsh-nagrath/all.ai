@@ -1,4 +1,4 @@
-// import NotFoundPage from "@/components/pages/misc/404";
+import NotFoundPage from "@/components/pages/misc/404";
 import Workplace from "@/components/pages/workplace/workplace";
 import Plugins from "@/components/pages/plugin-theme/plugins";
 import Theme from "@/components/pages/plugin-theme/theme";
@@ -32,8 +32,15 @@ const pageMap: Record<string, React.ReactNode> = {
 export default async function DynamicRoute({ params }: { params: Promise<{ route: string }> }) {
   try {
     const { route } = await params;
-    return pageMap[route];
+    
+    if (pageMap[route]) {
+      return pageMap[route];
+    }
+    
+    return <NotFoundPage />;
+    
   } catch (error) {
     console.error("Error in DynamicRoute:", error);
+    return <NotFoundPage />;
   }
 }
