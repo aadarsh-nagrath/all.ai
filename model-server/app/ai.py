@@ -14,7 +14,7 @@ client = OpenAI(
 async def chat_with_ai(messages):
     try:
         completion = client.chat.completions.create(
-            model="qwen/qwen-vl-plus:free",
+            model="qwen/qwen-2.5-72b-instruct:free",
             messages=messages,
             extra_headers={
                 "HTTP-Referer": os.getenv("SITE_URL", "http://localhost:3000"),
