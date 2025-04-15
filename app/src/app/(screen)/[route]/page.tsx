@@ -11,6 +11,7 @@ import ImageGen from "@/components/pages/modals/image-generation";
 import GetStarted from "@/components/pages/promptlib-notes/get-started";
 import Account from "@/components/pages/settings/account-billing";
 import GeneralSettings from "@/components/pages/settings/general-settings";
+import SubsPage from "@/components/pages/pricing-page/plans";
 
 const pageMap: Record<string, React.ReactNode> = {
   workplace: <Workplace />,
@@ -25,6 +26,7 @@ const pageMap: Record<string, React.ReactNode> = {
   account: <Account />,
   "general-settings": <GeneralSettings />,
   "prompt-lib": <PromptLib />,
+  "pricing-page": <SubsPage />,
 };
 
 export default async function DynamicRoute({ params }: { params: Promise<{ route: string }> }) {
