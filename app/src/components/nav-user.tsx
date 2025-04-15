@@ -5,12 +5,12 @@ import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
   Sparkles,
+  MessageCircle,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
-import { useRouter } from "next/navigation"; 
+import { redirect, useRouter } from "next/navigation"; 
 
 import {
   Avatar,
@@ -120,20 +120,20 @@ export function NavUser({
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => redirect("/pricing-page")}>
                   <Sparkles />
                   Upgrade to Pro
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => redirect("/account")}>
                   <BadgeCheck />
-                  Account
+                  Account n Billing
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <CreditCard />
-                  Billing
+                <DropdownMenuItem onClick={() => redirect("/feedback")}>
+                  <MessageCircle />
+                  Give us Feedback
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Bell />
@@ -141,7 +141,9 @@ export function NavUser({
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
+              <DropdownMenuItem
+              className="text-red-600 focus:text-red-600 focus:bg-red-100"
+              onClick={() => signOut({ callbackUrl: "/" })}>
                 <LogOut />
                 Log out
               </DropdownMenuItem>
