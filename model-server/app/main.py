@@ -61,3 +61,16 @@ async def get_user_chats(user_id: str):
         return formatted_sessions
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/api/chats/{chat_id}")
+async def delete_chat(chat_id: str):
+    try:
+        # Delete the communication session
+        result = await db.communication_sessions.delete_one({"communication_id": chat_id})
+        
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Chat not found")
+            
+        return {"status": "success", "message": "Chat deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

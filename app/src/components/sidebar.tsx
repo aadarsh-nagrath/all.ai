@@ -17,10 +17,9 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const [isClient, setIsClient] = React.useState(false);
 
   React.useEffect(() => {
-    setIsClient(true); // Ensure we are on the client side
+    setIsClient(true); 
   }, []);
 
-  // Don't render anything until the component mounts on the client
   if (!isClient) {
     return null;
   }

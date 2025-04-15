@@ -17,4 +17,25 @@ export async function getUserChats(userId: string) {
     console.error('Error fetching chats:', error);
     throw error; // Re-throw the error to handle it in the component
   }
+}
+
+export async function deleteChat(chatId: string) {
+  try {
+    const response = await fetch(`http://localhost:8000/api/chats/${encodeURIComponent(chatId)}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || 'Failed to delete chat');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error deleting chat:', error);
+    throw error;
+  }
 } 
