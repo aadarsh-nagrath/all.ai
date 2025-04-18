@@ -9,7 +9,8 @@ import Headline from "./headline";
 import SearchInput from "./searchbox";
 import Subheadline from "./subheadline";
 import { ThemeBadge } from "@/components/theme-badge"
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 function AnimatedThemeButton() {
   return (
@@ -26,6 +27,12 @@ function AnimatedThemeButton() {
 }
 
 export default function Workplace() {
+  const [showHeadings, setShowHeadings] = useState(true);
+
+  const handleMessageSent = () => {
+    setShowHeadings(false);
+  };
+
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <Breadcrumb>
@@ -36,9 +43,27 @@ export default function Workplace() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <Headline />
-      <Subheadline />
-      <SearchInput />
+      <AnimatePresence>
+        {showHeadings && (
+          <>
+            <motion.div
+              initial={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Headline />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Subheadline />
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+      <SearchInput onMessageSent={handleMessageSent} />
     </div>
   );
 }
