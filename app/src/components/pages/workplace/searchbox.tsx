@@ -131,14 +131,19 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
     const [currentStream, setCurrentStream] = useState("");
     const [isStreaming, setIsStreaming] = useState(false);
     const [isFixed, setIsFixed] = useState(false);
+    const [isAtBottom, setIsAtBottom] = useState(true);
+    const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+    const [shouldStopStream, setShouldStopStream] = useState(false);
     const wsRef = useRef<WebSocket | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
+    const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const { data: session } = useSession();
     const { textareaRef, adjustHeight } = useAutoResizeTextarea({
         minHeight: 60,
         maxHeight: 200,
     });
+    const animationFrameRef = useRef<number | null>(null);
 
     useEffect(() => {
         if (!session?.user?.email) return;
@@ -190,7 +195,7 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
         const streamingMessageIndex = messagesRef.current.length;
         
         const typeNextCharacter = () => {
-            if (index < currentStream.length) {
+            if (index < currentStream.length && !shouldStopStream) {
                 setMessages(prev => {
                     const newMessages = [...prev];
                     if (!newMessages[streamingMessageIndex]) {
@@ -207,16 +212,39 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
                     return newMessages;
                 });
                 index++;
-                requestAnimationFrame(typeNextCharacter);
+                animationFrameRef.current = requestAnimationFrame(typeNextCharacter);
+            } else if (shouldStopStream) {
+                // When stopped, keep the current message but stop the animation
+                setMessages(prev => {
+                    const newMessages = [...prev];
+                    if (!newMessages[streamingMessageIndex]) {
+                        newMessages.push({
+                            role: 'assistant',
+                            content: currentStream.substring(0, index)
+                        });
+                    } else {
+                        newMessages[streamingMessageIndex] = {
+                            ...newMessages[streamingMessageIndex],
+                            content: currentStream.substring(0, index)
+                        };
+                    }
+                    return newMessages;
+                });
+                setIsStreaming(false);
+                setShouldStopStream(false);
             } else {
                 setCurrentStream("");
                 setIsStreaming(false);
             }
         };
 
-        const frameId = requestAnimationFrame(typeNextCharacter);
-        return () => cancelAnimationFrame(frameId);
-    }, [isStreaming, currentStream]);
+        animationFrameRef.current = requestAnimationFrame(typeNextCharacter);
+        return () => {
+            if (animationFrameRef.current) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
+        };
+    }, [isStreaming, currentStream, shouldStopStream]);
 
     const handleSend = useCallback(() => {
         if (!input.trim() || !wsRef.current) return;
@@ -240,6 +268,13 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
             console.error("WebSocket is not open");
         }
     }, [input, adjustHeight, onMessageSent]);
+
+    const handleStopStream = useCallback(() => {
+        setShouldStopStream(true);
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+        }
+    }, []);
 
     const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -297,17 +332,53 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
         </div>
     );
 
-    // Auto-scroll to bottom when messages change or streaming updates
-    useEffect(() => {
-        if (messagesEndRef.current && chatContainerRef.current) {
+    // Handle user scrolling
+    const handleScroll = useCallback(() => {
+        if (scrollTimeoutRef.current) {
+            clearTimeout(scrollTimeoutRef.current);
+        }
+        
+        if (chatContainerRef.current) {
             const container = chatContainerRef.current;
-            const isNearBottom = container.scrollHeight - container.scrollTop <= container.clientHeight * 2;
+            const isNearBottom = container.scrollHeight - container.scrollTop <= container.clientHeight * 1.1;
+            setIsAtBottom(isNearBottom);
             
-            if (isNearBottom) {
-                messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+            // If user scrolls up during streaming, disable auto-scroll
+            if (isStreaming && !isNearBottom) {
+                setShouldAutoScroll(false);
             }
         }
-    }, [messages, currentStream]);
+        
+        scrollTimeoutRef.current = setTimeout(() => {
+            // Reset auto-scroll after user stops scrolling
+            if (isAtBottom) {
+                setShouldAutoScroll(true);
+            }
+        }, 1000);
+    }, [isStreaming, isAtBottom]);
+
+    // Auto-scroll to bottom when messages change or streaming updates
+    useEffect(() => {
+        if (messagesEndRef.current && chatContainerRef.current && shouldAutoScroll && isAtBottom) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [messages, currentStream, shouldAutoScroll, isAtBottom]);
+
+    // Reset auto-scroll when streaming stops
+    useEffect(() => {
+        if (!isStreaming) {
+            setShouldAutoScroll(true);
+        }
+    }, [isStreaming]);
+
+    // Cleanup timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (scrollTimeoutRef.current) {
+                clearTimeout(scrollTimeoutRef.current);
+            }
+        };
+    }, []);
 
     return (
         <div className="flex flex-col items-center w-full max-w-4xl mx-auto p-4 space-y-8">
@@ -324,7 +395,7 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
                 )}
             </AnimatePresence>
 
-            <div className="w-full space-y-4 flex-1 overflow-y-auto pb-32" ref={chatContainerRef}>
+            <div className="w-full space-y-4 flex-1 overflow-y-auto pb-32" ref={chatContainerRef} onScroll={handleScroll}>
                 {messages.map((msg, i) => (
                     <div 
                         key={i} 
@@ -415,24 +486,30 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={handleSend}
-                                    disabled={!input.trim()}
+                                    onClick={isStreaming ? handleStopStream : handleSend}
+                                    disabled={!input.trim() && !isStreaming}
                                     className={cn(
-                                        "px-1.5 py-1.5 rounded-lg text-sm transition-colors border border-border hover:border-accent hover:bg-accent flex items-center justify-between gap-1",
-                                        input.trim()
-                                            ? "bg-primary text-primary-foreground"
-                                            : "text-muted-foreground"
+                                        "px-1.5 py-1.5 rounded-lg text-sm transition-colors border border-border hover:border-accent hover:bg-accent flex items-center justify-center",
+                                        isStreaming 
+                                            ? "w-8 h-8"
+                                            : input.trim()
+                                                ? "bg-primary text-primary-foreground"
+                                                : "text-muted-foreground"
                                     )}
                                 >
-                                    <ArrowUpIcon
-                                        className={cn(
-                                            "w-4 h-4",
-                                            input.trim()
-                                                ? "text-primary-foreground"
-                                                : "text-muted-foreground"
-                                        )}
-                                    />
-                                    <span className="sr-only">Send</span>
+                                    {isStreaming ? (
+                                        <div className="w-3 h-3 bg-destructive animate-pulse" />
+                                    ) : (
+                                        <ArrowUpIcon
+                                            className={cn(
+                                                "w-4 h-4",
+                                                input.trim()
+                                                    ? "text-primary-foreground"
+                                                    : "text-muted-foreground"
+                                            )}
+                                        />
+                                    )}
+                                    <span className="sr-only">{isStreaming ? "Stop" : "Send"}</span>
                                 </button>
                             </div>
                         </div>
