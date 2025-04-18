@@ -316,8 +316,8 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
                         className={cn(
                             "p-4 rounded-lg",
                             msg.role === 'user' 
-                                ? "bg-primary/10 ml-auto max-w-[80%]" 
-                                : "bg-transparent mr-auto max-w-[80%]"
+                                ? "bg-primary/10 ml-auto w-fit max-w-[80%]" 
+                                : "bg-transparent mr-auto w-full max-w-[80%]"
                         )}
                     >
                         {msg.role === 'assistant' ? (
@@ -328,7 +328,7 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
                                 )}
                             </div>
                         ) : (
-                            <p className="whitespace-pre-wrap text-foreground">{msg.content}</p>
+                            <p className="whitespace-pre-wrap text-foreground text-right">{msg.content}</p>
                         )}
                     </div>
                 ))}
