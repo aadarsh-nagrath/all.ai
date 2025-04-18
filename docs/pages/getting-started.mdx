@@ -1,0 +1,129 @@
+# Getting Started with All AI
+
+This guide will help you get up and running with All AI in just a few minutes.
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+- Node.js 14.0 or later
+- npm or yarn package manager
+- An All AI account (sign up at [allai.com](https://allai.com))
+
+## Installation
+
+### 1. Install the All AI SDK
+
+```bash
+# Using npm
+npm install @all-ai/sdk
+
+# Using yarn
+yarn add @all-ai/sdk
+```
+
+### 2. Set up your API key
+
+After signing up for All AI, generate an API key from your dashboard. Then, set it up in your project:
+
+```javascript
+// Initialize the SDK with your API key
+import { AllAI } from '@all-ai/sdk';
+
+const ai = new AllAI({
+  apiKey: 'your-api-key',
+});
+```
+
+For security, we recommend storing your API key in environment variables:
+
+```javascript
+// Using environment variables (recommended)
+import { AllAI } from '@all-ai/sdk';
+
+const ai = new AllAI({
+  apiKey: process.env.ALL_AI_API_KEY,
+});
+```
+
+## Quick Start
+
+Let's create a simple example to demonstrate how to use All AI:
+
+```javascript
+// Text generation example
+async function generateText() {
+  const response = await ai.text.generate({
+    prompt: 'Explain quantum computing in simple terms',
+    maxTokens: 150,
+    temperature: 0.7,
+  });
+  
+  console.log(response.text);
+}
+
+generateText();
+```
+
+### Image generation example
+
+```javascript
+async function generateImage() {
+  const response = await ai.image.generate({
+    prompt: 'A serene lake surrounded by mountains at sunset',
+    resolution: '1024x1024',
+    style: 'photorealistic',
+  });
+  
+  console.log(response.imageUrl);
+}
+
+generateImage();
+```
+
+## Advanced Configuration
+
+You can customize the behavior of the SDK by providing additional options:
+
+```javascript
+const ai = new AllAI({
+  apiKey: process.env.ALL_AI_API_KEY,
+  basePath: 'https://api.custom-domain.com', // For custom endpoints
+  timeout: 30000, // Request timeout in milliseconds
+  maxRetries: 3, // Number of retries for failed requests
+});
+```
+
+## Using with TypeScript
+
+All AI SDK is written in TypeScript and provides complete type definitions:
+
+```typescript
+import { AllAI, TextGenerationParams, ImageGenerationParams } from '@all-ai/sdk';
+
+const ai = new AllAI({ apiKey: process.env.ALL_AI_API_KEY });
+
+const textParams: TextGenerationParams = {
+  prompt: 'Write a poem about artificial intelligence',
+  maxTokens: 200,
+  temperature: 0.8,
+};
+
+const imageParams: ImageGenerationParams = {
+  prompt: 'A futuristic city with flying cars',
+  resolution: '1024x1024',
+  style: 'digital art',
+};
+```
+
+## Learn More
+
+- [Explore All AI Models](/models) - Learn about available AI models
+- [API Reference](/api-reference) - Complete API documentation
+- [Tutorials](/tutorials) - Step-by-step guides for common use cases
+- [Examples](/examples) - Code examples for different scenarios
+
+<div className="mt-8 p-4 border border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-900/20 rounded-lg">
+  <h3 className="text-lg font-semibold mb-2">Need Help?</h3>
+  <p>If you encounter any issues or have questions, check our <a href="/faq" className="text-blue-500 hover:text-blue-600">FAQ</a> or join our <a href="https://discord.gg/allai" className="text-blue-500 hover:text-blue-600">Discord community</a>.</p>
+</div> 

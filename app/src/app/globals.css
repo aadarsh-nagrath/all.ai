@@ -4,7 +4,16 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
 /* Hide scrollbar by default */
 .scrollbar-hide::-webkit-scrollbar {
   width: 6px;
@@ -21,6 +30,23 @@ body {
   border-radius: 6px;
 }
 
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+}
 
 @layer base {
   :root {
@@ -102,4 +128,33 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Preview theme styles */
+body.preview-theme {
+  --background: var(--preview-background);
+  --foreground: var(--preview-foreground);
+  --card: var(--preview-card);
+  --card-foreground: var(--preview-card-foreground);
+  --popover: var(--preview-popover);
+  --popover-foreground: var(--preview-popover-foreground);
+  --primary: var(--preview-primary);
+  --primary-foreground: var(--preview-primary-foreground);
+  --secondary: var(--preview-secondary);
+  --secondary-foreground: var(--preview-secondary-foreground);
+  --muted: var(--preview-muted);
+  --muted-foreground: var(--preview-muted-foreground);
+  --accent: var(--preview-accent);
+  --accent-foreground: var(--preview-accent-foreground);
+  --border: var(--preview-border);
+  --input: var(--preview-input);
+  --ring: var(--preview-ring);
+  --sidebar-background: var(--preview-sidebar-background);
+  --sidebar-foreground: var(--preview-sidebar-foreground);
+  --sidebar-primary: var(--preview-sidebar-primary);
+  --sidebar-primary-foreground: var(--preview-sidebar-primary-foreground);
+  --sidebar-accent: var(--preview-sidebar-accent);
+  --sidebar-accent-foreground: var(--preview-sidebar-accent-foreground);
+  --sidebar-border: var(--preview-sidebar-border);
+  --sidebar-ring: var(--preview-sidebar-ring);
 }

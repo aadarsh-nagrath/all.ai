@@ -5,12 +5,12 @@ import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
   Sparkles,
+  MessageCircle,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
-import { useRouter } from "next/navigation"; // Use next/navigation for App Router
+import { redirect, useRouter } from "next/navigation"; 
 
 import {
   Avatar,
@@ -44,7 +44,7 @@ export function NavUser({
 }) {
   const { data: session } = useSession();
   const { isMobile } = useSidebar();
-  const router = useRouter(); // Initialize useRouter from next/navigation
+  const router = useRouter();
 
   const [isClient, setIsClient] = useState(false);
 
@@ -73,12 +73,12 @@ export function NavUser({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              onClick={handleLoginNavigation} // Use the navigation function
+              onClick={handleLoginNavigation} 
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
-                  src={(currentUser as { avatar?: string }).avatar}
+                  src={session?.user?.image || user.avatar}
                   alt={currentUser.name || ""}
                 />
                 <AvatarFallback className="rounded-lg">AI</AvatarFallback>
@@ -120,20 +120,20 @@ export function NavUser({
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => redirect("/pricing-page")}>
                   <Sparkles />
                   Upgrade to Pro
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => redirect("/account")}>
                   <BadgeCheck />
-                  Account
+                  Account n Billing
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <CreditCard />
-                  Billing
+                <DropdownMenuItem onClick={() => redirect("/feedback")}>
+                  <MessageCircle />
+                  Give us Feedback
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Bell />
@@ -141,7 +141,9 @@ export function NavUser({
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
+              <DropdownMenuItem
+              className="text-red-600 focus:text-red-600 focus:bg-red-100"
+              onClick={() => signOut({ callbackUrl: "/" })}>
                 <LogOut />
                 Log out
               </DropdownMenuItem>

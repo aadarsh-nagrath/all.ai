@@ -14,6 +14,13 @@ import { AppearanceSettings } from "./AppearanceSettings";
 import { VoiceInputSettings } from "./components/VoiceInputSettings";
 import { ExtensionsSettings } from "./components/ExtensionsSettings";
 import { LicenseKeySettings } from "./components/LicenseKeySettings";
+"use client"
+import * as React from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Input } from "@/components/ui/input"
+
 
 export default function Settings() {
   const [activeCategory, setActiveCategory] = React.useState("General");
