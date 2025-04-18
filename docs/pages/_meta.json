@@ -1,0 +1,26 @@
+{
+  "index": "Introduction",
+  "getting-started": "Getting Started",
+  "models": "AI Models",
+  "integrations": "Integrations",
+  "use-cases": "Use Cases",
+  "api-reference": "API Reference",
+  "tutorials": "Tutorials",
+  "faq": "FAQ",
+  "about": {
+    "title": "About All AI",
+    "type": "page"
+  },
+  "community": {
+    "title": "Community ↗",
+    "type": "page",
+    "href": "https://discord.gg/allai",
+    "newWindow": true
+  },
+  "github": {
+    "title": "GitHub ↗",
+    "type": "page",
+    "href": "https://github.com/all-ai",
+    "newWindow": true
+  }
+}

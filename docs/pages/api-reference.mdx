@@ -1,0 +1,279 @@
+# API Reference
+
+Welcome to the All AI API reference. This documentation provides detailed information about our API endpoints, request and response formats, and examples.
+
+## Authentication
+
+All API requests require authentication using an API key. You can obtain your API key from the [All AI Dashboard](https://dashboard.allai.com).
+
+Include your API key in the request headers:
+
+```bash
+curl https://api.allai.com/v1/text/generate \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Hello, world!"}'
+```
+
+## Base URL
+
+All API requests should be made to the following base URL:
+
+```
+https://api.allai.com/v1
+```
+
+## Rate Limits
+
+The All AI API has rate limits to ensure fair usage and system stability:
+
+| Plan | Requests per minute | Tokens per minute |
+| ---- | ------------------ | ----------------- |
+| Free | 10 | 10,000 |
+| Pro | 60 | 100,000 |
+| Enterprise | Custom | Custom |
+
+## Text Generation API
+
+### Generate Text
+
+```http
+POST /text/generate
+```
+
+Generate text based on a provided prompt.
+
+#### Request Parameters
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| prompt | string | Yes | The input text to generate from |
+| max_tokens | integer | No | Maximum number of tokens to generate (default: 150) |
+| temperature | float | No | Controls randomness (0.0-2.0, default: 0.7) |
+| top_p | float | No | Controls diversity via nucleus sampling (0.0-1.0, default: 1.0) |
+| frequency_penalty | float | No | Reduces repetition of token sequences (-2.0-2.0, default: 0.0) |
+| presence_penalty | float | No | Reduces repetition of topics (-2.0-2.0, default: 0.0) |
+| stop | string or array | No | Sequences where the API will stop generating |
+| model | string | No | Model to use (default: "alltext-pro") |
+
+#### Example Request
+
+```javascript
+fetch('https://api.allai.com/v1/text/generate', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    prompt: 'Write a short story about a robot learning to paint',
+    max_tokens: 250,
+    temperature: 0.8,
+    model: 'alltext-pro'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+#### Example Response
+
+```json
+{
+  "id": "gen-abc123",
+  "object": "text.generation",
+  "created": 1683042357,
+  "model": "alltext-pro",
+  "text": "The robot, designated RT-7, had been programmed for precision manufacturing...",
+  "usage": {
+    "prompt_tokens": 10,
+    "completion_tokens": 250,
+    "total_tokens": 260
+  }
+}
+```
+
+### Chat API
+
+```http
+POST /chat/completions
+```
+
+Create a conversation with the AI model.
+
+#### Request Parameters
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| messages | array | Yes | Array of message objects representing the conversation |
+| max_tokens | integer | No | Maximum number of tokens to generate (default: 150) |
+| temperature | float | No | Controls randomness (0.0-2.0, default: 0.7) |
+| model | string | No | Model to use (default: "alltext-pro") |
+
+Each message object in the `messages` array should have:
+- `role`: Either "system", "user", or "assistant"
+- `content`: The message content
+
+#### Example Request
+
+```javascript
+fetch('https://api.allai.com/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    messages: [
+      { role: "system", content: "You are a helpful assistant." },
+      { role: "user", content: "Can you explain how neural networks work?" }
+    ],
+    max_tokens: 150,
+    temperature: 0.7,
+    model: "alltext-pro"
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+## Image API
+
+### Generate Image
+
+```http
+POST /image/generate
+```
+
+Generate an image based on a text prompt.
+
+#### Request Parameters
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| prompt | string | Yes | Text description of the desired image |
+| resolution | string | No | Image resolution (default: "1024x1024") |
+| style | string | No | Artistic style (default: "natural") |
+| format | string | No | Output format: "url" or "base64" (default: "url") |
+| model | string | No | Model to use (default: "allimage") |
+
+#### Example Request
+
+```javascript
+fetch('https://api.allai.com/v1/image/generate', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    prompt: 'A futuristic city with flying cars and neon lights',
+    resolution: '1024x1024',
+    style: 'digital art'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+## Audio API
+
+### Speech to Text
+
+```http
+POST /audio/transcriptions
+```
+
+Convert speech audio to text.
+
+#### Request Parameters
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| file | file | Yes | The audio file to transcribe (formats: mp3, wav, ogg) |
+| language | string | No | Language code (e.g., "en", "es") |
+| model | string | No | Model to use (default: "allspeech") |
+
+This endpoint uses `multipart/form-data` encoding.
+
+### Text to Speech
+
+```http
+POST /audio/speech
+```
+
+Convert text to spoken audio.
+
+#### Request Parameters
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| text | string | Yes | The text to convert to speech |
+| voice | string | No | Voice ID (default: "allvoice-1") |
+| speed | float | No | Speaking speed (0.5-2.0, default: 1.0) |
+| format | string | No | Audio format (mp3, wav, ogg) (default: "mp3") |
+
+## Error Handling
+
+All API errors return appropriate HTTP status codes along with a JSON response body that provides more details about the error.
+
+### Error Response Format
+
+```json
+{
+  "error": {
+    "code": "error_code",
+    "message": "A human-readable error message",
+    "param": "The parameter that caused the error (if applicable)",
+    "type": "error_type"
+  }
+}
+```
+
+### Common Error Codes
+
+| HTTP Status | Error Code | Description |
+| ----------- | ---------- | ----------- |
+| 400 | invalid_request | The request was malformed or missing required parameters |
+| 401 | authentication_error | API key is missing or invalid |
+| 403 | permission_denied | The API key does not have permission for the requested operation |
+| 404 | not_found | The requested resource was not found |
+| 429 | rate_limit_exceeded | You have exceeded your rate limit |
+| 500 | server_error | An error occurred on our servers |
+
+## SDKs and Libraries
+
+We provide official client libraries for several popular programming languages:
+
+- [JavaScript/TypeScript](https://github.com/all-ai/allai-js)
+- [Python](https://github.com/all-ai/allai-python)
+- [Ruby](https://github.com/all-ai/allai-ruby)
+- [PHP](https://github.com/all-ai/allai-php)
+- [Java](https://github.com/all-ai/allai-java)
+- [Go](https://github.com/all-ai/allai-go)
+
+## Webhooks
+
+You can configure webhooks to receive notifications when certain events occur, such as completions or errors.
+
+```http
+POST /webhooks
+```
+
+Set up a new webhook.
+
+#### Request Parameters
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| url | string | Yes | The URL to send webhook events to |
+| events | array | Yes | Array of event types to subscribe to |
+| secret | string | No | Secret used to sign the webhook payload |
+
+## Playground
+
+Want to experiment with our API without writing code? Try our interactive [API Playground](https://dashboard.allai.com/playground).
+
+## Need Help?
+
+If you have any questions or need assistance, please check our [FAQ](/faq) or contact our [support team](mailto:support@allai.com). 

@@ -29,11 +29,11 @@ export default function LoginPage() {
       </div>
       <div className="relative hidden bg-muted lg:block">
         <Image
-          src="https://player.me/wp-content/uploads/2024/01/The-Future-Landscape-Open-Source-Large-Language-Models-LLMs-in-2024.jpg"
+          src="/images/panda-login.jpg"
           alt="Image"
-          width={900}
-          height={1700}
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+          width={500}
+          height={1000}
+          className="absolute inset-0 h-full w-full object-cover"
         />
       </div>
     </div>
