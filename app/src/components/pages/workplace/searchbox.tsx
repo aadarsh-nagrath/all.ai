@@ -4,15 +4,14 @@ import { useEffect, useRef, useCallback, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import {
-    ImageIcon,
-    FileUp,
-    Figma,
-    MonitorIcon,
-    CircleUserRound,
     ArrowUpIcon,
     Paperclip,
     PlusIcon,
     Globe,
+    ImageIcon,
+    Figma,
+    FileUp,
+    MonitorIcon,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import ReactMarkdown from 'react-markdown';
@@ -104,6 +103,10 @@ function useAutoResizeTextarea({
     return { textareaRef, adjustHeight };
 }
 
+interface SearchInputProps {
+    onMessageSent?: () => void;
+}
+
 interface ActionButtonProps {
     icon: React.ReactNode;
     label: string;
@@ -121,17 +124,16 @@ function ActionButton({ icon, label }: ActionButtonProps) {
     );
 }
 
-interface SearchInputProps {
-    onMessageSent?: () => void;
-}
-
 export default function SearchInput({ onMessageSent }: SearchInputProps) {
     const [showHeading, setShowHeading] = useState(true);
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<Array<{role: string, content: string}>>([]);
     const [currentStream, setCurrentStream] = useState("");
     const [isStreaming, setIsStreaming] = useState(false);
+    const [isFixed, setIsFixed] = useState(false);
     const wsRef = useRef<WebSocket | null>(null);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+    const chatContainerRef = useRef<HTMLDivElement>(null);
     const { data: session } = useSession();
     const { textareaRef, adjustHeight } = useAutoResizeTextarea({
         minHeight: 60,
@@ -230,6 +232,7 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
             setInput("");
             adjustHeight(true);
             setShowHeading(false);
+            setIsFixed(true);
             if (onMessageSent) {
                 onMessageSent();
             }
@@ -294,6 +297,18 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
         </div>
     );
 
+    // Auto-scroll to bottom when messages change or streaming updates
+    useEffect(() => {
+        if (messagesEndRef.current && chatContainerRef.current) {
+            const container = chatContainerRef.current;
+            const isNearBottom = container.scrollHeight - container.scrollTop <= container.clientHeight * 2;
+            
+            if (isNearBottom) {
+                messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+            }
+        }
+    }, [messages, currentStream]);
+
     return (
         <div className="flex flex-col items-center w-full max-w-4xl mx-auto p-4 space-y-8">
             <AnimatePresence>
@@ -309,7 +324,7 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
                 )}
             </AnimatePresence>
 
-            <div className="w-full space-y-4">
+            <div className="w-full space-y-4 flex-1 overflow-y-auto pb-32" ref={chatContainerRef}>
                 {messages.map((msg, i) => (
                     <div 
                         key={i} 
@@ -332,110 +347,119 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
                         )}
                     </div>
                 ))}
+                <div ref={messagesEndRef} />
             </div>
 
-            <div className="w-full">
-                <div className="relative bg-secondary rounded-xl border border-border">
-                    <div className="overflow-y-auto">
-                        <Textarea
-                            ref={textareaRef}
-                            value={input}
-                            onChange={(e) => {
-                                setInput(e.target.value);
-                                adjustHeight();
-                            }}
-                            onKeyDown={handleKeyDown}
-                            placeholder="Ask me a question..."
-                            className={cn(
-                                "w-full px-4 py-3",
-                                "resize-none",
-                                "bg-transparent",
-                                "border-none",
-                                "text-foreground text-sm",
-                                "focus:outline-none",
-                                "focus-visible:ring-0 focus-visible:ring-offset-0",
-                                "placeholder:text-muted-foreground placeholder:text-sm",
-                                "min-h-[60px]"
-                            )}
-                            style={{
-                                overflow: "hidden",
-                            }}
-                        />
-                    </div>
-
-                    <div className="flex items-center justify-between p-3">
-                        <div className="flex items-center gap-2">
-                            <button
-                                type="button"
-                                className="group p-2 hover:bg-accent rounded-lg transition-colors flex items-center gap-1"
-                            >
-                                <Paperclip className="w-4 h-4 text-foreground" />
-                                <span className="text-xs text-muted-foreground hidden group-hover:inline transition-opacity">
-                                    Attach
-                                </span>
-                            </button>
-                            <button
-                                className="h-8 w-8 flex items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
-                            >
-                                <Globe className="h-4 w-4" />
-                            </button>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <button
-                                type="button"
-                                className="px-2 py-1 rounded-lg text-sm text-muted-foreground transition-colors border border-dashed border-border hover:border-accent hover:bg-accent flex items-center justify-between gap-1"
-                            >
-                                <PlusIcon className="w-4 h-4" />
-                                Project
-                            </button>
-                            <button
-                                type="button"
-                                onClick={handleSend}
-                                disabled={!input.trim()}
+            <motion.div 
+                className={cn(
+                    "w-full",
+                    isFixed ? "fixed bottom-0 left-0 right-0 bg-background border-t border-border" : ""
+                )}
+                initial={false}
+                animate={{ y: isFixed ? 0 : "auto" }}
+                transition={{ duration: 0.3 }}
+            >
+                <div className="max-w-4xl mx-auto p-4">
+                    <div className="relative bg-secondary rounded-xl border border-border">
+                        <div className="overflow-y-auto">
+                            <Textarea
+                                ref={textareaRef}
+                                value={input}
+                                onChange={(e) => {
+                                    setInput(e.target.value);
+                                    adjustHeight();
+                                }}
+                                onKeyDown={handleKeyDown}
+                                placeholder="Ask me a question..."
                                 className={cn(
-                                    "px-1.5 py-1.5 rounded-lg text-sm transition-colors border border-border hover:border-accent hover:bg-accent flex items-center justify-between gap-1",
-                                    input.trim()
-                                        ? "bg-primary text-primary-foreground"
-                                        : "text-muted-foreground"
+                                    "w-full px-4 py-3",
+                                    "resize-none",
+                                    "bg-transparent",
+                                    "border-none",
+                                    "text-foreground text-sm",
+                                    "focus:outline-none",
+                                    "focus-visible:ring-0 focus-visible:ring-offset-0",
+                                    "placeholder:text-muted-foreground placeholder:text-sm",
+                                    "min-h-[60px]"
                                 )}
-                            >
-                                <ArrowUpIcon
+                                style={{
+                                    overflow: "hidden",
+                                }}
+                            />
+                        </div>
+
+                        <div className="flex items-center justify-between p-3">
+                            <div className="flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    className="group p-2 hover:bg-accent rounded-lg transition-colors flex items-center gap-1"
+                                >
+                                    <Paperclip className="w-4 h-4 text-foreground" />
+                                    <span className="text-xs text-muted-foreground hidden group-hover:inline transition-opacity">
+                                        Attach
+                                    </span>
+                                </button>
+                                <button
+                                    className="h-8 w-8 flex items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
+                                >
+                                    <Globe className="h-4 w-4" />
+                                </button>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    className="px-2 py-1 rounded-lg text-sm text-muted-foreground transition-colors border border-dashed border-border hover:border-accent hover:bg-accent flex items-center justify-between gap-1"
+                                >
+                                    <PlusIcon className="w-4 h-4" />
+                                    Project
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleSend}
+                                    disabled={!input.trim()}
                                     className={cn(
-                                        "w-4 h-4",
+                                        "px-1.5 py-1.5 rounded-lg text-sm transition-colors border border-border hover:border-accent hover:bg-accent flex items-center justify-between gap-1",
                                         input.trim()
-                                            ? "text-primary-foreground"
+                                            ? "bg-primary text-primary-foreground"
                                             : "text-muted-foreground"
                                     )}
-                                />
-                                <span className="sr-only">Send</span>
-                            </button>
+                                >
+                                    <ArrowUpIcon
+                                        className={cn(
+                                            "w-4 h-4",
+                                            input.trim()
+                                                ? "text-primary-foreground"
+                                                : "text-muted-foreground"
+                                        )}
+                                    />
+                                    <span className="sr-only">Send</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="flex items-center justify-center gap-3 mt-4">
-                    <ActionButton
-                        icon={<ImageIcon className="w-4 h-4" />}
-                        label="Clone a Screenshot"
-                    />
-                    <ActionButton
-                        icon={<Figma className="w-4 h-4" />}
-                        label="Import from Figma"
-                    />
-                    <ActionButton
-                        icon={<FileUp className="w-4 h-4" />}
-                        label="Upload a Project"
-                    />
-                    <ActionButton
-                        icon={<MonitorIcon className="w-4 h-4" />}
-                        label="Landing Page"
-                    />
-                    <ActionButton
-                        icon={<CircleUserRound className="w-4 h-4" />}
-                        label="Sign Up Form"
-                    />
+                    {!isFixed && (
+                        <div className="flex items-center justify-center gap-3 mt-4">
+                            <ActionButton
+                                icon={<ImageIcon className="w-4 h-4" />}
+                                label="Clone a Screenshot"
+                            />
+                            <ActionButton
+                                icon={<Figma className="w-4 h-4" />}
+                                label="Import from Figma"
+                            />
+                            <ActionButton
+                                icon={<FileUp className="w-4 h-4" />}
+                                label="Upload a Project"
+                            />
+                            <ActionButton
+                                icon={<MonitorIcon className="w-4 h-4" />}
+                                label="Landing Page"
+                            />
+                        </div>
+                    )}
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 }
