@@ -5,5 +5,13 @@ const withNextra = require('nextra')({
 })
 
 module.exports = withNextra({
-  basePath: '/docs'
+  basePath: '/docs',
+  async rewrites() {
+    return [
+      {
+        source: '/docs/:path*',
+        destination: '/:path*',
+      },
+    ]
+  },
 })

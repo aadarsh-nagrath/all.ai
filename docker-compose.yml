@@ -16,6 +16,16 @@ services:
     networks:
       - app-network
 
+  docs:
+    build: ./docs
+    container_name: docs_app
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+    networks:
+      - app-network
+
   model-server:
     build: ./model-server
     container_name: model_server

@@ -2,15 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CodeBlock, CodeBlockCode, CodeBlockGroup } from "@/components/ui/code-block";
-import { Check, Copy, Zap, Brain, Sparkles, Code, Palette, Cpu, Lock, Moon, Sun, BookOpen, Rocket, Shield, Layers, GitBranch, BarChart } from "lucide-react";
+import { Check, Copy, Code, Palette, Cpu, Moon, Sun, BookOpen, Rocket, Shield, Layers, GitBranch, BarChart } from "lucide-react";
 import { useTheme } from "next-themes";
 
 const GetStartedPage = () => {
   const [copied, setCopied] = useState(false);
-  const [isStreaming, setIsStreaming] = useState(true);
   const [streamedJSX, setStreamedJSX] = useState("");
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -84,7 +82,6 @@ const response = await llm.query({
         setStreamedJSX(jsxContent.slice(0, currentIndex + 1));
         currentIndex++;
       } else {
-        setIsStreaming(false);
         clearInterval(interval);
       }
     }, 5); // Reduced from 10ms to 5ms for faster typing

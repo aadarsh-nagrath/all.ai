@@ -24,6 +24,10 @@ const nextConfig = {
             source: '/ws/:path*',
             destination: 'http://localhost:8000/ws/:path*',
           },
+          {
+            source: '/docs/:path*',
+            destination: 'http://localhost:3001/docs/:path*',
+          },
         ]
       : [];
   },
