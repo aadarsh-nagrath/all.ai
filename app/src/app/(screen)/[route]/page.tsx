@@ -7,7 +7,7 @@ import CreateAgents from "@/components/pages/ai-agents/create-agents";
 import Notes from "@/components/pages/promptlib-notes/notes";
 import PromptLib from "@/components/pages/promptlib-notes/prompt-lib";
 import BrowseAgents from "@/components/pages/ai-agents/browse-agents";
-import ImageGen from "@/components/pages/modals/image-generation";
+import ImageGen from "@/components/pages/modals/img-m/image-generation";
 import GetStarted from "@/components/pages/promptlib-notes/get-started";
 import Account from "@/components/pages/settings/account-billing";
 import GeneralSettings from "@/components/pages/settings/general-settings";
