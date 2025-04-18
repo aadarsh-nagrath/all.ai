@@ -32,6 +32,7 @@ import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
 import markdown from 'react-syntax-highlighter/dist/esm/languages/prism/markdown';
 import yaml from 'react-syntax-highlighter/dist/esm/languages/prism/yaml';
 import "../../../styles/markdown.css";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Register languages
 SyntaxHighlighter.registerLanguage('python', python);
@@ -120,7 +121,12 @@ function ActionButton({ icon, label }: ActionButtonProps) {
     );
 }
 
-export default function SearchInput() {
+interface SearchInputProps {
+    onMessageSent?: () => void;
+}
+
+export default function SearchInput({ onMessageSent }: SearchInputProps) {
+    const [showHeading, setShowHeading] = useState(true);
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<Array<{role: string, content: string}>>([]);
     const [currentStream, setCurrentStream] = useState("");
@@ -223,10 +229,14 @@ export default function SearchInput() {
             setMessages(prev => [...prev, {role: 'user', content: input}]);
             setInput("");
             adjustHeight(true);
+            setShowHeading(false);
+            if (onMessageSent) {
+                onMessageSent();
+            }
         } else {
             console.error("WebSocket is not open");
         }
-    }, [input, adjustHeight]);
+    }, [input, adjustHeight, onMessageSent]);
 
     const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -286,9 +296,18 @@ export default function SearchInput() {
 
     return (
         <div className="flex flex-col items-center w-full max-w-4xl mx-auto p-4 space-y-8">
-            <h1 className="text-4xl font-bold text-foreground">
-                What can I help you with?
-            </h1>
+            <AnimatePresence>
+                {showHeading && (
+                    <motion.h1
+                        initial={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="text-4xl font-bold text-foreground"
+                    >
+                        What can I help you with?
+                    </motion.h1>
+                )}
+            </AnimatePresence>
 
             <div className="w-full space-y-4">
                 {messages.map((msg, i) => (
