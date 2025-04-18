@@ -29,11 +29,11 @@ export default function LoginPage() {
       </div>
       <div className="relative hidden bg-muted lg:block">
         <Image
-          src="/placeholder.svg"
+          src="/images/panda-login.jpg"
           alt="Image"
           width={500}
           height={1000}
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+          className="absolute inset-0 h-full w-full object-cover"
         />
       </div>
     </div>
