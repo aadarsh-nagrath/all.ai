@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   images: {
-    domains: ['lh3.googleusercontent.com'],
+    domains: ['lh3.googleusercontent.com', 'freeflux.ai', 'assets.grok.com', 'iunewind.ru', 'static.vecteezy.com'],
     remotePatterns: [
       {
         protocol: 'https',
