@@ -27,7 +27,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { ModeToggle } from "./mode-change"
 import { Button } from "@/components/ui/button"
 
 interface ChatSession {
@@ -149,7 +148,6 @@ export function NavProjects() {
               </SidebarMenuItem>
             ))
           )}
-          <ModeToggle />
         </SidebarMenu>
       </div>
     </SidebarGroup>
