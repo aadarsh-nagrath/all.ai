@@ -4,15 +4,14 @@ import { useEffect, useRef, useCallback, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import {
-    ImageIcon,
-    FileUp,
-    Figma,
-    MonitorIcon,
-    CircleUserRound,
     ArrowUpIcon,
     Paperclip,
     PlusIcon,
     Globe,
+    ImageIcon,
+    Figma,
+    FileUp,
+    MonitorIcon,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import ReactMarkdown from 'react-markdown';
@@ -32,6 +31,7 @@ import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
 import markdown from 'react-syntax-highlighter/dist/esm/languages/prism/markdown';
 import yaml from 'react-syntax-highlighter/dist/esm/languages/prism/yaml';
 import "../../../styles/markdown.css";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Register languages
 SyntaxHighlighter.registerLanguage('python', python);
@@ -103,6 +103,10 @@ function useAutoResizeTextarea({
     return { textareaRef, adjustHeight };
 }
 
+interface SearchInputProps {
+    onMessageSent?: () => void;
+}
+
 interface ActionButtonProps {
     icon: React.ReactNode;
     label: string;
@@ -120,17 +124,26 @@ function ActionButton({ icon, label }: ActionButtonProps) {
     );
 }
 
-export default function SearchInput() {
+export default function SearchInput({ onMessageSent }: SearchInputProps) {
+    const [showHeading, setShowHeading] = useState(true);
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<Array<{role: string, content: string}>>([]);
     const [currentStream, setCurrentStream] = useState("");
     const [isStreaming, setIsStreaming] = useState(false);
+    const [isFixed, setIsFixed] = useState(false);
+    const [isAtBottom, setIsAtBottom] = useState(true);
+    const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+    const [shouldStopStream, setShouldStopStream] = useState(false);
     const wsRef = useRef<WebSocket | null>(null);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+    const chatContainerRef = useRef<HTMLDivElement>(null);
+    const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const { data: session } = useSession();
     const { textareaRef, adjustHeight } = useAutoResizeTextarea({
         minHeight: 60,
         maxHeight: 200,
     });
+    const animationFrameRef = useRef<number | null>(null);
 
     useEffect(() => {
         if (!session?.user?.email) return;
@@ -182,7 +195,7 @@ export default function SearchInput() {
         const streamingMessageIndex = messagesRef.current.length;
         
         const typeNextCharacter = () => {
-            if (index < currentStream.length) {
+            if (index < currentStream.length && !shouldStopStream) {
                 setMessages(prev => {
                     const newMessages = [...prev];
                     if (!newMessages[streamingMessageIndex]) {
@@ -199,16 +212,39 @@ export default function SearchInput() {
                     return newMessages;
                 });
                 index++;
-                requestAnimationFrame(typeNextCharacter);
+                animationFrameRef.current = requestAnimationFrame(typeNextCharacter);
+            } else if (shouldStopStream) {
+                // When stopped, keep the current message but stop the animation
+                setMessages(prev => {
+                    const newMessages = [...prev];
+                    if (!newMessages[streamingMessageIndex]) {
+                        newMessages.push({
+                            role: 'assistant',
+                            content: currentStream.substring(0, index)
+                        });
+                    } else {
+                        newMessages[streamingMessageIndex] = {
+                            ...newMessages[streamingMessageIndex],
+                            content: currentStream.substring(0, index)
+                        };
+                    }
+                    return newMessages;
+                });
+                setIsStreaming(false);
+                setShouldStopStream(false);
             } else {
                 setCurrentStream("");
                 setIsStreaming(false);
             }
         };
 
-        const frameId = requestAnimationFrame(typeNextCharacter);
-        return () => cancelAnimationFrame(frameId);
-    }, [isStreaming, currentStream]);
+        animationFrameRef.current = requestAnimationFrame(typeNextCharacter);
+        return () => {
+            if (animationFrameRef.current) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
+        };
+    }, [isStreaming, currentStream, shouldStopStream]);
 
     const handleSend = useCallback(() => {
         if (!input.trim() || !wsRef.current) return;
@@ -223,10 +259,22 @@ export default function SearchInput() {
             setMessages(prev => [...prev, {role: 'user', content: input}]);
             setInput("");
             adjustHeight(true);
+            setShowHeading(false);
+            setIsFixed(true);
+            if (onMessageSent) {
+                onMessageSent();
+            }
         } else {
             console.error("WebSocket is not open");
         }
-    }, [input, adjustHeight]);
+    }, [input, adjustHeight, onMessageSent]);
+
+    const handleStopStream = useCallback(() => {
+        setShouldStopStream(true);
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+        }
+    }, []);
 
     const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -284,21 +332,78 @@ export default function SearchInput() {
         </div>
     );
 
+    // Handle user scrolling
+    const handleScroll = useCallback(() => {
+        if (scrollTimeoutRef.current) {
+            clearTimeout(scrollTimeoutRef.current);
+        }
+        
+        if (chatContainerRef.current) {
+            const container = chatContainerRef.current;
+            const isNearBottom = container.scrollHeight - container.scrollTop <= container.clientHeight * 1.1;
+            setIsAtBottom(isNearBottom);
+            
+            // If user scrolls up during streaming, disable auto-scroll
+            if (isStreaming && !isNearBottom) {
+                setShouldAutoScroll(false);
+            }
+        }
+        
+        scrollTimeoutRef.current = setTimeout(() => {
+            // Reset auto-scroll after user stops scrolling
+            if (isAtBottom) {
+                setShouldAutoScroll(true);
+            }
+        }, 1000);
+    }, [isStreaming, isAtBottom]);
+
+    // Auto-scroll to bottom when messages change or streaming updates
+    useEffect(() => {
+        if (messagesEndRef.current && chatContainerRef.current && shouldAutoScroll && isAtBottom) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [messages, currentStream, shouldAutoScroll, isAtBottom]);
+
+    // Reset auto-scroll when streaming stops
+    useEffect(() => {
+        if (!isStreaming) {
+            setShouldAutoScroll(true);
+        }
+    }, [isStreaming]);
+
+    // Cleanup timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (scrollTimeoutRef.current) {
+                clearTimeout(scrollTimeoutRef.current);
+            }
+        };
+    }, []);
+
     return (
         <div className="flex flex-col items-center w-full max-w-4xl mx-auto p-4 space-y-8">
-            <h1 className="text-4xl font-bold text-foreground">
-                What can I help you with?
-            </h1>
+            <AnimatePresence>
+                {showHeading && (
+                    <motion.h1
+                        initial={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="text-4xl font-bold text-foreground"
+                    >
+                        What can I help you with?
+                    </motion.h1>
+                )}
+            </AnimatePresence>
 
-            <div className="w-full space-y-4">
+            <div className="w-full space-y-4 flex-1 overflow-y-auto pb-32" ref={chatContainerRef} onScroll={handleScroll}>
                 {messages.map((msg, i) => (
                     <div 
                         key={i} 
                         className={cn(
                             "p-4 rounded-lg",
                             msg.role === 'user' 
-                                ? "bg-primary/10 ml-auto max-w-[80%]" 
-                                : "bg-transparent mr-auto max-w-[80%]"
+                                ? "bg-primary/10 ml-auto w-fit max-w-[80%]" 
+                                : "bg-transparent mr-auto w-full max-w-[80%]"
                         )}
                     >
                         {msg.role === 'assistant' ? (
@@ -309,114 +414,129 @@ export default function SearchInput() {
                                 )}
                             </div>
                         ) : (
-                            <p className="whitespace-pre-wrap text-foreground">{msg.content}</p>
+                            <p className="whitespace-pre-wrap text-foreground text-right">{msg.content}</p>
                         )}
                     </div>
                 ))}
+                <div ref={messagesEndRef} />
             </div>
 
-            <div className="w-full">
-                <div className="relative bg-secondary rounded-xl border border-border">
-                    <div className="overflow-y-auto">
-                        <Textarea
-                            ref={textareaRef}
-                            value={input}
-                            onChange={(e) => {
-                                setInput(e.target.value);
-                                adjustHeight();
-                            }}
-                            onKeyDown={handleKeyDown}
-                            placeholder="Ask me a question..."
-                            className={cn(
-                                "w-full px-4 py-3",
-                                "resize-none",
-                                "bg-transparent",
-                                "border-none",
-                                "text-foreground text-sm",
-                                "focus:outline-none",
-                                "focus-visible:ring-0 focus-visible:ring-offset-0",
-                                "placeholder:text-muted-foreground placeholder:text-sm",
-                                "min-h-[60px]"
-                            )}
-                            style={{
-                                overflow: "hidden",
-                            }}
-                        />
-                    </div>
-
-                    <div className="flex items-center justify-between p-3">
-                        <div className="flex items-center gap-2">
-                            <button
-                                type="button"
-                                className="group p-2 hover:bg-accent rounded-lg transition-colors flex items-center gap-1"
-                            >
-                                <Paperclip className="w-4 h-4 text-foreground" />
-                                <span className="text-xs text-muted-foreground hidden group-hover:inline transition-opacity">
-                                    Attach
-                                </span>
-                            </button>
-                            <button
-                                className="h-8 w-8 flex items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
-                            >
-                                <Globe className="h-4 w-4" />
-                            </button>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <button
-                                type="button"
-                                className="px-2 py-1 rounded-lg text-sm text-muted-foreground transition-colors border border-dashed border-border hover:border-accent hover:bg-accent flex items-center justify-between gap-1"
-                            >
-                                <PlusIcon className="w-4 h-4" />
-                                Project
-                            </button>
-                            <button
-                                type="button"
-                                onClick={handleSend}
-                                disabled={!input.trim()}
+            <motion.div 
+                className={cn(
+                    "w-full",
+                    isFixed ? "fixed bottom-0 left-0 right-0 bg-background border-t border-border" : ""
+                )}
+                initial={false}
+                animate={{ y: isFixed ? 0 : "auto" }}
+                transition={{ duration: 0.3 }}
+            >
+                <div className="max-w-4xl mx-auto p-4">
+                    <div className="relative bg-secondary rounded-xl border border-border">
+                        <div className="overflow-y-auto">
+                            <Textarea
+                                ref={textareaRef}
+                                value={input}
+                                onChange={(e) => {
+                                    setInput(e.target.value);
+                                    adjustHeight();
+                                }}
+                                onKeyDown={handleKeyDown}
+                                placeholder="Ask me a question..."
                                 className={cn(
-                                    "px-1.5 py-1.5 rounded-lg text-sm transition-colors border border-border hover:border-accent hover:bg-accent flex items-center justify-between gap-1",
-                                    input.trim()
-                                        ? "bg-primary text-primary-foreground"
-                                        : "text-muted-foreground"
+                                    "w-full px-4 py-3",
+                                    "resize-none",
+                                    "bg-transparent",
+                                    "border-none",
+                                    "text-foreground text-sm",
+                                    "focus:outline-none",
+                                    "focus-visible:ring-0 focus-visible:ring-offset-0",
+                                    "placeholder:text-muted-foreground placeholder:text-sm",
+                                    "min-h-[60px]"
                                 )}
-                            >
-                                <ArrowUpIcon
+                                style={{
+                                    overflow: "hidden",
+                                }}
+                            />
+                        </div>
+
+                        <div className="flex items-center justify-between p-3">
+                            <div className="flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    className="group p-2 hover:bg-accent rounded-lg transition-colors flex items-center gap-1"
+                                >
+                                    <Paperclip className="w-4 h-4 text-foreground" />
+                                    <span className="text-xs text-muted-foreground hidden group-hover:inline transition-opacity">
+                                        Attach
+                                    </span>
+                                </button>
+                                <button
+                                    className="h-8 w-8 flex items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
+                                >
+                                    <Globe className="h-4 w-4" />
+                                </button>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    className="px-2 py-1 rounded-lg text-sm text-muted-foreground transition-colors border border-dashed border-border hover:border-accent hover:bg-accent flex items-center justify-between gap-1"
+                                >
+                                    <PlusIcon className="w-4 h-4" />
+                                    Project
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={isStreaming ? handleStopStream : handleSend}
+                                    disabled={!input.trim() && !isStreaming}
                                     className={cn(
-                                        "w-4 h-4",
-                                        input.trim()
-                                            ? "text-primary-foreground"
-                                            : "text-muted-foreground"
+                                        "px-1.5 py-1.5 rounded-lg text-sm transition-colors border border-border hover:border-accent hover:bg-accent flex items-center justify-center",
+                                        isStreaming 
+                                            ? "w-8 h-8"
+                                            : input.trim()
+                                                ? "bg-primary text-primary-foreground"
+                                                : "text-muted-foreground"
                                     )}
-                                />
-                                <span className="sr-only">Send</span>
-                            </button>
+                                >
+                                    {isStreaming ? (
+                                        <div className="w-3 h-3 bg-destructive animate-pulse" />
+                                    ) : (
+                                        <ArrowUpIcon
+                                            className={cn(
+                                                "w-4 h-4",
+                                                input.trim()
+                                                    ? "text-primary-foreground"
+                                                    : "text-muted-foreground"
+                                            )}
+                                        />
+                                    )}
+                                    <span className="sr-only">{isStreaming ? "Stop" : "Send"}</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="flex items-center justify-center gap-3 mt-4">
-                    <ActionButton
-                        icon={<ImageIcon className="w-4 h-4" />}
-                        label="Clone a Screenshot"
-                    />
-                    <ActionButton
-                        icon={<Figma className="w-4 h-4" />}
-                        label="Import from Figma"
-                    />
-                    <ActionButton
-                        icon={<FileUp className="w-4 h-4" />}
-                        label="Upload a Project"
-                    />
-                    <ActionButton
-                        icon={<MonitorIcon className="w-4 h-4" />}
-                        label="Landing Page"
-                    />
-                    <ActionButton
-                        icon={<CircleUserRound className="w-4 h-4" />}
-                        label="Sign Up Form"
-                    />
+                    {!isFixed && (
+                        <div className="flex items-center justify-center gap-3 mt-4">
+                            <ActionButton
+                                icon={<ImageIcon className="w-4 h-4" />}
+                                label="Clone a Screenshot"
+                            />
+                            <ActionButton
+                                icon={<Figma className="w-4 h-4" />}
+                                label="Import from Figma"
+                            />
+                            <ActionButton
+                                icon={<FileUp className="w-4 h-4" />}
+                                label="Upload a Project"
+                            />
+                            <ActionButton
+                                icon={<MonitorIcon className="w-4 h-4" />}
+                                label="Landing Page"
+                            />
+                        </div>
+                    )}
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 }
