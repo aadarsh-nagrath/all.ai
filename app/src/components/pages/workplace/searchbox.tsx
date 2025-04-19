@@ -135,6 +135,9 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
     const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
     const [shouldStopStream, setShouldStopStream] = useState(false);
     const wsRef = useRef<WebSocket | null>(null);
+    const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const reconnectAttemptsRef = useRef(0);
+    const maxReconnectAttempts = 5;
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -145,7 +148,7 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
     });
     const animationFrameRef = useRef<number | null>(null);
 
-    useEffect(() => {
+    const connectWebSocket = useCallback(() => {
         if (!session?.user?.email) return;
 
         const wsUrl = `ws://localhost:8000/ws/${encodeURIComponent(session.user.email)}`;
@@ -154,6 +157,7 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
 
         ws.onopen = () => {
             console.log("WebSocket connection established");
+            reconnectAttemptsRef.current = 0; // Reset reconnection attempts on successful connection
         };
 
         ws.onmessage = (event) => {
@@ -169,20 +173,36 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
             if (event.code === 1000) {
                 console.log("Normal closure");
             } else {
-                console.log("Abnormal closure");
+                console.log("Abnormal closure - attempting to reconnect");
+                if (reconnectAttemptsRef.current < maxReconnectAttempts) {
+                    const backoffTime = Math.min(1000 * Math.pow(2, reconnectAttemptsRef.current), 30000);
+                    reconnectTimeoutRef.current = setTimeout(() => {
+                        reconnectAttemptsRef.current += 1;
+                        connectWebSocket();
+                    }, backoffTime);
+                } else {
+                    console.log("Max reconnection attempts reached");
+                }
             }
         };
 
         ws.onerror = (error) => {
             console.error("WebSocket error:", error);
         };
+    }, [session?.user?.email]);
+
+    useEffect(() => {
+        connectWebSocket();
 
         return () => {
             if (wsRef.current) {
                 wsRef.current.close();
             }
+            if (reconnectTimeoutRef.current) {
+                clearTimeout(reconnectTimeoutRef.current);
+            }
         };
-    }, [session?.user?.email]);
+    }, [connectWebSocket]);
 
     const messagesRef = useRef(messages);
     messagesRef.current = messages;
@@ -424,7 +444,7 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
             <motion.div 
                 className={cn(
                     "w-full",
-                    isFixed ? "fixed bottom-0 left-0 right-0 bg-background border-t border-border" : ""
+                    isFixed ? "fixed bottom-0 left-0 right-0 bg-transparent border-border" : ""
                 )}
                 initial={false}
                 animate={{ y: isFixed ? 0 : "auto" }}

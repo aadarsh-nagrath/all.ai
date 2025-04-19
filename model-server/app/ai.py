@@ -24,4 +24,4 @@ async def chat_with_ai(messages):
         return completion.choices[0].message.content
     except Exception as e:
         logger.error(f"AI API error: {str(e)}")
-        return "Sorry, I couldn't process your request right now."
+        return "Sorry, I couldn't process your request right now. Consider using a different model or try refreshing the page."
