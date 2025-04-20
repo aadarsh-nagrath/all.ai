@@ -2,7 +2,7 @@
 
 import { PlaceholdersAndVanishInput } from "./components/placeholder-vanish";
 import Feature from "./components/feature-section-w-grid";
-import { Settings } from "lucide-react";
+import { GitFork, Settings, Zap, Bolt } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -14,6 +14,32 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import Select from "@/components/ui/custom-select";
+
+
+const modelData = [
+  {
+    id: '1',
+    label: 'Perchance',
+    value: 'perchance',
+    description: 'Fast & efficient',
+    icon: <GitFork className="text-green-500" />, 
+  },
+  {
+    id: '2',
+    label: 'Flux-Schnell',
+    value: 'flux_schnell',
+    description: 'High quality',
+    icon: <Zap className="text-blue-500" />,
+  },
+  {
+    id: '3',
+    label: 'Fast Flux',
+    value: 'fast_flux',
+    description: 'Quick results',
+    icon: <Bolt className="text-purple-500" />,
+  },
+];
 
 export default function ImgGen() {
   const placeholders = [
@@ -35,6 +61,11 @@ export default function ImgGen() {
 
   return (
     <div className="h-[40rem] flex flex-col items-center px-4">
+      <div className="absolute bottom-0 top-0 left-20 p-4 z-10">
+        <div className="w-[250px]">
+          <Select data={modelData} defaultValue={'perchance'} />
+        </div>
+      </div>
       <h2 className="text-xl text-center sm:text-5xl dark:text-white text-black mt-4">
         What would you like to create today?
       </h2>
