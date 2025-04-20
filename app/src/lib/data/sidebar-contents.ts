@@ -64,8 +64,8 @@ export const sidebarcontent = {
       url: "#",
       icon: Brain,
       items: [
-        { title: "Browse Agents", url: "#", key: "browse-agents" },
-        { title: "Create Agents", url: "#", key: "create-agents" },
+        { title: "Explore Agents", url: "#", key: "explore-agents" },
+        { title: "Agent Kit", url: "#", key: "agent-kit" },
       ],
     },
     {

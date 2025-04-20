@@ -4,10 +4,10 @@
 // import Plugins from "@/components/pages/plugin-theme/plugins";
 // import Theme from "@/components/pages/plugin-theme/theme";
 // import TextGen from "@/components/pages/modals/text-generation";
-// import CreateAgents from "@/components/pages/ai-agents/create-agents";
+// import CreateAgents from "@/components/pages/ai-agents/agent-kit";
 // import Notes from "@/components/pages/promptlib-notes/notes";
 // import PromptLib from "@/components/pages/promptlib-notes/prompt-lib";
-// import BrowseAgents from "@/components/pages/ai-agents/browse-agents";
+// import BrowseAgents from "@/components/pages/ai-agents/explore-agents";
 // import ImageGen from "@/components/pages/modals/image-generation";
 // import GetStarted from "@/components/pages/promptlib-notes/get-started";
 // import Account from "@/components/pages/settings/account-billing";
@@ -21,8 +21,8 @@
 //       <Route path="/plugins" element={<Plugins />} />
 //       <Route path="/theme" element={<Theme />} />
 //       <Route path="/text-generation" element={<TextGen />} />
-//       <Route path="/create-agents" element={<CreateAgents />} />
-//       <Route path="/browse-agents" element={<BrowseAgents />} />
+//       <Route path="/agent-kit" element={<CreateAgents />} />
+//       <Route path="/explore-agents" element={<BrowseAgents />} />
 //       <Route path="/image-generation" element={<ImageGen />} />
 //       <Route path="/notes" element={<Notes />} />
 //       <Route path="/get-started" element={<GetStarted />} />
