@@ -14,8 +14,16 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import Select from "@/components/ui/custom-select";
-
+import Select from "@/components/pages/modals/img-m/components/custom-select";
+import { Label } from "@/components/ui/label";
+import {
+  Select as SelectDropdown,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import React from "react";
 
 const modelData = [
   {
@@ -42,6 +50,7 @@ const modelData = [
 ];
 
 export default function ImgGen() {
+  const [selectedModel, setSelectedModel] = React.useState('perchance');
   const placeholders = [
     "A futuristic city at sunset, with flying cars and neon lights",
     "A medieval knight fighting a dragon on top of a mountain",
@@ -59,11 +68,30 @@ export default function ImgGen() {
     console.log("submitted");
   };
 
+  const artStyles = [
+    "Casual Photo",
+    "Anime",
+    "Digital Art",
+    "Realistic",
+    "Oil Painting",
+    "Watercolor"
+  ];
+
+  const artStyleMixOptions = [
+    "Not Mix",
+    "Mix Styles",
+    "Blend Styles"
+  ];
+
   return (
     <div className="h-[40rem] flex flex-col items-center px-4">
       <div className="absolute bottom-0 top-0 left-20 p-4 z-10">
         <div className="w-[250px]">
-          <Select data={modelData} defaultValue={'perchance'} />
+          <Select 
+            data={modelData} 
+            defaultValue={'perchance'} 
+            onChange={(value) => setSelectedModel(value)}
+          />
         </div>
       </div>
       <h2 className="text-xl text-center sm:text-5xl dark:text-white text-black mt-4">
@@ -88,17 +116,91 @@ export default function ImgGen() {
               <div className="mx-auto w-full p-4 h-full">
                 <DrawerHeader>
                   <DrawerTitle>Image Generation Settings</DrawerTitle>
-                  <DrawerDescription>Configure your image generation preferences.</DrawerDescription>
+                  <DrawerDescription>
+                    Configure settings for {modelData.find(m => m.value === selectedModel)?.label}
+                  </DrawerDescription>
                 </DrawerHeader>
                 <div className="p-4 pb-0 h-[calc(100%-120px)] overflow-y-auto">
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        Image Size
-                      </label>
-                      {/* Add your form elements here */}
-                    </div>
-                    {/* Add more settings as needed */}
+                  <div className="space-y-6">
+                    {selectedModel === 'perchance' && (
+                      <>
+                        <div className="space-y-2">
+                          <Label>Art Style</Label>
+                          <SelectDropdown defaultValue={artStyles[0]}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select art style" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {artStyles.map((style) => (
+                                <SelectItem key={style} value={style}>
+                                  {style}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </SelectDropdown>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Art Style Mix</Label>
+                          <SelectDropdown defaultValue={artStyleMixOptions[0]}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select mix style" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {artStyleMixOptions.map((style) => (
+                                <SelectItem key={style} value={style}>
+                                  {style}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </SelectDropdown>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Negative Prompt</Label>
+                          <textarea
+                            className="w-full min-h-[100px] p-2 rounded-md border border-input bg-background"
+                            defaultValue="blurry, low quality, distorted, deformed, ugly, bad anatomy"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Image Shape</Label>
+                          <SelectDropdown defaultValue="portrait">
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select image shape" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="portrait">Portrait</SelectItem>
+                              <SelectItem value="landscape">Landscape</SelectItem>
+                              <SelectItem value="square">Square</SelectItem>
+                            </SelectContent>
+                          </SelectDropdown>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Guidance Scale</Label>
+                          <input
+                            type="number"
+                            className="w-full p-2 rounded-md border border-input bg-background"
+                            defaultValue={3}
+                            min={1}
+                            max={20}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Number of Images</Label>
+                          <input
+                            type="number"
+                            className="w-full p-2 rounded-md border border-input bg-background"
+                            defaultValue={6}
+                            min={1}
+                            max={10}
+                          />
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
                 <DrawerFooter className="pt-4">
