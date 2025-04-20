@@ -4,71 +4,61 @@ export const PAYMENT_FREQUENCIES = ["monthly", "yearly"]
 
 export const TIERS = [
   {
-    id: "individuals",
-    name: "Individuals",
-    price: {
-      monthly: "Free",
-      yearly: "Free",
-    },
-    description: "For your hobby projects",
+    id: "basic",
+    name: "Basic",
+    price: 49,
+    description: "For your basic ai chat needs",
     features: [
-      "Free email alerts",
-      "3-minute checks",
-      "Automatic data enrichment",
-      "10 monitors",
-      "Up to 3 seats",
+      "Remove Ads/Popups",
+      "Basic Chat ",
+      "30 image generation limit",
+      "Unlock AI Agents",
+      "Voice Input",
+      "Share Chats",
+      "Basic Themes",
     ],
     cta: "Get started",
   },
   {
-    id: "teams",
-    name: "Teams",
-    price: {
-      monthly: 90,
-      yearly: 75,
-    },
-    description: "Great for small businesses",
+    id: "standard",
+    name: "Standard",
+    price: 75,
+    description: "Great for great features",
     features: [
-      "Unlimited phone calls",
-      "30 second checks",
-      "Single-user account",
-      "20 monitors",
-      "Up to 6 seats",
+      "500 Image Generation",
+      "Web Search",
+      "Text-to-Speech",
+      "Vision / Images",
+      "Upload Documents",
+      "7 Amazing themes",
     ],
     cta: "Get started",
     popular: true,
   },
   {
-    id: "organizations",
-    name: "Organizations",
-    price: {
-      monthly: 120,
-      yearly: 100,
-    },
-    description: "Great for large businesses",
+    id: "premium",
+    name: "Premium",
+    price: 99,
+    description: "Great if need everything",
     features: [
-      "Unlimited phone calls",
-      "15 second checks",
-      "Single-user account",
-      "50 monitors",
-      "Up to 10 seats",
+      "Unlimited Plugins",
+      "Notes",
+      "Artifacts",
+      "Free Updates",
+      "More Theme Access",
     ],
     cta: "Get started",
   },
   {
-    id: "enterprise",
-    name: "Enterprise",
-    price: {
-      monthly: "Custom",
-      yearly: "Custom",
-    },
-    description: "For multiple teams",
+    id: "custom",
+    name: "Custom",
+    price: "Custom",
+    description: "For your custom preference",
     features: [
-      "Everything in Organizations",
-      "Up to 5 team members",
-      "100 monitors",
-      "15 status pages",
-      "200+ integrations",
+      "Personalized theme for your llm",
+      "Personalized Features",
+      "Personal consultation and support",
+      "Priority Support"
     ],
     cta: "Contact Us",
     highlighted: true,
@@ -84,7 +74,6 @@ export default function SubsPage() {
         <PricingSection
           title="Simple Pricing"
           subtitle="Choose the best plan for your needs"
-          frequencies={PAYMENT_FREQUENCIES}
           tiers={TIERS}
         />
     </div>

@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/card"
 
 export interface PricingTier {
   name: string
-  price: Record<string, number | string>
+  price: number | string
   description: string
   features: string[]
   cta: string
@@ -20,11 +20,10 @@ export interface PricingTier {
 }
 
 interface PricingCardProps {
-  tier: PricingTier | undefined // Allow tier to be undefined
-  paymentFrequency: string
+  tier: PricingTier | undefined
 }
 
-export default function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
+export default function PricingCard({ tier }: PricingCardProps) {
   // Add a fallback for tier
   if (!tier) {
     return (
@@ -35,7 +34,7 @@ export default function PricingCard({ tier, paymentFrequency }: PricingCardProps
     );
   }
 
-  const price = tier.price[paymentFrequency]
+  const price = tier.price
   const isHighlighted = tier.highlighted
   const isPopular = tier.popular
 
@@ -74,7 +73,7 @@ export default function PricingCard({ tier, paymentFrequency }: PricingCardProps
               className="text-4xl font-medium"
             />
             <p className="-mt-2 text-xs text-muted-foreground">
-              Per month/user
+              One-time payment
             </p>
           </>
         ) : (
