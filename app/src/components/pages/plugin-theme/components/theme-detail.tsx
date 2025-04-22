@@ -1,9 +1,10 @@
+"use client"
 import { CircleCheck, Plus } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
-import { Theme } from "./theme-stash"
+import { Theme } from "@/lib/data/theme-data"
 
 interface ThemeDetailProps {
   theme: Theme

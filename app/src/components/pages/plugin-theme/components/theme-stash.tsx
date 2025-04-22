@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Palette, Search, Settings, Sun, Boxes } from "lucide-react"
+import { Palette, Search, Settings, Sun, Boxes, Sparkles, Globe, Brush } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -74,12 +74,6 @@ export default function ThemeStash() {
     return searchQuery === "" ||
       theme.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       theme.description.toLowerCase().includes(searchQuery.toLowerCase())
-  })
-
-  const filteredThemeStyles = mockThemeStyles.filter((style) => {
-    return searchQuery === "" ||
-      style.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      style.description.toLowerCase().includes(searchQuery.toLowerCase())
   })
 
   const handleThemeSelect = (theme: Theme) => {
@@ -247,42 +241,72 @@ export default function ThemeStash() {
       <div className="w-96 flex flex-col">
         {activeTab === "themestyle" ? (
           selectedThemeStyle ? (
-            <div className="p-4">
-              <h2 className="text-lg font-semibold">{selectedThemeStyle.title}</h2>
-              <p className="text-sm text-muted-foreground mt-1">{selectedThemeStyle.description}</p>
-              <div className="mt-4 space-y-4">
-                <div>
-                  <h3 className="text-sm font-medium">Styles</h3>
-                  <div className="mt-2 space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Border Radius</span>
-                      <span className="text-sm">{selectedThemeStyle.styles.borderRadius}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Box Shadow</span>
-                      <span>{selectedThemeStyle.styles.boxShadow}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Spacing</span>
-                      <span>{selectedThemeStyle.styles.spacing}</span>
+            <div className="flex flex-col h-full">
+              <div className="p-6 border-b border-border">
+                <h2 className="text-xl font-semibold mb-2">{selectedThemeStyle.title}</h2>
+                <p className="text-sm text-muted-foreground">{selectedThemeStyle.description}</p>
+              </div>
+              <div className="flex-1 overflow-auto p-6">
+                <div className="space-y-6">
+                  <div className="rounded-lg border border-border p-4 bg-muted/30">
+                    <h3 className="text-sm font-medium mb-3">Highlights</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Sparkles className="w-4 h-4 text-primary" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-medium">Unique Feature</h4>
+                          <p className="text-sm text-muted-foreground">This theme style brings a fresh perspective to modern design</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Palette className="w-4 h-4 text-primary" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-medium">Color Harmony</h4>
+                          <p className="text-sm text-muted-foreground">Carefully curated color palette for optimal visual appeal</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div>
-                  <h3 className="text-sm font-medium">Typography</h3>
-                  <div className="mt-2 space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Font Family</span>
-                      <span className="text-sm">{selectedThemeStyle.styles.typography.fontFamily}</span>
+
+                  <div className="rounded-lg border border-border p-4 bg-muted/30">
+                    <h3 className="text-sm font-medium mb-3">Best For</h3>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full">Modern Apps</span>
+                      <span className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full">Dashboards</span>
+                      <span className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full">Portfolios</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Font Size</span>
-                      <span className="text-sm">{selectedThemeStyle.styles.typography.fontSize}</span>
+                  </div>
+
+                  <div className="rounded-lg border border-border p-4 bg-muted/30">
+                    <h3 className="text-sm font-medium mb-3">Design Philosophy</h3>
+                    <p className="text-sm text-muted-foreground">
+                      This theme style emphasizes clean lines, subtle gradients, and a perfect balance between form and function. It&apos;s designed to create an immersive experience while maintaining excellent readability and usability.
+                    </p>
+                  </div>
+
+                  <div className="rounded-lg border border-border p-4 bg-muted/30">
+                    <h3 className="text-sm font-medium mb-3">Inspiration</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Globe className="w-4 h-4" />
+                        <span>Inspired by modern web design trends</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Brush className="w-4 h-4" />
+                        <span>Influenced by minimalist art movement</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Line Height</span>
-                      <span className="text-sm">{selectedThemeStyle.styles.typography.lineHeight}</span>
-                    </div>
+                  </div>
+
+                  <div className="pt-4">
+                    <Button className="w-full">
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Apply Theme Style
+                    </Button>
                   </div>
                 </div>
               </div>
