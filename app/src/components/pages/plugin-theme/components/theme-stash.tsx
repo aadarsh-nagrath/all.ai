@@ -1,36 +1,74 @@
 "use client"
 
-import { useState } from "react"
-import { Palette, Search, Settings, Sun } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Palette, Search, Settings, Sun, Boxes } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { ThemeList } from "./theme-list"
 import { ThemeDetail } from "./theme-detail"
-import { mockThemes } from "@/lib/data/theme-data"
+import { mockThemes, mockThemeStyles, Theme, ThemeStyle } from "@/lib/data/theme-data"
 import { cn } from "@/lib/utils"
 
-export interface Theme {
-    id: string
-    title: string
-    description: string
-    colors: {
-      primary: string
-      secondary: string
-      accent: string
-      background: string
-      foreground: string
-    }
-    tags: string[]
-    createdAt: string
-    variables?: {
-      [key: string]: string
-    }
+function ThemeTabs({ activeTab, onTabChange }: { activeTab: string; onTabChange: (value: string) => void }) {
+  return (
+    <Tabs value={activeTab} onValueChange={onTabChange}>
+      <TabsList className="mb-3 h-auto -space-x-px bg-background p-0 shadow-sm shadow-black/5 rtl:space-x-reverse">
+        <TabsTrigger
+          value="themestyle"
+          className="relative overflow-hidden rounded-none border border-border py-2 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 first:rounded-s last:rounded-e data-[state=active]:bg-muted data-[state=active]:after:bg-primary"
+        >
+          <Boxes
+            className="-ms-0.5 me-1.5 opacity-60"
+            size={16}
+            strokeWidth={2}
+            aria-hidden="true"
+          />
+          ThemeStyle
+        </TabsTrigger>
+        <TabsTrigger
+          value="themes"
+          className="relative overflow-hidden rounded-none border border-border py-2 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 first:rounded-s last:rounded-e data-[state=active]:bg-muted data-[state=active]:after:bg-primary"
+        >
+          <Palette
+            className="-ms-0.5 me-1.5 opacity-60"
+            size={16}
+            strokeWidth={2}
+            aria-hidden="true"
+          />
+          Themes
+        </TabsTrigger>
+      </TabsList>
+    </Tabs>
+  )
+}
+
+function FilterTabs() {
+  return (
+    <Tabs defaultValue="all">
+      <TabsList>
+        <TabsTrigger value="all">
+          All
+        </TabsTrigger>
+        <TabsTrigger value="saved">
+          <Palette className="h-4 w-4" />
+        </TabsTrigger>
+      </TabsList>
+    </Tabs>
+  )
 }
 
 export default function ThemeStash() {
+  const [mounted, setMounted] = useState(false)
   const [selectedTheme, setSelectedTheme] = useState<Theme | null>(null)
+  const [selectedThemeStyle, setSelectedThemeStyle] = useState<ThemeStyle | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
+  const [activeTab, setActiveTab] = useState("themestyle")
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const filteredThemes = mockThemes.filter((theme) => {
     return searchQuery === "" ||
@@ -38,41 +76,87 @@ export default function ThemeStash() {
       theme.description.toLowerCase().includes(searchQuery.toLowerCase())
   })
 
+  const filteredThemeStyles = mockThemeStyles.filter((style) => {
+    return searchQuery === "" ||
+      style.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      style.description.toLowerCase().includes(searchQuery.toLowerCase())
+  })
+
   const handleThemeSelect = (theme: Theme) => {
     setSelectedTheme(theme)
   }
 
+  const handleThemeStyleSelect = (style: ThemeStyle) => {
+    setSelectedThemeStyle(style)
+  }
+
+  if (!mounted) {
+    return null
+  }
+
   return (
     <div className="flex h-screen bg-background text-foreground">
-      {/* Left Sidebar - Theme List */}
+      {/* Left Sidebar - ThemeStyle/Themes List */}
       <div className="w-64 border-r border-border flex flex-col">
         <div className="p-4 border-b border-border">
-          <h2 className="text-lg font-semibold mb-4">Theme List</h2>
-          <div className="space-y-2">
-            {mockThemes.map((theme) => (
-              <div
-                key={theme.id}
-                className={cn(
-                  "p-2 rounded cursor-pointer hover:bg-muted/50 transition-colors",
-                  selectedTheme?.id === theme.id && "bg-muted"
-                )}
-                onClick={() => handleThemeSelect(theme)}
-              >
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-1">
-                    {Object.entries(theme.colors).slice(0, 2).map(([name, color]) => (
-                      <div
-                        key={name}
-                        className="w-3 h-3 rounded-full border border-border"
-                        style={{ backgroundColor: color }}
-                      />
-                    ))}
+          <ScrollArea>
+            <ThemeTabs activeTab={activeTab} onTabChange={setActiveTab} />
+            <ScrollBar orientation="horizontal" />
+
+            {activeTab === "themestyle" ? (
+              <div className="space-y-2 mt-4">
+                {mockThemeStyles.map((style) => (
+                  <div
+                    key={style.id}
+                    className={cn(
+                      "p-2 rounded cursor-pointer hover:bg-muted/50 transition-colors",
+                      selectedThemeStyle?.id === style.id && "bg-muted"
+                    )}
+                    onClick={() => handleThemeStyleSelect(style)}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="flex gap-1">
+                        <div
+                          className="w-3 h-3 rounded-full border border-border"
+                          style={{ 
+                            borderRadius: style.styles.borderRadius,
+                            boxShadow: style.styles.boxShadow
+                          }}
+                        />
+                      </div>
+                      <span className="text-sm truncate">{style.title}</span>
+                    </div>
                   </div>
-                  <span className="text-sm truncate">{theme.title}</span>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
+            ) : (
+              <div className="space-y-2 mt-4">
+                {mockThemes.map((theme) => (
+                  <div
+                    key={theme.id}
+                    className={cn(
+                      "p-2 rounded cursor-pointer hover:bg-muted/50 transition-colors",
+                      selectedTheme?.id === theme.id && "bg-muted"
+                    )}
+                    onClick={() => handleThemeSelect(theme)}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="flex gap-1">
+                        {Object.entries(theme.colors).slice(0, 2).map(([name, color]) => (
+                          <div
+                            key={name}
+                            className="w-3 h-3 rounded-full border border-border"
+                            style={{ backgroundColor: color }}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-sm truncate">{theme.title}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </ScrollArea>
         </div>
         <div className="mt-auto p-4 flex items-center justify-between">
           <Button variant="ghost" size="icon" className="rounded-full">
@@ -84,21 +168,12 @@ export default function ThemeStash() {
         </div>
       </div>
 
-      {/* Middle Section - Theme List */}
+      {/* Middle Section - ThemeStyle/Themes List */}
       <div className="flex-1 flex flex-col border-r border-border">
         <div className="p-4 border-b border-border flex justify-between items-center">
-          <h1 className="text-xl font-semibold">Themes</h1>
+          <h1 className="text-xl font-semibold">{activeTab === "themestyle" ? "ThemeStyle" : "Themes"}</h1>
           <div className="flex space-x-2">
-            <Tabs defaultValue="all">
-              <TabsList>
-                <TabsTrigger value="all">
-                  All
-                </TabsTrigger>
-                <TabsTrigger value="saved">
-                  <Palette className="h-4 w-4" />
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <FilterTabs />
             <Button variant="outline" className="ml-2">
               Presets
             </Button>
@@ -108,7 +183,7 @@ export default function ThemeStash() {
           <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search themes"
+              placeholder={`Search ${activeTab}`}
               className="pl-9"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -116,20 +191,92 @@ export default function ThemeStash() {
           </div>
         </div>
         <div className="flex-1 overflow-auto">
-          <ThemeList
-            themes={filteredThemes}
-            onThemeSelect={handleThemeSelect}
-            selectedThemeId={selectedTheme?.id}
-          />
+          {activeTab === "themestyle" ? (
+            <div className="grid grid-cols-1 gap-4 p-4">
+              {filteredThemeStyles.map((style) => (
+                <div
+                  key={style.id}
+                  className={cn(
+                    "p-4 rounded-lg border border-border cursor-pointer hover:bg-muted/50 transition-colors",
+                    selectedThemeStyle?.id === style.id && "bg-muted"
+                  )}
+                  onClick={() => handleThemeStyleSelect(style)}
+                >
+                  <h3 className="font-medium">{style.title}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">{style.description}</p>
+                  <div className="mt-2 flex gap-2">
+                    {style.tags.map((tag) => (
+                      <span key={tag} className="text-xs bg-muted px-2 py-1 rounded-full">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <ThemeList
+              themes={filteredThemes}
+              onThemeSelect={handleThemeSelect}
+              selectedThemeId={selectedTheme?.id}
+            />
+          )}
         </div>
       </div>
 
-      {/* Right Section - Theme Details */}
+      {/* Right Section - ThemeStyle/Themes Details */}
       <div className="w-96 flex flex-col">
-        {selectedTheme ? (
-          <ThemeDetail theme={selectedTheme} />
+        {activeTab === "themestyle" ? (
+          selectedThemeStyle ? (
+            <div className="p-4">
+              <h2 className="text-lg font-semibold">{selectedThemeStyle.title}</h2>
+              <p className="text-sm text-muted-foreground mt-1">{selectedThemeStyle.description}</p>
+              <div className="mt-4 space-y-4">
+                <div>
+                  <h3 className="text-sm font-medium">Styles</h3>
+                  <div className="mt-2 space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Border Radius</span>
+                      <span className="text-sm">{selectedThemeStyle.styles.borderRadius}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Box Shadow</span>
+                      <span className="text-sm">{selectedThemeStyle.styles.boxShadow}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Spacing</span>
+                      <span className="text-sm">{selectedThemeStyle.styles.spacing}</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium">Typography</h3>
+                  <div className="mt-2 space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Font Family</span>
+                      <span className="text-sm">{selectedThemeStyle.styles.typography.fontFamily}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Font Size</span>
+                      <span className="text-sm">{selectedThemeStyle.styles.typography.fontSize}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Line Height</span>
+                      <span className="text-sm">{selectedThemeStyle.styles.typography.lineHeight}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full text-muted-foreground">Select a ThemeStyle to view details</div>
+          )
         ) : (
-          <div className="flex items-center justify-center h-full text-muted-foreground">Select a theme to view details</div>
+          selectedTheme ? (
+            <ThemeDetail theme={selectedTheme} />
+          ) : (
+            <div className="flex items-center justify-center h-full text-muted-foreground">Select a theme to view details</div>
+          )
         )}
       </div>
     </div>
