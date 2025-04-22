@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { GeistSans, GeistMono } from "geist/font";
 import { ThemeProvider } from "@/components/theme-provider";
 import SessionWrapper from "@/components/session-wrapper";
+import SessionCheck from "@/components/SessionCheck";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster"
 
@@ -32,7 +33,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SessionWrapper>
-            {children}
+            <SessionCheck>
+              {children}
+            </SessionCheck>
           </SessionWrapper>
           <Toaster />
         </ThemeProvider>
