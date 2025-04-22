@@ -192,27 +192,46 @@ export default function ThemeStash() {
         </div>
         <div className="flex-1 overflow-auto">
           {activeTab === "themestyle" ? (
-            <div className="grid grid-cols-1 gap-4 p-4">
-              {filteredThemeStyles.map((style) => (
-                <div
-                  key={style.id}
-                  className={cn(
-                    "p-4 rounded-lg border border-border cursor-pointer hover:bg-muted/50 transition-colors",
-                    selectedThemeStyle?.id === style.id && "bg-muted"
-                  )}
-                  onClick={() => handleThemeStyleSelect(style)}
-                >
-                  <h3 className="font-medium">{style.title}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{style.description}</p>
-                  <div className="mt-2 flex gap-2">
-                    {style.tags.map((tag) => (
-                      <span key={tag} className="text-xs bg-muted px-2 py-1 rounded-full">
-                        {tag}
-                      </span>
-                    ))}
+            <div className="h-full p-6">
+              {selectedThemeStyle ? (
+                <div className="h-full flex flex-col">
+                  <div className="h-[60vh] relative rounded-lg overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-border/20 to-border/10 rounded-lg" />
+                    <div className="absolute inset-[1px] rounded-lg overflow-hidden">
+                      <div 
+                        className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20"
+                        style={{ 
+                          borderRadius: selectedThemeStyle.styles.borderRadius,
+                          boxShadow: selectedThemeStyle.styles.boxShadow
+                        }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-background/80 backdrop-blur-sm">
+                        <div className="text-center p-8 max-w-3xl">
+                          <h2 className="text-2xl font-semibold mb-2">{selectedThemeStyle.title}</h2>
+                          <p className="text-muted-foreground mb-4">{selectedThemeStyle.description}</p>
+                          <div className="flex flex-wrap gap-2 justify-center">
+                            {selectedThemeStyle.tags.map((tag) => (
+                              <span key={tag} className="text-xs bg-muted px-3 py-1 rounded-full">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-4 border-t border-border mt-6">
+                    <h3 className="text-sm font-medium mb-2">Extra</h3>
+                    <div className="p-4 rounded-lg border border-border bg-muted/50">
+                      <p className="text-sm text-muted-foreground text-center">Additional features coming soon</p>
+                    </div>
                   </div>
                 </div>
-              ))}
+              ) : (
+                <div className="flex items-center justify-center h-full text-muted-foreground">
+                  Select a ThemeStyle to view details
+                </div>
+              )}
             </div>
           ) : (
             <ThemeList
@@ -239,13 +258,13 @@ export default function ThemeStash() {
                       <span className="text-sm text-muted-foreground">Border Radius</span>
                       <span className="text-sm">{selectedThemeStyle.styles.borderRadius}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Box Shadow</span>
-                      <span className="text-sm">{selectedThemeStyle.styles.boxShadow}</span>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Box Shadow</span>
+                      <span>{selectedThemeStyle.styles.boxShadow}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Spacing</span>
-                      <span className="text-sm">{selectedThemeStyle.styles.spacing}</span>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Spacing</span>
+                      <span>{selectedThemeStyle.styles.spacing}</span>
                     </div>
                   </div>
                 </div>
