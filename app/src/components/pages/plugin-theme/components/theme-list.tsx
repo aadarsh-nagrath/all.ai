@@ -1,9 +1,9 @@
 "use client"
 
-import { ChevronRight } from "lucide-react"
+import { ChevronRight} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { Theme } from "./theme-stash"
+import { Theme } from "@/lib/data/theme-data"
 
 interface ThemeListProps {
   themes: Theme[]
