@@ -34,15 +34,17 @@ export default function Workplace() {
   };
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbSeparator className="hidden md:block" />
-          <BreadcrumbItem>
-            <AnimatedThemeButton />
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <div className="flex flex-1 flex-col gap-4 p-4 pt-0 relative min-h-screen">
+      <div className="absolute top-4 right-4">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbSeparator className="hidden md:block" />
+            <BreadcrumbItem>
+              <AnimatedThemeButton />
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
       <AnimatePresence>
         {showHeadings && (
           <>

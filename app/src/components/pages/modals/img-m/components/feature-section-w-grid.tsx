@@ -24,6 +24,7 @@ const portraitImages = [
   "https://fal.media/files/lion/70dhFaqsVmxMh0reSXNzk.png",
   "https://ehristoforu-dalle-3-xl-lora-v2.hf.space/file=/tmp/gradio/ec2dd3b5b1f8d1a66f20e5dd927cfebfeb5093be/ebe15c70-f809-4369-b534-acd669f3fef0.png",
   "https://fal.media/files/lion/PX3laU3cVXMtvHsLVrVXq.png",
+  "https://freeflux.ai/images/c00351d5-bf2a-45ec-a296-4f85e3f2f679.jpg"
 ];
 
 export default function Feature() {

@@ -3,10 +3,10 @@ import Workplace from "@/components/pages/workplace/workplace";
 import Plugins from "@/components/pages/plugin-theme/plugins";
 import Theme from "@/components/pages/plugin-theme/theme";
 import TextGen from "@/components/pages/modals/text-generation";
-import CreateAgents from "@/components/pages/ai-agents/create-agents";
+import CreateAgents from "@/components/pages/ai-agents/agent-kit";
 import Notes from "@/components/pages/promptlib-notes/notes";
 import PromptLib from "@/components/pages/promptlib-notes/prompt-lib";
-import BrowseAgents from "@/components/pages/ai-agents/browse-agents";
+import BrowseAgents from "@/components/pages/ai-agents/explore-agents";
 import ImageGen from "@/components/pages/modals/img-m/image-generation";
 import GetStarted from "@/components/pages/promptlib-notes/get-started";
 import Account from "@/components/pages/settings/account-billing";
@@ -18,8 +18,8 @@ const pageMap: Record<string, React.ReactNode> = {
   plugins: <Plugins />,
   theme: <Theme />,
   "text-generation": <TextGen />,
-  "create-agents": <CreateAgents />,
-  "browse-agents": <BrowseAgents />,
+  "agent-kit": <CreateAgents />,
+  "explore-agents": <BrowseAgents />,
   "image-generation": <ImageGen />,
   notes: <Notes />,
   "get-started": <GetStarted />,
