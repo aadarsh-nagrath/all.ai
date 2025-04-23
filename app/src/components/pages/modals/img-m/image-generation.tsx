@@ -85,7 +85,7 @@ export default function ImgGen() {
 
   return (
     <div className="h-[40rem] flex flex-col items-center px-4">
-      <div className="absolute bottom-0 top-0 left-20 p-4 z-10">
+      <div className="absolute top-0 left-20 p-4 z-10">
         <div className="w-[250px]">
           <Select 
             data={modelData} 

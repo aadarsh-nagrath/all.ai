@@ -9,7 +9,7 @@ import Headline from "./headline";
 import SearchInput from "./searchbox";
 import Subheadline from "./subheadline";
 import { ThemeBadge } from "@/components/theme-badge"
-import { motion, AnimatePresence } from "framer-motion";
+import { motion} from "framer-motion";
 import { useState, useEffect } from "react";
 
 function AnimatedThemeButton() {
