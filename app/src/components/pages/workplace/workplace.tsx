@@ -10,7 +10,7 @@ import SearchInput from "./searchbox";
 import Subheadline from "./subheadline";
 import { ThemeBadge } from "@/components/theme-badge"
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function AnimatedThemeButton() {
   return (
@@ -29,13 +29,21 @@ function AnimatedThemeButton() {
 export default function Workplace() {
   const [showHeadings, setShowHeadings] = useState(true);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowHeadings(prev => !prev);
+    }, 15000); // 15 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   const handleMessageSent = () => {
     setShowHeadings(false);
   };
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0 relative min-h-screen">
-      <div className="absolute top-4 right-4">
+      <div className="sticky top-0 z-10 flex justify-end pb-4">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbSeparator className="hidden md:block" />
@@ -45,26 +53,13 @@ export default function Workplace() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <AnimatePresence>
-        {showHeadings && (
-          <>
-            <motion.div
-              initial={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Headline />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Subheadline />
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      <motion.div
+        animate={{ opacity: showHeadings ? 1 : 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Headline />
+        <Subheadline />
+      </motion.div>
       <SearchInput onMessageSent={handleMessageSent} />
     </div>
   );
