@@ -7,14 +7,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { Separator } from "@/components/ui/separator";
 
 const completionVariants = cva(
-  "flex items-center gap-2 rounded-lg p-3 text-sm transition-all duration-200 rounded-full border-[.75px] px-2.5 w-fit h-7 flex items-center text-xs font-medium mb-2 shadow-[inset_0px_-2.10843px_0px_0px_rgb(244,241,238),_0px_1.20482px_6.3253px_0px_rgb(244,241,238)]",
+  "flex items-center gap-2 rounded-lg p-3 text-sm transition-all duration-200 rounded-full border-[.75px] px-2.5 w-fit h-7 flex items-center text-xs font-medium mb-2 shadow-[inset_0px_-2.10843px_0px_0px_hsl(var(--muted)),_0px_1.20482px_6.3253px_0px_hsl(var(--muted))]",
   {
     variants: {
       variant: {
-        success: "border-[#E9E3DD] text-[#36322F] bg-[#FBFAF9]",
-        error: "border border-red-200 text-red-800 bg-red-50",
-        warning: "border border-yellow-200 text-yellow-800 bg-yellow-50",
-        pending: "border border-blue-200 text-blue-800 bg-blue-50",
+        success: "border-border text-foreground bg-card",
+        error: "border border-destructive/20 text-destructive bg-destructive/10",
+        warning: "border border-warning/20 text-warning bg-warning/10",
+        pending: "border border-primary/20 text-primary bg-primary/10",
       },
       size: {
         sm: "text-xs p-2",
@@ -65,10 +65,10 @@ export function CompletionIndicator({
   }, []);
 
   const icons = {
-    success: <CheckCircle2 className="h-4 w-4 shrink-0 fill-green-400" />,
-    error: <XCircle className="h-4 w-4 shrink-0" />,
-    warning: <AlertCircle className="h-4 w-4 shrink-0" />,
-    pending: <Clock className="h-4 w-4 shrink-0" />,
+    success: <CheckCircle2 className="h-4 w-4 shrink-0 fill-success stroke-success-foreground" />,
+    error: <XCircle className="h-4 w-4 shrink-0 fill-destructive stroke-destructive-foreground" />,
+    warning: <AlertCircle className="h-4 w-4 shrink-0 fill-warning stroke-warning-foreground" />,
+    pending: <Clock className="h-4 w-4 shrink-0 fill-primary stroke-primary-foreground" />,
   };
 
   if (!mounted) {
@@ -100,9 +100,9 @@ export function CompletionIndicator({
       </div>
       {typeof progress === "number" && <div className="ml-2 text-xs font-medium">{progress}%</div>}
       {status === "pending" && typeof progress === "number" && (
-        <div className="relative h-1 w-20 overflow-hidden rounded-full bg-blue-100">
+        <div className="relative h-1 w-20 overflow-hidden rounded-full bg-primary/10">
           <div
-            className="absolute inset-y-0 left-0 bg-blue-500 transition-all duration-500"
+            className="absolute inset-y-0 left-0 bg-primary transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>

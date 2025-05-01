@@ -115,7 +115,7 @@ export type GlowEffectProps = {
 export function GlowEffect({
   className,
   style,
-  colors = ["#FF5733", "#33FF57", "#3357FF", "#F1C40F"],
+  colors = ["hsl(var(--primary))", "hsl(var(--secondary))", "hsl(var(--accent))", "hsl(var(--background))"],
   mode = "rotate",
   blur = "medium",
   transition,

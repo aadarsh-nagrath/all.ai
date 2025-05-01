@@ -75,9 +75,9 @@ function ClassificationTab({ parsedOutput }: TabContentProps) {
           <div>
             <h4 className="text-sm font-medium mb-2">Query Classification</h4>
             <Badge className="mb-2">{parsedOutput.classification.type}</Badge>
-            <p className="text-sm text-neutral-600">{parsedOutput.classification.reasoning}</p>
+            <p className="text-sm text-muted-foreground">{parsedOutput.classification.reasoning}</p>
           </div>
-          <div className="pt-4 border-t">
+          <div className="pt-4 border-t border-border">
             <h4 className="text-sm font-medium mb-2">Routed Response</h4>
             <MemoizedReactMarkdown>{parsedOutput.response}</MemoizedReactMarkdown>
           </div>
@@ -95,11 +95,11 @@ function ToolsTab({ parsedOutput }: TabContentProps) {
         <Card key={index} className="p-4">
           <CompletionIndicator status="success" message={`${tool.name || `Tool ${index + 1}`}`} className="mb-2" />
           <div className="space-y-2">
-            <div className="text-sm text-neutral-600">
+            <div className="text-sm text-muted-foreground">
               <MemoizedReactMarkdown>{tool.input || tool.args || tool.parameters}</MemoizedReactMarkdown>
             </div>
             {tool.output && (
-              <div className="pt-2 border-t">
+              <div className="pt-2 border-t border-border">
                 <h4 className="text-xs font-medium mb-1">Output</h4>
                 <MemoizedReactMarkdown>{tool.output}</MemoizedReactMarkdown>
               </div>
@@ -202,9 +202,12 @@ export function OutputPanel({ selectedAgent, loading, output, parsedOutput }: Ou
   return (
     <motion.div
       variants={slideInFromRight}
-      className={cn("flex flex-col min-h-0 overflow-hidden bg-muted", "h-full w-full", "md:w-1/2 lg:w-3/5")}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      className="hidden md:flex w-full md:w-1/2 lg:w-3/5 mx-2 lg:m-2 rounded-2xl p-4 flex-col overflow-hidden h-full"
     >
-      <h2 className="absolute top-4 right-4 hidden md:block text-[9px] font-medium text-neutral-400 ">
+      <h2 className="absolute top-4 right-4 hidden md:block text-[9px] font-medium text-muted-foreground">
         {loading ? "Processing..." : "Output"}
       </h2>
       {/* Header with Indicators */}

@@ -62,7 +62,7 @@ export function InputPanel({
       initial="initial"
       animate="animate"
       exit="exit"
-      className="w-full md:w-1/2 lg:w-2/5 mx-2 lg:m-2  rounded-b-2xl rounded-t-sm lg:rounded-2xl p-[1px] bg-white flex flex-col h-[calc(100dvh-6rem)] lg:h-auto md:min-h-0 shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)]"
+      className="w-full md:w-1/2 lg:w-2/5 mx-2 lg:m-2  rounded-b-2xl rounded-t-sm lg:rounded-2xl p-[1px] flex flex-col h-[calc(100dvh-6rem)] lg:h-auto md:min-h-0 shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)]"
     >
       {/* Examples */}
       <ExampleButtons
@@ -76,7 +76,7 @@ export function InputPanel({
       {/* Input Fields */}
       <ScrollArea className="flex-1 w-full">
         <motion.div
-          className="p-2 sm:p-4 space-y-5"
+          className="p-3 sm:p-4 space-y-5"
           variants={staggerContainerVariants}
           key={selectedAgent.name}
         >
@@ -84,7 +84,7 @@ export function InputPanel({
             <motion.div
               variants={staggerItemVariants}
               key={index}
-              className="space-y-2.5"
+              className="space-y-3"
             >
               <div className="flex items-center gap-1.5">
                 <Label
@@ -132,14 +132,14 @@ export function InputPanel({
                     onChange={(e) => onInputChange(field.name, e.target.value)}
                     placeholder={field.placeholder}
                     className={cn(
-                      " rounded-[5px] resize-none text-[16px] leading-snug md:leading-relaxed md:text-[14px] caret-blue-400  border-none ring-1 ring-[#F6F6F6] ring-offset-neutral-50 ring-offset-1 transition-all duration-200 shadow-[0px_1px_0px_0px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_rgba(255,_255,_255,_0.25)] focus-visible:ring-[#2B7BE5] focus-visible:ring-[1px] focus-visible:ring-offset-blue-100 focus-visible:ring-offset-2 ease-out",
+                      "rounded-[5px] resize-none text-[16px] leading-snug md:leading-relaxed md:text-[14px] caret-primary border-none ring-1 ring-border ring-offset-muted ring-offset-1 transition-all duration-200 shadow-[0px_1px_0px_0px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_rgba(255,_255,_255,_0.25)] focus-visible:ring-primary focus-visible:ring-[1px] focus-visible:ring-offset-primary/20 focus-visible:ring-offset-2 ease-out",
                       hasMultipleTextAreas
-                        ? "min-h-[150px] lg:min-h-[130px]"
-                        : "min-h-[220px] lg:min-h-[240px]",
-                      hasSingleInputField && "min-h-[340px] lg:min-h-[300px]"
+                        ? "min-h-[180px] lg:min-h-[170px]"
+                        : "min-h-[220px] lg:min-h-[220px]",
+                      hasSingleInputField && "min-h-[320px] lg:min-h-[300px]"
                     )}
                   />
-                  <div className="absolute bottom-3 right-3 text-[11px] text-neutral-400 bg-white/80 px-1.5 py-0.5 rounded-[4px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)]">
+                  <div className="absolute bottom-3 right-3 text-[11px] text-muted-foreground bg-background/80 px-1.5 py-0.5 rounded-[4px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)]">
                     {(inputs[field.name] || "").length} chars
                   </div>
                 </div>
@@ -149,7 +149,7 @@ export function InputPanel({
                   value={inputs[field.name] || ""}
                   onChange={(e) => onInputChange(field.name, e.target.value)}
                   placeholder={field.placeholder}
-                  className="text-[13px] border-none ring-1 ring-[#F6F6F6] ring-offset-[#F6F6F6] ring-offset-4 focus:border-neutral-300 focus:ring-neutral-200 transition-colors duration-200 shadow-[0px_1px_0px_0px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_rgba(255,_255,_255,_0.25)] focus-visible:ring-neutral-300"
+                  className="text-[13px] border-none ring-1 ring-border ring-offset-background ring-offset-4 focus-visible:ring-primary transition-colors duration-200 shadow-[0px_1px_0px_0px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_rgba(255,_255,_255,_0.25)]"
                 />
               )}
             </motion.div>
@@ -159,28 +159,28 @@ export function InputPanel({
 
       {/* Agent Info Card */}
       <motion.div
-        className="flex-none border-t border-neutral-100/80 bg-[#FCFCFC] "
+        className="flex-none border-t border-border"
         variants={fadeIn}
       >
         <div className="p-2 sm:p-4">
-          <Card className=" border-none rounded-lg px-2 pt-2 relative shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)]">
-            <div className="text-[10px] text-neutral-600 space-y-3 ">
-              <div className="space-y-1.5 p-2 ">
-                <h4 className="text-neutral-900 flex items-center gap-1   text-[10px] py-[2px] font-medium ">
+          <Card className="border-none rounded-lg px-2 pt-2 relative shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)]">
+            <div className="text-[10px] text-muted-foreground space-y-3">
+              <div className="space-y-1.5 p-2">
+                <h4 className="text-foreground flex items-center gap-1 text-[10px] py-[2px] font-medium">
                   <TextEffect>{selectedAgent.name}</TextEffect>{" "}
-                  <span className="text-neutral-500">pattern is best for</span>
+                  <span className="text-muted-foreground">pattern is best for</span>
                 </h4>
 
-                <div className="leading-relaxed text-[10px] ">
+                <div className="leading-relaxed text-[10px]">
                   {selectedAgent.context}
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <div className=" min-w-[100px] flex items-center gap-1  pl-1  absolute top-1.5 right-1.5  rounded-md px-[2px] py-[1px] ">
-                  <p className="font-medium text-muted-foreground/60  text-[9px]">
+                <div className="min-w-[100px] flex items-center gap-1 pl-1 absolute top-1.5 right-1.5 rounded-md px-[2px] py-[1px]">
+                  <p className="font-medium text-muted-foreground text-[9px]">
                     Average Processing Time
                   </p>
-                  <div className="inline-block bg-neutral-50 px-1 py-0.5 text-[9px] rounded-sm text-neutral-800 border border-black/10 ">
+                  <div className="inline-block bg-muted px-1 py-0.5 text-[9px] rounded-sm text-foreground border border-border">
                     <NumberFlow value={selectedAgent.averageTime ?? 0} />s
                   </div>
                 </div>
@@ -210,7 +210,7 @@ function ExampleButtons({
 }) {
   return (
     <motion.div
-      className="flex-none p-2 sm:p-3 md:p-4 border-b border-neutral-100/80 bg-[#FAFAFA]/50  rounded-t-2xl"
+      className="flex-none p-2 sm:p-3 md:p-4 border-b border-border rounded-t-2xl"
       variants={fadeIn}
       initial="initial"
       animate="animate"
@@ -224,7 +224,7 @@ function ExampleButtons({
             exit: { opacity: 0, y: -10 },
           }}
         >
-          <Label className="text-[11px] sm:text-xs font-medium text-neutral-600">
+          <Label className="text-[11px] sm:text-xs font-medium text-muted-foreground">
             Quick Examples
           </Label>
           <Tooltip delayDuration={300}>
@@ -232,9 +232,9 @@ function ExampleButtons({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6 hover:bg-neutral-100 transition-colors duration-200"
+                className="h-6 w-6 hover:bg-accent transition-colors duration-200"
               >
-                <Info className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-neutral-500" />
+                <Info className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-muted-foreground" />
               </Button>
             </TooltipTrigger>
             <TooltipContent
@@ -294,9 +294,9 @@ function ExampleButtons({
                   }}
                   type="button"
                   className={cn(
-                    "min-w-fit whitespace-nowrap text-[11px] sm:text-xs py-1 px-2.5 bg-white text-neutral-800 rounded-[6px] transition-all duration-200 hover:bg-neutral-50 active:scale-95 touch-manipulation shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)] relative group",
+                    "min-w-fit whitespace-nowrap text-[11px] sm:text-xs py-1 px-2.5 bg-background text-foreground rounded-[6px] transition-all duration-200 hover:bg-accent active:scale-95 touch-manipulation shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)] relative group border border-input",
                     index === selectedExampleIndex &&
-                      "bg-black text-white hover:bg-black/90 shadow-[0px_1px_2px_0px_rgba(38,_99,_235,_0.3),_0px_1px_1px_0px_rgba(38,_99,_235,_0.1)_inset,_0px_0px_0px_1px_rgba(38,_99,_235,_0.4)_inset] hover:shadow-[0px_2px_4px_0px_rgba(38,_99,_235,_0.25),_0px_1px_1px_0px_rgba(38,_99,_235,_0.1)_inset,_0px_0px_0px_1px_rgba(38,_99,_235,_0.4)_inset] pr-7"
+                      "bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.2),_0px_1px_1px_0px_rgba(0,0,0,0.1)_inset,_0px_0px_0px_1px_rgba(0,0,0,0.1)_inset] hover:shadow-[0px_2px_4px_0px_rgba(0,0,0,0.15),_0px_1px_1px_0px_rgba(0,0,0,0.1)_inset,_0px_0px_0px_1px_rgba(0,0,0,0.1)_inset] pr-7"
                   )}
                   onClick={() => {
                     if (index === selectedExampleIndex) {
@@ -347,7 +347,7 @@ function ExampleButtons({
                         },
                       }}
                       whileTap={{ scale: 0.9 }}
-                      className="absolute right-1.5 top-1 -translate-y-1/2 p-0.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors duration-200 cursor-pointer backdrop-blur-[2px] shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.2)]"
+                      className="absolute right-1.5 top-1 -translate-y-1/2 p-0.5 rounded-full bg-primary-foreground/20 hover:bg-primary-foreground/30 transition-colors duration-200 cursor-pointer backdrop-blur-[2px] shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.2)]"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -361,7 +361,7 @@ function ExampleButtons({
                 </motion.button>
               ))}
             </div>
-            <ScrollBar orientation="horizontal" className="bg-neutral-100" />
+            <ScrollBar orientation="horizontal" className="bg-muted" />
           </ScrollArea>
         </motion.div>
       </div>
@@ -389,7 +389,7 @@ export function ActionButtons({
   mobileReOpenOutputDrawer: () => void;
 }) {
   return (
-    <div className="flex items-center justify-between gap-3 px-4 py-4 bg-[#FAFAFA]/50">
+    <div className="flex items-center justify-between gap-3 px-4 py-4">
       <Button
         variant="ghost"
         size="sm"
@@ -401,12 +401,12 @@ export function ActionButtons({
           }
           resetState();
         }}
-        className="group h-9 gap-1.5  rounded-lg bg-[#FFFFFF] text-[#36322F] hover:enabled:bg-[#F8F8F8] disabled:bg-[#F0F0F0] [box-shadow:inset_0px_-2.108433723449707px_0px_0px_#E0E0E0,_0px_1.2048193216323853px_6.325301647186279px_0px_rgba(0,_0,_0,_10%)] hover:enabled:[box-shadow:inset_0px_-2.53012px_0px_0px_#E8E8E8,_0px_1.44578px_7.59036px_0px_rgba(0,_0,_0,_12%)] disabled:shadow-none border border-[#E0E0E0] active:bg-[#F0F0F0] active:[box-shadow:inset_0px_-1.5px_0px_0px_#D8D8D8,_0px_0.5px_2px_0px_rgba(0,_0,_0,_15%)] "
+        className="group h-9 gap-1.5 rounded-lg"
       >
         {isMobile ? (
           <WorkHistoryIcon className="w-3.5 h-3.5" />
         ) : (
-          <DeletePutBackIcon className="w-3.5 h-3.5 stroke-red-800 " />
+          <DeletePutBackIcon className="w-3.5 h-3.5 stroke-destructive" />
         )}
       </Button>
       {!isMobile && (
@@ -416,7 +416,7 @@ export function ActionButtons({
               variant="outline"
               size="sm"
               disabled={inputHistory.length === 0}
-              className="group h-9 gap-1.5 rounded-lg bg-[#FFFFFF] text-[#36322F] hover:enabled:bg-[#F8F8F8] disabled:bg-[#F0F0F0] [box-shadow:inset_0px_-2.108433723449707px_0px_0px_#E0E0E0,_0px_1.2048193216323853px_6.325301647186279px_0px_rgba(0,_0,_0,_10%)] hover:enabled:[box-shadow:inset_0px_-2.53012px_0px_0px_#E8E8E8,_0px_1.44578px_7.59036px_0px_rgba(0,_0,_0,_12%)] disabled:shadow-none border border-[#E0E0E0] active:bg-[#F0F0F0] active:[box-shadow:inset_0px_-1.5px_0px_0px_#D8D8D8,_0px_0.5px_2px_0px_rgba(0,_0,_0,_15%)] "
+              className="group h-9 gap-1.5 rounded-lg"
             >
               <WorkHistoryIcon className="w-3.5 h-3.5" />
               <span className="text-xs hidden md:block">History</span>
@@ -427,7 +427,7 @@ export function ActionButtons({
             className="w-[320px] max-h-[400px] overflow-y-auto"
           >
             {inputHistory.length === 0 ? (
-              <div className="p-4 text-sm text-neutral-500 text-center">
+              <div className="p-4 text-sm text-muted-foreground text-center">
                 No history yet
               </div>
             ) : (
@@ -440,13 +440,13 @@ export function ActionButtons({
                     <DropdownMenuItem
                       key={index}
                       onClick={() => handleHistorySelect(item)}
-                      className="py-2.5 px-3 break-all cursor-pointer hover:bg-neutral-50"
+                      className="py-2.5 px-3 break-all cursor-pointer hover:bg-accent"
                     >
                       <div className="flex items-center gap-2 w-full">
                         <div className="flex-1 truncate text-sm">
                           {formatDisplayText(displayText)}
                         </div>
-                        <ArrowRight className="w-3.5 h-3.5 text-neutral-400" />
+                        <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
                       </div>
                     </DropdownMenuItem>
                   );
@@ -462,7 +462,7 @@ export function ActionButtons({
       <div className="relative w-full">
         {Object.values(inputs).some((v) => v.trim()) && (
           <GlowEffect
-            colors={["#FF5733", "#33FF57", "#3357FF", "#F1C40F"]}
+            colors={["hsl(var(--primary))", "hsl(var(--secondary))", "hsl(var(--accent))", "hsl(var(--muted))"]}
             mode="colorShift"
             blur="soft"
             duration={3}
@@ -471,7 +471,7 @@ export function ActionButtons({
         )}
         <button
           onClick={handleInputSubmit}
-          className="rounded-lg w-full h-9 relative inline-flex text-center justify-center items-center gap-1  hover:bg-[#4a4542] bg-[#36322F] px-2.5 py-1.5 text-sm text-zinc-50 outline outline-1 outline-[#fff2f21f] [box-shadow:inset_0px_-2.108433723449707px_0px_0px_#171310,_0px_1.2048193216323853px_6.325301647186279px_0px_rgba(58,_33,_8,_58%)] hover:[box-shadow:inset_0px_-2.53012px_0px_0px_#171310,_0px_1.44578px_7.59036px_0px_rgba(58,_33,_8,_64%)]"
+          className="rounded-lg w-full h-9 relative inline-flex text-center justify-center items-center gap-1 bg-primary hover:bg-primary/90 px-2.5 py-1.5 text-sm text-primary-foreground"
         >
           {loading ? (
             <>
@@ -480,7 +480,7 @@ export function ActionButtons({
             </>
           ) : (
             <>
-              <ArtificialIntelligence04Icon className="group-disabled:opacity-50 size-5 transition-all duration-200 ease-in-out group-disabled:fill-white  group-hover:fill-blue-200 group-hover:rotate-12 text-blue-400 stroke-1 fill-black mr-1.5" />
+              <ArtificialIntelligence04Icon className="group-disabled:opacity-50 size-5 transition-all duration-200 ease-in-out group-disabled:fill-primary-foreground group-hover:fill-primary-foreground/80 group-hover:rotate-12 text-primary-foreground stroke-1 fill-primary mr-1.5" />
               <span className="text-xs">
                 {isMobile ? "Run & View Output" : "Run Agent"}
               </span>
@@ -498,8 +498,8 @@ const ArtificialIntelligence04Icon = (props: React.SVGProps<SVGSVGElement>) => (
     viewBox="0 0 24 24"
     width={24}
     height={24}
-    color={"#000000"}
-    fill={"none"}
+    color="currentColor"
+    fill="none"
     {...props}
   >
     <path
@@ -543,8 +543,8 @@ const WorkHistoryIcon = (props: React.SVGProps<SVGSVGElement>) => (
     viewBox="0 0 24 24"
     width={24}
     height={24}
-    color={"#000000"}
-    fill={"none"}
+    color="currentColor"
+    fill="none"
     {...props}
   >
     <path
@@ -582,8 +582,8 @@ const DeletePutBackIcon = (props: React.SVGProps<SVGSVGElement>) => (
     viewBox="0 0 24 24"
     width={24}
     height={24}
-    color={"#000000"}
-    fill={"none"}
+    color="currentColor"
+    fill="none"
     {...props}
   >
     <path
@@ -596,6 +596,7 @@ const DeletePutBackIcon = (props: React.SVGProps<SVGSVGElement>) => (
       stroke="currentColor"
       strokeWidth="1.5"
       strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M14.5 18.5C13.9943 18.0085 12 16.7002 12 16C12 15.2998 13.9943 13.9915 14.5 13.5"
@@ -615,6 +616,7 @@ const DeletePutBackIcon = (props: React.SVGProps<SVGSVGElement>) => (
       stroke="currentColor"
       strokeWidth="1.5"
       strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M19 13.5L19.5 5.5"

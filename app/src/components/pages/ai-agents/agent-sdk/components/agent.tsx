@@ -197,8 +197,8 @@ export function AgentSandbox() {
       />
 
       {/* Main content area with input and output panels */}
-      <div className="flex-1 flex flex-col min-h-0 pb-4 bg-muted overflow-hidden relative">
-        <h2 className="hidden md:block text-[9px] font-medium text-neutral-400 px-2 sm:px-4 pt-4">Input</h2>
+      <div className="h-[83vh] flex flex-col min-h-0 pb-4 overflow-hidden relative ">
+        <h2 className="hidden md:block text-[9px] font-medium text-muted-foreground px-2 sm:px-4 pt-2">Input</h2>
         <div className="flex-1 flex flex-col md:flex-row min-h-0 w-[calc(100vw-1rem)] lg:w-full py-2">
           {selectedAgentDetails && (
             <InputPanel
