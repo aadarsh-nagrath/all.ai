@@ -6,10 +6,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Model } from "./models"
+import { Row, Table } from "@tanstack/react-table"
 
 interface QuickStartCellProps {
-  row: any
-  table: any
+  row: Row<Model>
+  table: Table<Model>
   toast: any
 }
 
@@ -19,7 +20,7 @@ export function QuickStartCell({ row, table, toast }: QuickStartCellProps) {
     const updatedData = table.options.data.map((model: Model) => {
       if (model.id === row.original.id) {
         // Only change status if it's not "Active" or "Maintenance"
-        const newStatus = checked ? "Quick Start" : 
+        const newStatus: Model["status"] = checked ? "Quick Start" : 
           (model.status === "Active" ? "Active" : 
            model.status === "Maintenance" ? "Maintenance" : "Ready")
         
@@ -32,7 +33,9 @@ export function QuickStartCell({ row, table, toast }: QuickStartCellProps) {
       return model
     })
     
+    // The updateData function is defined in the table meta via type declaration
     table.options.meta?.updateData(updatedData)
+    
     toast({
       variant: "success",
       title: checked ? "Added to Quick Start" : "Removed from Quick Start",
