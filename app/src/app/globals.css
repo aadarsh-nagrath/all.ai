@@ -158,3 +158,25 @@ body.preview-theme {
   --sidebar-border: var(--preview-sidebar-border);
   --sidebar-ring: var(--preview-sidebar-ring);
 }
+
+/* Gradient Button Styles */
+.gradient-button {
+  background: linear-gradient(90deg, #4F46E5 0%, #7C3AED 100%);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.gradient-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.3);
+}
+
+.gradient-button:active {
+  transform: translateY(0);
+  box-shadow: 0 5px 15px -5px rgba(124, 58, 237, 0.3);
+}
+
+.gradient-button-variant {
+  background: linear-gradient(90deg, #06B6D4 0%, #3B82F6 100%);
+}
