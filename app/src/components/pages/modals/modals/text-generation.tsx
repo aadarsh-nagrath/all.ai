@@ -8,7 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import {useId, useState, useMemo } from "react"
+import { useState, useMemo } from "react"
 import { ModelTable } from "./components/ModelTable"
 import { ModelHeader } from "./components/ModelHeader"
 import { ModelNavigation } from "./components/ModelNavigation"
@@ -17,7 +17,6 @@ import { ModelSearch } from "./components/ModelSearch"
 import { Model, createColumns, dummyModels } from "./components/models"
 
 export default function ModelSelection() {
-  const id = useId()
   const { toast } = useToast()
   const [activeTab, setActiveTab] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')

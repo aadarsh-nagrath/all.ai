@@ -1,11 +1,12 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ColumnDef, Row, HeaderGroup, Header, Cell, flexRender } from "@tanstack/react-table"
+import { ColumnDef, Row, HeaderGroup, Header, Cell, flexRender, Table as TableType } from "@tanstack/react-table"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Model } from "./models"
 
 interface ModelTableProps {
-  table: any
-  columns: ColumnDef<any>[]
+  table: TableType<Model>
+  columns: ColumnDef<Model>[]
 }
 
 export function ModelTable({ table, columns }: ModelTableProps) {
@@ -18,9 +19,9 @@ export function ModelTable({ table, columns }: ModelTableProps) {
       <div className="bg-background border-b border-border">
         <Table className="table-fixed w-full">
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup: HeaderGroup<any>) => (
+            {table.getHeaderGroups().map((headerGroup: HeaderGroup<Model>) => (
               <TableRow key={headerGroup.id} className="hover:bg-transparent">
-                {headerGroup.headers.map((header: Header<any, any>) => {
+                {headerGroup.headers.map((header: Header<Model, unknown>) => {
                   return (
                     <TableHead
                       key={header.id}
@@ -85,7 +86,7 @@ export function ModelTable({ table, columns }: ModelTableProps) {
         <Table className="table-fixed w-full">
           <TableBody>
             {rowCount ? (
-              table.getRowModel().rows.map((row: Row<any>) => (
+              table.getRowModel().rows.map((row: Row<Model>) => (
                 <TableRow 
                   key={row.id} 
                   data-state={row.getIsSelected() && "selected"}
@@ -94,7 +95,7 @@ export function ModelTable({ table, columns }: ModelTableProps) {
                     row.original.quickStart && "bg-primary/5 hover:bg-primary/10 animate-pulse-once"
                   )}
                 >
-                  {row.getVisibleCells().map((cell: Cell<any, any>) => (
+                  {row.getVisibleCells().map((cell: Cell<Model, unknown>) => (
                     <TableCell key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>

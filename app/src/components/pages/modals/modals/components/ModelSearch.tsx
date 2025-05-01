@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react"
 import { Search, Filter, Check, ChevronDown } from "lucide-react"
-import { Model } from "./models"
 
 interface ModelSearchProps {
   searchTerm: string
