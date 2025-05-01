@@ -36,7 +36,7 @@ export const AgentOutputCards = {
             >
               <Card className="p-4 relative overflow-hidden rounded-2xl transition-all duration-300 border-none shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)] ">
                 <motion.div
-                  className="absolute top-0 left-0 w-1 h-full bg-blue-500"
+                  className="absolute top-0 left-0 w-1 h-full bg-primary"
                   initial={{ scaleY: 0 }}
                   animate={{ scaleY: 1 }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
@@ -65,8 +65,8 @@ export const AgentOutputCards = {
                   <div className="space-y-2">
                     <MemoizedReactMarkdown>{formatMarkdownContent(step.text)}</MemoizedReactMarkdown>
                     {step.result && (
-                      <div className="mt-2 pt-2 border-t">
-                        <div className="text-sm font-medium text-neutral-600 mb-1">Result:</div>
+                      <div className="mt-2 pt-2 border-t border-border">
+                        <div className="text-sm font-medium text-muted-foreground mb-1">Result:</div>
                         <MemoizedReactMarkdown>{formatMarkdownContent(step.result)}</MemoizedReactMarkdown>
                       </div>
                     )}
@@ -97,24 +97,24 @@ export const AgentOutputCards = {
                   <Badge
                     variant="outline"
                     className={cn("transition-colors", {
-                      "bg-blue-50 border-blue-200 hover:bg-blue-100": index === 0,
-                      "bg-green-50 border-green-200 hover:bg-green-100": index === 1,
-                      "bg-purple-50 border-purple-200 hover:bg-purple-100": index === 2,
+                      "bg-primary/10 border-primary/20 hover:bg-primary/20": index === 0,
+                      "bg-secondary/10 border-secondary/20 hover:bg-secondary/20": index === 1,
+                      "bg-accent/10 border-accent/20 hover:bg-accent/20": index === 2,
                     })}
                   >
                     {step.step}
                   </Badge>
                   <motion.div
-                    className="flex-1 h-1 bg-neutral-100 rounded overflow-hidden"
+                    className="flex-1 h-1 bg-muted rounded overflow-hidden"
                     initial={{ width: 0 }}
                     animate={{ width: "100%" }}
                     transition={{ duration: 0.5 }}
                   >
                     <motion.div
                       className={cn("h-1 rounded", {
-                        "bg-blue-500": index === 0,
-                        "bg-green-500": index === 1,
-                        "bg-purple-500": index === 2,
+                        "bg-primary": index === 0,
+                        "bg-secondary": index === 1,
+                        "bg-accent": index === 2,
                       })}
                       initial={{ width: "0%" }}
                       animate={{ width: "100%" }}
@@ -166,9 +166,9 @@ export const AgentOutputCards = {
                   <Badge
                     variant="outline"
                     className={cn("transition-colors", {
-                      "bg-blue-50 border-blue-200": output.classification?.type === "general",
-                      "bg-green-50 border-green-200": output.classification?.type === "technical",
-                      "bg-purple-50 border-purple-200": output.classification?.type === "creative",
+                      "bg-primary/10 border-primary/20": output.classification?.type === "general",
+                      "bg-secondary/10 border-secondary/20": output.classification?.type === "technical",
+                      "bg-accent/10 border-accent/20": output.classification?.type === "creative",
                     })}
                   >
                     {output.classification?.type || "Processing"}
@@ -179,24 +179,24 @@ export const AgentOutputCards = {
                   animate={{ width: "auto", opacity: 1 }}
                   transition={{ duration: 0.3, delay: 0.2 }}
                 >
-                  <ArrowRight className="w-4 h-4 text-neutral-400" />
+                  <ArrowRight className="w-4 h-4 text-muted-foreground" />
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: 0.3 }}
-                  className="text-sm text-neutral-600"
+                  className="text-sm text-muted-foreground"
                 >
                   {output.classification?.reasoning || "Analyzing query..."}
                 </motion.div>
               </div>
               <motion.div
-                className="border-t pt-4"
+                className="border-t border-border pt-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.4 }}
               >
-                <div className="text-sm text-neutral-600  relative group">
+                <div className="text-sm text-muted-foreground relative group">
                   <MemoizedReactMarkdown>
                     {output.response || output.text || "Processing response..."}
                   </MemoizedReactMarkdown>
@@ -231,9 +231,9 @@ export const AgentOutputCards = {
                     <Badge
                       variant="outline"
                       className={cn("transition-colors", {
-                        "bg-blue-50 border-blue-200": index === 0,
-                        "bg-green-50 border-green-200": index === 1,
-                        "bg-purple-50 border-purple-200": index === 2,
+                        "bg-primary/10 border-primary/20": index === 0,
+                        "bg-secondary/10 border-secondary/20": index === 1,
+                        "bg-accent/10 border-accent/20": index === 2,
                       })}
                     >
                       {result.task || `Worker ${index + 1}`}
@@ -241,7 +241,7 @@ export const AgentOutputCards = {
                   </motion.div>
                 </div>
                 <motion.div
-                  className="text-sm text-neutral-600  relative group"
+                  className="text-sm text-muted-foreground relative group"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.3, delay: index * 0.15 + 0.2 }}
@@ -267,7 +267,7 @@ export const AgentOutputCards = {
                 <Badge variant="outline">{index + 1}</Badge>
                 <div>
                   <div className="font-medium text-sm">{task.name}</div>
-                  <div className="text-sm text-neutral-600">{task.description}</div>
+                  <div className="text-sm text-muted-foreground">{task.description}</div>
                 </div>
               </div>
             ))}
@@ -314,21 +314,21 @@ export const AgentOutputCards = {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.3, delay: index * 0.15 + 0.3 }}
-                      className="text-xs text-neutral-500"
+                      className="text-xs text-muted-foreground"
                     >
                       Quality:
                     </motion.div>
                     <motion.div
-                      className="w-24 h-2 bg-neutral-100 rounded overflow-hidden"
+                      className="w-24 h-2 bg-muted rounded overflow-hidden"
                       initial={{ width: 0 }}
                       animate={{ width: "96px" }}
                       transition={{ duration: 0.5, delay: index * 0.15 + 0.4 }}
                     >
                       <motion.div
                         className={cn("h-2 rounded transition-all", {
-                          "bg-red-500": iteration.evaluation.quality < 5,
-                          "bg-yellow-500": iteration.evaluation.quality >= 5 && iteration.evaluation.quality < 8,
-                          "bg-green-500": iteration.evaluation.quality >= 8,
+                          "bg-destructive": iteration.evaluation.quality < 5,
+                          "bg-warning": iteration.evaluation.quality >= 5 && iteration.evaluation.quality < 8,
+                          "bg-success": iteration.evaluation.quality >= 8,
                         })}
                         initial={{ width: 0 }}
                         animate={{ width: `${(iteration.evaluation.quality / 10) * 100}%` }}
@@ -355,9 +355,9 @@ export const AgentOutputCards = {
                     className={cn(
                       "shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)] p-4  rounded-xl",
                       {
-                        "bg-red-50/30": iteration.evaluation.quality < 5,
-                        "bg-yellow-50/30": iteration.evaluation.quality >= 5 && iteration.evaluation.quality < 8,
-                        "bg-green-50/30": iteration.evaluation.quality >= 8,
+                        "bg-destructive/10": iteration.evaluation.quality < 5,
+                        "bg-warning/10": iteration.evaluation.quality >= 5 && iteration.evaluation.quality < 8,
+                        "bg-success/10": iteration.evaluation.quality >= 8,
                       }
                     )}
                   >
@@ -375,15 +375,15 @@ export const AgentOutputCards = {
                       className={cn(
                         "shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)] p-4  rounded-xl",
                         {
-                          "bg-red-50/30": iteration.evaluation.quality < 5,
-                          "bg-yellow-50/30": iteration.evaluation.quality >= 5 && iteration.evaluation.quality < 8,
-                          "bg-green-50/30": iteration.evaluation.quality >= 8,
+                          "bg-destructive/10": iteration.evaluation.quality < 5,
+                          "bg-warning/10": iteration.evaluation.quality >= 5 && iteration.evaluation.quality < 8,
+                          "bg-success/10": iteration.evaluation.quality >= 8,
                         }
                       )}
                     >
-                      <div className="text-xs font-bold uppercase font-mono text-neutral-500 mb-1"></div>
+                      <div className="text-xs font-bold uppercase font-mono text-muted-foreground mb-1"></div>
                       <Badge variant="outline">Iteration {iteration.iteration} Output:</Badge>
-                      <div className="text-sm text-neutral-600  relative group">
+                      <div className="text-sm text-muted-foreground  relative group">
                         <MemoizedReactMarkdown>{iteration.output}</MemoizedReactMarkdown>
                       </div>
                     </div>

@@ -13,24 +13,24 @@ interface TokenCounterProps {
 export const TokenCounter: FC<TokenCounterProps> = ({ promptTokens, completionTokens, totalTokens, className }) => {
   return (
     <div className={cn("flex items-center  gap-3 ", className)}>
-      <div className="flex items-center gap-2 divide-x divide-neutral-200">
+      <div className="flex items-center gap-2 divide-x divide-border">
         <div className="flex items-center gap-1">
-          <span className="text-[10px] text-neutral-500">Prompt</span>
-          <span className="font-mono text-[10px] font-medium text-neutral-700">
+          <span className="text-[10px] text-muted-foreground">Prompt</span>
+          <span className="font-mono text-[10px] font-medium text-foreground/70">
             <NumberFlow value={promptTokens} />
           </span>
         </div>
         <div className="flex items-center gap-1 pl-2">
-          <span className="text-[10px] text-neutral-500">Completion</span>
-          <span className="font-mono text-[10px] font-medium text-neutral-700">
+          <span className="text-[10px] text-muted-foreground">Completion</span>
+          <span className="font-mono text-[10px] font-medium text-foreground/70">
             <NumberFlow value={completionTokens} />
           </span>
         </div>
         <div className="flex items-center gap-1 pl-2">
-          <TokenCircleIcon className=" h-4 w-4" />
+          <TokenCircleIcon className="h-4 w-4" />
 
-          <span className="text-[10px] text-neutral-500 font-semibold">Total</span>
-          <span className="font-mono text-[10px]  text-neutral-800 font-semibold">
+          <span className="text-[10px] text-muted-foreground font-semibold">Total</span>
+          <span className="font-mono text-[10px] text-foreground font-semibold">
             <NumberFlow value={totalTokens} />
           </span>
         </div>
@@ -45,7 +45,6 @@ const TokenCircleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     viewBox="0 0 24 24"
     width={24}
     height={24}
-    color={"#000000"}
     fill={"none"}
     {...props}
   >

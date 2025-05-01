@@ -18,9 +18,9 @@ const defaultComponents: Components = {
       {...props}
       className={cn(
         "overflow-x-auto p-4 rounded-lg",
-        "bg-neutral-50 text-neutral-900",
+        "bg-card text-card-foreground",
         "font-mono text-sm",
-        "border border-neutral-200",
+        "border border-border",
         "w-full"
       )}
     >
@@ -32,7 +32,7 @@ const defaultComponents: Components = {
     <code
       className={cn(
         "relative rounded font-mono text-sm",
-        "bg-neutral-100 text-neutral-900",
+        "bg-muted text-muted-foreground",
         "py-[0.2rem] px-[0.3rem]",
         "whitespace-pre-wrap break-words",
         // If inside a pre (code block), use different styling
@@ -53,8 +53,8 @@ export const MarkdownRenderer: FC<MarkdownProps> = memo(
       className={cn(
         "prose prose-sm dark:prose-invert",
         "max-w-none break-words overflow-hidden",
-        "[&_pre]:bg-neutral-50 [&_pre]:text-neutral-900", // Target pre elements specifically
-        "[&_code]:text-neutral-900", // Ensure code text is always visible
+        "[&_pre]:bg-card [&_pre]:text-card-foreground", // Target pre elements specifically
+        "[&_code]:text-foreground", // Ensure code text is always visible
         className
       )}
     >
