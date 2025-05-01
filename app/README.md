@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+AI Agents SDK
+An interactive sandbox environment for testing various AI agent patterns using the AI SDK. This environment showcases different agent architectures including sequential processing, routing, parallel processing, orchestrator-worker, and evaluator-optimizer patterns.
 
-## Getting Started
+Features
+- Multiple agent architectures and patterns
+- Interactive testing interface
+- Real-time visualization of outputs
+- Built-in rate limiting protection
+- Responsive mobile design  
+- Management of history and examples
 
-First, run the development server:
+Installation
+npx create-next-app@latest my-app --template=next-app-router
+cd my-app
+npm install @ai-sdk/openai ai zod mathjs lucide-react @radix-ui/react-tabs @radix-ui/react-accordion @monaco-editor/react @upstash/redis @upstash/ratelimit
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Environment Variables
+Create a .env.local file in your project root and add:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# OpenAI API Key
+OPENAI_API_KEY=your_openai_api_key
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Upstash Redis (for rate limiting)
+UPSTASH_REDIS_REST_URL=your_upstash_redis_url
+UPSTASH_REDIS_REST_TOKEN=your_upstash_redis_token
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Rate Limiting
+The environment includes IP-based rate limiting via Upstash Redis for protection:
 
-## Learn More
+- 10 requests per 10 seconds per IP
+- Graceful handling of errors with countdown
+- Counter for remaining requests
+- Rate limiting distributed across instances
 
-To learn more about Next.js, take a look at the following resources:
+To adjust rate limit configuration, modify lib/rate-limit.ts:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+export const rateLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(10, "10 s"), // Modify these parameters as needed
+  analytics: true,
+  prefix: "@upstash/ratelimit",
+});
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Usage
+1. Configure your environment variables
+2. Import the agent playground component
+3. Begin testing different agent patterns
 
-## Deploy on Vercel
+import { AgentPlayground } from "./components/agent-playground";
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+export default function Page() {
+  return <AgentPlayground />;
+}
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Agent Patterns
+Sequential Processing
+- Tasks processed step-by-step
+- Results depend on previous steps
+
+Routing
+- Smart classification of requests
+- Dynamic routing to specialized handlers
+
+Parallel Processing
+- Tasks executed concurrently
+- Results aggregated and synthesized
+
+Orchestrator-Worker
+- Tasks broken down and delegated
+- Results coordinated and assembled
+
+Evaluator-Optimizer
+- Quality assessment of outputs
+- Progressive refinement
+
+Security
+- Rate limiting by IP
+- Validation and sanitization of inputs
+- Protected environment variables
+- API key security
