@@ -7,14 +7,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { Separator } from "@/components/ui/separator";
 
 const completionVariants = cva(
-  "flex items-center gap-2 rounded-lg p-3 text-sm transition-all duration-200 rounded-full border-[.75px] px-2.5 w-fit h-7 flex items-center text-xs font-medium mb-2 shadow-[inset_0px_-2.10843px_0px_0px_hsl(var(--muted)),_0px_1.20482px_6.3253px_0px_hsl(var(--muted))]",
+  "flex items-center gap-2 rounded-lg p-3 text-sm transition-all duration-200 rounded-full border-[.75px] px-2.5 w-fit h-7 flex items-center text-xs font-medium mb-2 shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset]",
   {
     variants: {
       variant: {
-        success: "border-border text-foreground bg-card",
-        error: "border border-destructive/20 text-destructive bg-destructive/10",
-        warning: "border border-warning/20 text-warning bg-warning/10",
-        pending: "border border-primary/20 text-primary bg-primary/10",
+        success: "border-border/50 text-gray-200 bg-background/60",
+        error: "border border-destructive/30 text-destructive/90 bg-destructive/20",
+        warning: "border border-warning/30 text-warning/90 bg-warning/20",
+        pending: "border border-primary/30 text-primary/90 bg-primary/20",
       },
       size: {
         sm: "text-xs p-2",
@@ -65,10 +65,10 @@ export function CompletionIndicator({
   }, []);
 
   const icons = {
-    success: <CheckCircle2 className="h-4 w-4 shrink-0 fill-success stroke-success-foreground" />,
-    error: <XCircle className="h-4 w-4 shrink-0 fill-destructive stroke-destructive-foreground" />,
-    warning: <AlertCircle className="h-4 w-4 shrink-0 fill-warning stroke-warning-foreground" />,
-    pending: <Clock className="h-4 w-4 shrink-0 fill-primary stroke-primary-foreground" />,
+    success: <CheckCircle2 className="h-4 w-4 shrink-0 fill-green-500/30 stroke-green-400" />,
+    error: <XCircle className="h-4 w-4 shrink-0 fill-destructive/30 stroke-destructive/90" />,
+    warning: <AlertCircle className="h-4 w-4 shrink-0 fill-warning/30 stroke-warning/90" />,
+    pending: <Clock className="h-4 w-4 shrink-0 fill-primary/30 stroke-primary/90" />,
   };
 
   if (!mounted) {
@@ -100,14 +100,14 @@ export function CompletionIndicator({
       </div>
       {typeof progress === "number" && <div className="ml-2 text-xs font-medium">{progress}%</div>}
       {status === "pending" && typeof progress === "number" && (
-        <div className="relative h-1 w-20 overflow-hidden rounded-full bg-primary/10">
+        <div className="relative h-1 w-20 overflow-hidden rounded-full bg-primary/20">
           <div
-            className="absolute inset-y-0 left-0 bg-primary transition-all duration-500"
+            className="absolute inset-y-0 left-0 bg-primary/80 transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
       )}
-      {children && <Separator orientation="vertical" className="h-full" />}
+      {children && <Separator orientation="vertical" className="h-full bg-gray-700/50" />}
 
       {children}
     </div>

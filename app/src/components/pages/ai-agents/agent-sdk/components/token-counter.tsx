@@ -12,25 +12,25 @@ interface TokenCounterProps {
 
 export const TokenCounter: FC<TokenCounterProps> = ({ promptTokens, completionTokens, totalTokens, className }) => {
   return (
-    <div className={cn("flex items-center  gap-3 ", className)}>
-      <div className="flex items-center gap-2 divide-x divide-border">
+    <div className={cn("flex items-center gap-3", className)}>
+      <div className="flex items-center gap-2 divide-x divide-border/30 bg-background/40 rounded-lg px-3 py-1.5 shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset]">
         <div className="flex items-center gap-1">
-          <span className="text-[10px] text-muted-foreground">Prompt</span>
-          <span className="font-mono text-[10px] font-medium text-foreground/70">
+          <span className="text-[10px] text-gray-400">Prompt</span>
+          <span className="font-mono text-[10px] font-medium text-gray-300">
             <NumberFlow value={promptTokens} />
           </span>
         </div>
         <div className="flex items-center gap-1 pl-2">
-          <span className="text-[10px] text-muted-foreground">Completion</span>
-          <span className="font-mono text-[10px] font-medium text-foreground/70">
+          <span className="text-[10px] text-gray-400">Completion</span>
+          <span className="font-mono text-[10px] font-medium text-gray-300">
             <NumberFlow value={completionTokens} />
           </span>
         </div>
         <div className="flex items-center gap-1 pl-2">
-          <TokenCircleIcon className="h-4 w-4" />
+          <TokenCircleIcon className="h-4 w-4 text-primary/80" />
 
-          <span className="text-[10px] text-muted-foreground font-semibold">Total</span>
-          <span className="font-mono text-[10px] text-foreground font-semibold">
+          <span className="text-[10px] text-gray-300 font-semibold">Total</span>
+          <span className="font-mono text-[10px] text-white font-semibold">
             <NumberFlow value={totalTokens} />
           </span>
         </div>

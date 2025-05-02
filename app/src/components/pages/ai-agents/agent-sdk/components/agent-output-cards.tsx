@@ -34,7 +34,7 @@ export const AgentOutputCards = {
               exit={{ opacity: 0, x: 20, height: 0 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
             >
-              <Card className="p-4 relative overflow-hidden rounded-2xl transition-all duration-300 border-none shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)] ">
+              <Card className="p-4 relative overflow-hidden rounded-2xl transition-all duration-300 border-none bg-background/50 shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset] ">
                 <motion.div
                   className="absolute top-0 left-0 w-1 h-full bg-primary"
                   initial={{ scaleY: 0 }}
@@ -48,7 +48,7 @@ export const AgentOutputCards = {
                       animate={{ scale: 1 }}
                       transition={{ type: "spring", stiffness: 500, delay: index * 0.1 }}
                     >
-                      <Badge variant="outline" className="transition-colors">{`Step ${index + 1}`}</Badge>
+                      <Badge variant="outline" className="transition-colors border-gray-500/30 text-gray-200">{`Step ${index + 1}`}</Badge>
                     </motion.div>
                     {step.tool && (
                       <motion.div
@@ -56,17 +56,17 @@ export const AgentOutputCards = {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.1 + 0.2 }}
                       >
-                        <Badge variant="secondary" className="text-xs">
+                        <Badge variant="secondary" className="text-xs bg-secondary/20 text-gray-200 border-gray-500/30">
                           {step.tool}
                         </Badge>
                       </motion.div>
                     )}
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 text-gray-100">
                     <MemoizedReactMarkdown>{formatMarkdownContent(step.text)}</MemoizedReactMarkdown>
                     {step.result && (
-                      <div className="mt-2 pt-2 border-t border-border">
-                        <div className="text-sm font-medium text-muted-foreground mb-1">Result:</div>
+                      <div className="mt-2 pt-2 border-t border-border/30">
+                        <div className="text-sm font-medium text-gray-300 mb-1">Result:</div>
                         <MemoizedReactMarkdown>{formatMarkdownContent(step.result)}</MemoizedReactMarkdown>
                       </div>
                     )}
@@ -92,20 +92,20 @@ export const AgentOutputCards = {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3, delay: index * 0.2 }}
             >
-              <Card className="p-4  transition-all duration-200 rounded-2xl border-none shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)] ">
+              <Card className="p-4 transition-all duration-200 rounded-2xl border-none bg-background/50 shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset] ">
                 <div className="flex items-center gap-2 mb-3">
                   <Badge
                     variant="outline"
-                    className={cn("transition-colors", {
-                      "bg-primary/10 border-primary/20 hover:bg-primary/20": index === 0,
-                      "bg-secondary/10 border-secondary/20 hover:bg-secondary/20": index === 1,
-                      "bg-accent/10 border-accent/20 hover:bg-accent/20": index === 2,
+                    className={cn("transition-colors border-gray-500/30 text-gray-200", {
+                      "bg-primary/15 border-primary/30 hover:bg-primary/20": index === 0,
+                      "bg-secondary/15 border-secondary/30 hover:bg-secondary/20": index === 1,
+                      "bg-accent/15 border-accent/30 hover:bg-accent/20": index === 2,
                     })}
                   >
                     {step.step}
                   </Badge>
                   <motion.div
-                    className="flex-1 h-1 bg-muted rounded overflow-hidden"
+                    className="flex-1 h-1 bg-muted/30 rounded overflow-hidden"
                     initial={{ width: 0 }}
                     animate={{ width: "100%" }}
                     transition={{ duration: 0.5 }}
@@ -122,7 +122,9 @@ export const AgentOutputCards = {
                     />
                   </motion.div>
                 </div>
-                <MemoizedReactMarkdown>{formatMarkdownContent(step.output)}</MemoizedReactMarkdown>
+                <div className="text-gray-100">
+                  <MemoizedReactMarkdown>{formatMarkdownContent(step.output)}</MemoizedReactMarkdown>
+                </div>
               </Card>
             </motion.div>
           ))}
@@ -131,13 +133,15 @@ export const AgentOutputCards = {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: (output.steps?.length || 0) * 0.2 }}
-              className="prose prose-sm dark:prose-invert max-w-none  rounded-[1.25rem] p-1 shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)] "
+              className="prose prose-sm dark:prose-invert max-w-none rounded-[1.25rem] p-1 shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset] "
             >
-              <Card className="p-4  transition-all duration-200 rounded-2xl border-none shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)] ">
+              <Card className="p-4 transition-all duration-200 rounded-2xl border-none bg-background/50 shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset] ">
                 <div className="flex items-center gap-2 mb-3">
-                  <Badge variant="secondary">Final Output</Badge>
+                  <Badge variant="secondary" className="bg-secondary/20 text-gray-200 border-gray-500/30">Final Output</Badge>
                 </div>
-                <MemoizedReactMarkdown>{formatMarkdownContent(output.finalOutput)}</MemoizedReactMarkdown>
+                <div className="text-gray-100">
+                  <MemoizedReactMarkdown>{formatMarkdownContent(output.finalOutput)}</MemoizedReactMarkdown>
+                </div>
               </Card>
             </motion.div>
           )}
@@ -156,7 +160,7 @@ export const AgentOutputCards = {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
           >
-            <Card className="p-4 rounded-2xl transition-all duration-300 border-none shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)] ">
+            <Card className="p-4 rounded-2xl transition-all duration-300 border-none bg-background/50 shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset] ">
               <div className="flex items-center gap-2 mb-4">
                 <motion.div
                   initial={{ scale: 0 }}
@@ -165,10 +169,10 @@ export const AgentOutputCards = {
                 >
                   <Badge
                     variant="outline"
-                    className={cn("transition-colors", {
-                      "bg-primary/10 border-primary/20": output.classification?.type === "general",
-                      "bg-secondary/10 border-secondary/20": output.classification?.type === "technical",
-                      "bg-accent/10 border-accent/20": output.classification?.type === "creative",
+                    className={cn("transition-colors border-gray-500/30 text-gray-200", {
+                      "bg-primary/15 border-primary/30": output.classification?.type === "general",
+                      "bg-secondary/15 border-secondary/30": output.classification?.type === "technical",
+                      "bg-accent/15 border-accent/30": output.classification?.type === "creative",
                     })}
                   >
                     {output.classification?.type || "Processing"}
@@ -179,24 +183,24 @@ export const AgentOutputCards = {
                   animate={{ width: "auto", opacity: 1 }}
                   transition={{ duration: 0.3, delay: 0.2 }}
                 >
-                  <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                  <ArrowRight className="w-4 h-4 text-gray-400" />
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: 0.3 }}
-                  className="text-sm text-muted-foreground"
+                  className="text-sm text-gray-300"
                 >
                   {output.classification?.reasoning || "Analyzing query..."}
                 </motion.div>
               </div>
               <motion.div
-                className="border-t border-border pt-4"
+                className="border-t border-border/30 pt-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.4 }}
               >
-                <div className="text-sm text-muted-foreground relative group">
+                <div className="text-sm text-gray-100 relative group">
                   <MemoizedReactMarkdown>
                     {output.response || output.text || "Processing response..."}
                   </MemoizedReactMarkdown>
@@ -221,7 +225,7 @@ export const AgentOutputCards = {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3, delay: index * 0.15 }}
             >
-              <Card className="p-4 rounded-2xl transition-all duration-300 border-none shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)] ">
+              <Card className="p-4 rounded-2xl transition-all duration-300 border-none bg-background/50 shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset] ">
                 <div className="flex items-center gap-2 mb-3">
                   <motion.div
                     initial={{ scale: 0 }}
@@ -230,10 +234,10 @@ export const AgentOutputCards = {
                   >
                     <Badge
                       variant="outline"
-                      className={cn("transition-colors", {
-                        "bg-primary/10 border-primary/20": index === 0,
-                        "bg-secondary/10 border-secondary/20": index === 1,
-                        "bg-accent/10 border-accent/20": index === 2,
+                      className={cn("transition-colors border-gray-500/30 text-gray-200", {
+                        "bg-primary/15 border-primary/30": index === 0,
+                        "bg-secondary/15 border-secondary/30": index === 1,
+                        "bg-accent/15 border-accent/30": index === 2,
                       })}
                     >
                       {result.task || `Worker ${index + 1}`}
@@ -241,7 +245,7 @@ export const AgentOutputCards = {
                   </motion.div>
                 </div>
                 <motion.div
-                  className="text-sm text-muted-foreground relative group"
+                  className="text-sm text-gray-100 relative group"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.3, delay: index * 0.15 + 0.2 }}
@@ -259,15 +263,15 @@ export const AgentOutputCards = {
   "orchestrator-worker": {
     renderOutput: (output: any) => (
       <div className="space-y-4 p-1">
-        <Card className="p-4 rounded-2xl border-none shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)] ">
-          <h3 className="text-sm font-medium mb-3">Task Breakdown</h3>
+        <Card className="p-4 rounded-2xl border-none bg-background/50 shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset] ">
+          <h3 className="text-sm font-medium mb-3 text-gray-200">Task Breakdown</h3>
           <div className="space-y-3">
             {output.plan?.tasks.map((task: any, index: number) => (
               <div key={index} className="flex items-start gap-3">
-                <Badge variant="outline">{index + 1}</Badge>
+                <Badge variant="outline" className="border-gray-500/30 text-gray-200 bg-background/30">{index + 1}</Badge>
                 <div>
-                  <div className="font-medium text-sm">{task.name}</div>
-                  <div className="text-sm text-muted-foreground">{task.description}</div>
+                  <div className="font-medium text-sm text-gray-200">{task.name}</div>
+                  <div className="text-sm text-gray-300">{task.description}</div>
                 </div>
               </div>
             ))}
@@ -275,12 +279,14 @@ export const AgentOutputCards = {
         </Card>
         <div className="grid gap-4">
           {output.results?.map((result: any, index: number) => (
-            <Card key={index} className="p-4">
+            <Card key={index} className="p-4 bg-background/50 border-none shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset]">
               <div className="flex items-center gap-2 mb-2">
-                <Badge>{result.task}</Badge>
-                <Badge variant="outline">Worker {index + 1}</Badge>
+                <Badge className="bg-primary/20 text-gray-200 hover:bg-primary/30 border-gray-500/30">{result.task}</Badge>
+                <Badge variant="outline" className="border-gray-500/30 text-gray-200 bg-background/30">Worker {index + 1}</Badge>
               </div>
-              <MemoizedReactMarkdown>{result.result}</MemoizedReactMarkdown>
+              <div className="text-gray-100">
+                <MemoizedReactMarkdown>{result.result}</MemoizedReactMarkdown>
+              </div>
             </Card>
           ))}
         </div>
@@ -300,26 +306,26 @@ export const AgentOutputCards = {
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
               transition={{ duration: 0.3, delay: index * 0.15 }}
             >
-              <Card className="p-4 rounded-2xl transition-all duration-300 border-none shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)] ">
+              <Card className="p-4 rounded-2xl transition-all duration-300 border-none bg-background/50 shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset] ">
                 <div className="flex items-center justify-between mb-3">
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.15 + 0.2 }}
                   >
-                    <Badge variant="outline">Iteration {iteration.iteration}</Badge>
+                    <Badge variant="outline" className="border-gray-500/30 text-gray-200 bg-background/30">Iteration {iteration.iteration}</Badge>
                   </motion.div>
                   <div className="flex items-center gap-2">
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.3, delay: index * 0.15 + 0.3 }}
-                      className="text-xs text-muted-foreground"
+                      className="text-xs text-gray-300"
                     >
                       Quality:
                     </motion.div>
                     <motion.div
-                      className="w-24 h-2 bg-muted rounded overflow-hidden"
+                      className="w-24 h-2 bg-muted/30 rounded overflow-hidden"
                       initial={{ width: 0 }}
                       animate={{ width: "96px" }}
                       transition={{ duration: 0.5, delay: index * 0.15 + 0.4 }}
@@ -339,7 +345,7 @@ export const AgentOutputCards = {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.3, delay: index * 0.15 + 0.6 }}
-                      className="text-xs font-medium"
+                      className="text-xs font-medium text-gray-200"
                     >
                       {iteration.evaluation.quality}/10
                     </motion.div>
@@ -353,37 +359,39 @@ export const AgentOutputCards = {
                 >
                   <div
                     className={cn(
-                      "shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)] p-4  rounded-xl",
+                      "shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset] p-4 rounded-xl",
                       {
-                        "bg-destructive/10": iteration.evaluation.quality < 5,
-                        "bg-warning/10": iteration.evaluation.quality >= 5 && iteration.evaluation.quality < 8,
-                        "bg-success/10": iteration.evaluation.quality >= 8,
+                        "bg-destructive/10 border-destructive/20": iteration.evaluation.quality < 5,
+                        "bg-warning/10 border-warning/20": iteration.evaluation.quality >= 5 && iteration.evaluation.quality < 8,
+                        "bg-success/10 border-success/20": iteration.evaluation.quality >= 8,
                       }
                     )}
                   >
-                    <Badge variant="outline">Iteration {iteration.iteration} Feedback:</Badge>
+                    <Badge variant="outline" className="border-gray-500/30 text-gray-200 bg-background/30 mb-2">Iteration {iteration.iteration} Feedback:</Badge>
 
-                    <MemoizedReactMarkdown>{iteration.evaluation.feedback}</MemoizedReactMarkdown>
+                    <div className="text-gray-100">
+                      <MemoizedReactMarkdown>{iteration.evaluation.feedback}</MemoizedReactMarkdown>
+                    </div>
                   </div>
                   <motion.div
-                    className="pt-3 "
+                    className="pt-3"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.15 + 0.8 }}
                   >
                     <div
                       className={cn(
-                        "shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)] p-4  rounded-xl",
+                        "shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset] p-4 rounded-xl",
                         {
-                          "bg-destructive/10": iteration.evaluation.quality < 5,
-                          "bg-warning/10": iteration.evaluation.quality >= 5 && iteration.evaluation.quality < 8,
-                          "bg-success/10": iteration.evaluation.quality >= 8,
+                          "bg-destructive/10 border-destructive/20": iteration.evaluation.quality < 5,
+                          "bg-warning/10 border-warning/20": iteration.evaluation.quality >= 5 && iteration.evaluation.quality < 8,
+                          "bg-success/10 border-success/20": iteration.evaluation.quality >= 8,
                         }
                       )}
                     >
-                      <div className="text-xs font-bold uppercase font-mono text-muted-foreground mb-1"></div>
-                      <Badge variant="outline">Iteration {iteration.iteration} Output:</Badge>
-                      <div className="text-sm text-muted-foreground  relative group">
+                      <div className="text-xs font-bold uppercase font-mono text-gray-400 mb-1"></div>
+                      <Badge variant="outline" className="border-gray-500/30 text-gray-200 bg-background/30 mb-2">Iteration {iteration.iteration} Output:</Badge>
+                      <div className="text-sm text-gray-100 relative group">
                         <MemoizedReactMarkdown>{iteration.output}</MemoizedReactMarkdown>
                       </div>
                     </div>
