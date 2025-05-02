@@ -30,13 +30,13 @@ interface TabContentProps {
 function ResponseTab({ parsedOutput }: TabContentProps) {
   return (
     <TabsContent value="response" className="mt-4 space-y-4">
-      <Card className="p-4">
+      <Card className="p-4 bg-background/50 border-none shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset]">
         <CompletionIndicator
           status={parsedOutput.error ? "error" : "success"}
           message={parsedOutput.text || parsedOutput.response || parsedOutput.finalOutput || parsedOutput.output}
           className="mb-4"
         />
-        <div className="max-w-full overflow-x-auto">
+        <div className="max-w-full overflow-x-auto text-gray-100">
           <MemoizedReactMarkdown>
             {formatJSONString(
               parsedOutput.text || parsedOutput.response || parsedOutput.finalOutput || parsedOutput.output
@@ -53,13 +53,13 @@ function StepsTab({ parsedOutput }: TabContentProps) {
   return (
     <TabsContent value="steps" className="mt-4 space-y-4">
       {parsedOutput.steps.map((step: any, index: number) => (
-        <Card key={index} className="p-4">
+        <Card key={index} className="p-4 bg-background/50 border-none shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset]">
           <CompletionIndicator
             status="success"
             message={`${step.step || `Step ${index + 1}`}: ${step.output ? "completed" : "success"}`}
             className="mb-2"
           />
-          <MemoizedReactMarkdown>{step.output || step.result || step.text}</MemoizedReactMarkdown>
+          <MemoizedReactMarkdown className="text-gray-100">{step.output || step.result || step.text}</MemoizedReactMarkdown>
         </Card>
       ))}
     </TabsContent>
@@ -70,16 +70,16 @@ function ClassificationTab({ parsedOutput }: TabContentProps) {
   if (!parsedOutput.classification) return null;
   return (
     <TabsContent value="classification" className="mt-4 space-y-4">
-      <Card className="p-4">
+      <Card className="p-4 bg-background/50 border-none shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset]">
         <div className="space-y-4">
           <div>
-            <h4 className="text-sm font-medium mb-2">Query Classification</h4>
+            <h4 className="text-sm font-medium mb-2 text-gray-200">Query Classification</h4>
             <Badge className="mb-2">{parsedOutput.classification.type}</Badge>
-            <p className="text-sm text-muted-foreground">{parsedOutput.classification.reasoning}</p>
+            <p className="text-sm text-gray-300">{parsedOutput.classification.reasoning}</p>
           </div>
-          <div className="pt-4 border-t border-border">
-            <h4 className="text-sm font-medium mb-2">Routed Response</h4>
-            <MemoizedReactMarkdown>{parsedOutput.response}</MemoizedReactMarkdown>
+          <div className="pt-4 border-t border-border/30">
+            <h4 className="text-sm font-medium mb-2 text-gray-200">Routed Response</h4>
+            <MemoizedReactMarkdown className="text-gray-100">{parsedOutput.response}</MemoizedReactMarkdown>
           </div>
         </div>
       </Card>
@@ -92,16 +92,16 @@ function ToolsTab({ parsedOutput }: TabContentProps) {
   return (
     <TabsContent value="tools" className="mt-4 space-y-4">
       {parsedOutput.toolCalls.map((tool: any, index: number) => (
-        <Card key={index} className="p-4">
+        <Card key={index} className="p-4 bg-background/50 border-none shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset]">
           <CompletionIndicator status="success" message={`${tool.name || `Tool ${index + 1}`}`} className="mb-2" />
           <div className="space-y-2">
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm text-gray-300">
               <MemoizedReactMarkdown>{tool.input || tool.args || tool.parameters}</MemoizedReactMarkdown>
             </div>
             {tool.output && (
-              <div className="pt-2 border-t border-border">
-                <h4 className="text-xs font-medium mb-1">Output</h4>
-                <MemoizedReactMarkdown>{tool.output}</MemoizedReactMarkdown>
+              <div className="pt-2 border-t border-border/30">
+                <h4 className="text-xs font-medium mb-1 text-gray-200">Output</h4>
+                <MemoizedReactMarkdown className="text-gray-100">{tool.output}</MemoizedReactMarkdown>
               </div>
             )}
           </div>
@@ -116,10 +116,10 @@ function IterationsTab({ parsedOutput }: TabContentProps) {
   return (
     <TabsContent value="iterations" className="mt-4 space-y-4">
       {parsedOutput.iterations.map((iteration: any, index: number) => (
-        <Card key={index} className="p-4">
+        <Card key={index} className="p-4 bg-background/50 border-none shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset]">
           <CompletionIndicator status="success" message={`Iteration ${index + 1}`} className="mb-2" />
           <div className="space-y-2">
-            <MemoizedReactMarkdown>{iteration.output || iteration.result || iteration.text}</MemoizedReactMarkdown>
+            <MemoizedReactMarkdown className="text-gray-100">{iteration.output || iteration.result || iteration.text}</MemoizedReactMarkdown>
           </div>
         </Card>
       ))}
@@ -173,11 +173,12 @@ export function OutputPanel({ selectedAgent, loading, output, parsedOutput }: Ou
 
     return (
       <Tabs defaultValue="response" className="w-full">
-        <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${availableTabs.length}, 1fr)` }}>
+        <TabsList className="grid w-full bg-background/30 border-none shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset]" style={{ gridTemplateColumns: `repeat(${availableTabs.length}, 1fr)` }}>
           {availableTabs.map((tab) => (
             <TabsTrigger
               key={tab}
               value={tab}
+              className="data-[state=active]:bg-background/60 data-[state=active]:text-white data-[state=active]:shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.2)_inset] text-gray-400 hover:text-gray-200"
               disabled={
                 (tab === "steps" && !parsedOutput.steps?.length) ||
                 (tab === "tools" && !parsedOutput.toolCalls?.length) ||

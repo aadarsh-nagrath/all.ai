@@ -62,7 +62,7 @@ export function InputPanel({
       initial="initial"
       animate="animate"
       exit="exit"
-      className="w-full md:w-1/2 lg:w-2/5 mx-2 lg:m-2  rounded-b-2xl rounded-t-sm lg:rounded-2xl p-[1px] flex flex-col h-[calc(100dvh-6rem)] lg:h-auto md:min-h-0 shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)]"
+      className="w-full md:w-1/2 lg:w-2/5 mx-2 lg:m-2 rounded-b-2xl rounded-t-sm lg:rounded-2xl p-[1px] flex flex-col h-[calc(100dvh-6rem)] lg:h-auto md:min-h-0 bg-background/80 shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.1)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.15)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.6)]"
     >
       {/* Examples */}
       <ExampleButtons
@@ -89,7 +89,7 @@ export function InputPanel({
               <div className="flex items-center gap-1.5">
                 <Label
                   className={cn(
-                    "text-xs font-medium transition-all duration-200"
+                    "text-xs font-medium transition-all duration-200 text-gray-200"
                   )}
                 >
                   {field.label}
@@ -118,28 +118,28 @@ export function InputPanel({
                           ease: "easeOut",
                         },
                       }}
-                      className="flex items-center justify-center h-4 w-4 rounded-full bg-green-500/10 ring-1 ring-green-500/30"
+                      className="flex items-center justify-center h-4 w-4 rounded-full bg-green-500/20 ring-1 ring-green-500/40"
                     >
-                      <Check className="h-2.5 w-2.5 text-green-500 stroke-[3]" />
+                      <Check className="h-2.5 w-2.5 text-green-400 stroke-[3]" />
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
               {field.type === "textarea" ? (
-                <div className="relative p-1 rounded-[9px] group shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)]">
+                <div className="relative p-1 rounded-[9px] group shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.1)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.15)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.6)]">
                   <Textarea
                     value={inputs[field.name] || ""}
                     onChange={(e) => onInputChange(field.name, e.target.value)}
                     placeholder={field.placeholder}
                     className={cn(
-                      "rounded-[5px] resize-none text-[16px] leading-snug md:leading-relaxed md:text-[14px] caret-primary border-none ring-1 ring-border ring-offset-muted ring-offset-1 transition-all duration-200 shadow-[0px_1px_0px_0px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_rgba(255,_255,_255,_0.25)] focus-visible:ring-primary focus-visible:ring-[1px] focus-visible:ring-offset-primary/20 focus-visible:ring-offset-2 ease-out",
+                      "rounded-[5px] resize-none text-[16px] leading-snug md:leading-relaxed md:text-[14px] caret-primary border-none bg-background/30 ring-1 ring-border ring-offset-muted ring-offset-1 transition-all duration-200 shadow-[0px_1px_0px_0px_hsla(0,_0%,_0%,_0.02)_inset,_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_rgba(255,_255,_255,_0.2)] text-gray-100 focus-visible:ring-primary focus-visible:ring-[1px] focus-visible:ring-offset-primary/30 focus-visible:ring-offset-2 focus-visible:bg-background/50 ease-out",
                       hasMultipleTextAreas
                         ? "min-h-[180px] lg:min-h-[170px]"
                         : "min-h-[220px] lg:min-h-[220px]",
                       hasSingleInputField && "min-h-[320px] lg:min-h-[300px]"
                     )}
                   />
-                  <div className="absolute bottom-3 right-3 text-[11px] text-muted-foreground bg-background/80 px-1.5 py-0.5 rounded-[4px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)]">
+                  <div className="absolute bottom-3 right-3 text-[11px] text-gray-300 bg-background/90 px-1.5 py-0.5 rounded-[4px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.1)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.15)_inset]">
                     {(inputs[field.name] || "").length} chars
                   </div>
                 </div>
@@ -149,7 +149,7 @@ export function InputPanel({
                   value={inputs[field.name] || ""}
                   onChange={(e) => onInputChange(field.name, e.target.value)}
                   placeholder={field.placeholder}
-                  className="text-[13px] border-none ring-1 ring-border ring-offset-background ring-offset-4 focus-visible:ring-primary transition-colors duration-200 shadow-[0px_1px_0px_0px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_hsla(0,_0%,_0%,_0.02)_inset,_0px_0px_0px_1px_rgba(255,_255,_255,_0.25)]"
+                  className="text-[13px] border-none bg-background/30 text-gray-100 ring-1 ring-border ring-offset-background ring-offset-2 focus-visible:ring-primary focus-visible:bg-background/50 transition-colors duration-200 shadow-[0px_1px_0px_0px_hsla(0,_0%,_0%,_0.02)_inset,_0px_1px_1px_0px_rgba(255,_255,_255,_0.05)_inset,_0px_0px_0px_1px_rgba(255,_255,_255,_0.2)]"
                 />
               )}
             </motion.div>
@@ -159,16 +159,16 @@ export function InputPanel({
 
       {/* Agent Info Card */}
       <motion.div
-        className="flex-none border-t border-border"
+        className="flex-none border-t border-border/30"
         variants={fadeIn}
       >
         <div className="p-2 sm:p-4">
-          <Card className="border-none rounded-lg px-2 pt-2 relative shadow-[0px_1px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(255,_252,_240,_0.5)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.1)_inset,_0px_0px_1px_0px_rgba(28,_27,_26,_0.5)]">
-            <div className="text-[10px] text-muted-foreground space-y-3">
+          <Card className="border-none rounded-lg px-2 pt-2 relative shadow-[0px_1px_2px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(255,_255,_255,_0.1)_inset,_0px_0px_0px_1px_hsla(0,_0%,_100%,_0.15)_inset] bg-background/40">
+            <div className="text-[10px] text-gray-300 space-y-3">
               <div className="space-y-1.5 p-2">
-                <h4 className="text-foreground flex items-center gap-1 text-[10px] py-[2px] font-medium">
+                <h4 className="text-white flex items-center gap-1 text-[10px] py-[2px] font-medium">
                   <TextEffect>{selectedAgent.name}</TextEffect>{" "}
-                  <span className="text-muted-foreground">pattern is best for</span>
+                  <span className="text-gray-400">pattern is best for</span>
                 </h4>
 
                 <div className="leading-relaxed text-[10px]">
@@ -177,10 +177,10 @@ export function InputPanel({
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="min-w-[100px] flex items-center gap-1 pl-1 absolute top-1.5 right-1.5 rounded-md px-[2px] py-[1px]">
-                  <p className="font-medium text-muted-foreground text-[9px]">
+                  <p className="font-medium text-gray-400 text-[9px]">
                     Average Processing Time
                   </p>
-                  <div className="inline-block bg-muted px-1 py-0.5 text-[9px] rounded-sm text-foreground border border-border">
+                  <div className="inline-block bg-background/80 px-1 py-0.5 text-[9px] rounded-sm text-gray-200 border border-border/40">
                     <NumberFlow value={selectedAgent.averageTime ?? 0} />s
                   </div>
                 </div>
