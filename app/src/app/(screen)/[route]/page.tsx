@@ -2,8 +2,9 @@ import NotFoundPage from "@/components/pages/misc/404";
 import Workplace from "@/components/pages/workplace/workplace";
 import Plugins from "@/components/pages/plugin-theme/plugins";
 import Theme from "@/components/pages/plugin-theme/theme";
+
 import TextGen from "@/components/pages/modals/modals/text-generation";
-import CreateAgents from "@/components/pages/ai-agents/agent-kit";
+import CreateAgents from "@/components/pages/ai-agents/agent-sdk/agent-kit";
 import Notes from "@/components/pages/promptlib-notes/notes";
 import PromptLib from "@/components/pages/promptlib-notes/prompt-lib";
 import BrowseAgents from "@/components/pages/ai-agents/explore-agents";

@@ -316,7 +316,6 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
                         const match = /language-(\w+)/.exec(className || '');
                         return !inline && match ? (
                             <SyntaxHighlighter
-                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                 style={oneDark as any}
                                 language={match[1]}
                                 PreTag="div"
