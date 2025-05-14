@@ -14,6 +14,7 @@ import { ModelHeader } from "./components/ModelHeader"
 import { ModelNavigation } from "./components/ModelNavigation"
 import { ModelSidebar } from "./components/ModelSidebar"
 import { ModelSearch } from "./components/ModelSearch"
+import { ModelSettings } from "./components/ModelSettings"
 import { Model, createColumns, dummyModels } from "./components/models"
 
 export default function ModelSelection() {
@@ -51,8 +52,7 @@ export default function ModelSelection() {
       const lowerSearchTerm = searchTerm.toLowerCase()
       filtered = filtered.filter((model: Model) => 
         model.name.toLowerCase().includes(lowerSearchTerm) ||
-        model.provider.toLowerCase().includes(lowerSearchTerm) ||
-        model.version.toLowerCase().includes(lowerSearchTerm)
+        model.provider.toLowerCase().includes(lowerSearchTerm)
       )
     }
     
@@ -138,19 +138,23 @@ export default function ModelSelection() {
 
       {/* Content Sections */}
       <div className="p-4">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
-          <div className="space-y-4">
-            <ModelSearch 
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-              selectedProvider={selectedProvider}
-              setSelectedProvider={setSelectedProvider}
-              availableProviders={availableProviders}
-            />
-            <ModelTable table={table} columns={columns} />
+        {activeTab === 'settings' ? (
+          <ModelSettings />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
+            <div className="space-y-4">
+              <ModelSearch 
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                selectedProvider={selectedProvider}
+                setSelectedProvider={setSelectedProvider}
+                availableProviders={availableProviders}
+              />
+              <ModelTable table={table} columns={columns} />
+            </div>
+            <ModelSidebar />
           </div>
-          <ModelSidebar />
-        </div>
+        )}
       </div>
     </div>
   )
