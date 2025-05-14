@@ -3,12 +3,13 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { QuickStartCell } from "./QuickStartCell"
+import { Button } from "@/components/ui/button"
+import { Settings2 } from "lucide-react"
 
 export type Model = {
   id: string
   name: string
   provider: string
-  version: string
   status: "Active" | "Ready" | "Quick Start" | "Maintenance" | "Inactive"
   parameters: number
   contextLength: number
@@ -22,7 +23,6 @@ export const dummyModels: Model[] = [
     id: "1",
     name: "GPT-4",
     provider: "OpenAI",
-    version: "4.0",
     status: "Active",
     parameters: 175e9,
     contextLength: 32,
@@ -34,7 +34,6 @@ export const dummyModels: Model[] = [
     id: "2",
     name: "Claude 3",
     provider: "Anthropic",
-    version: "3.0",
     status: "Ready",
     parameters: 200e9,
     contextLength: 200,
@@ -46,7 +45,6 @@ export const dummyModels: Model[] = [
     id: "3",
     name: "Gemini Pro",
     provider: "Google",
-    version: "1.0",
     status: "Ready",
     parameters: 150e9,
     contextLength: 32,
@@ -58,7 +56,6 @@ export const dummyModels: Model[] = [
     id: "4",
     name: "Llama 2",
     provider: "Meta",
-    version: "2.0",
     status: "Maintenance",
     parameters: 70e9,
     contextLength: 4,
@@ -70,7 +67,6 @@ export const dummyModels: Model[] = [
     id: "5",
     name: "Mistral",
     provider: "Mistral AI",
-    version: "7B",
     status: "Ready",
     parameters: 7e9,
     contextLength: 8,
@@ -82,7 +78,6 @@ export const dummyModels: Model[] = [
     id: "6",
     name: "Gemini 1.5 Pro",
     provider: "Google",
-    version: "1.5",
     status: "Ready",
     parameters: 200e9,
     contextLength: 1000,
@@ -94,7 +89,6 @@ export const dummyModels: Model[] = [
     id: "7",
     name: "Gemini 1.5 Flash",
     provider: "Google",
-    version: "1.5",
     status: "Ready",
     parameters: 50e9,
     contextLength: 2000,
@@ -106,7 +100,6 @@ export const dummyModels: Model[] = [
     id: "8",
     name: "GPT-4.5",
     provider: "OpenAI",
-    version: "4.5",
     status: "Ready",
     parameters: 300e9,
     contextLength: 128,
@@ -118,7 +111,6 @@ export const dummyModels: Model[] = [
     id: "9",
     name: "GPT-4.1",
     provider: "OpenAI",
-    version: "4.1",
     status: "Ready",
     parameters: 200e9,
     contextLength: 64,
@@ -130,7 +122,6 @@ export const dummyModels: Model[] = [
     id: "10",
     name: "Llama 4 Scout",
     provider: "Meta AI",
-    version: "4.0",
     status: "Ready",
     parameters: 70e9,
     contextLength: 32,
@@ -142,7 +133,6 @@ export const dummyModels: Model[] = [
     id: "11",
     name: "Llama 4 Maverick",
     provider: "Meta AI",
-    version: "4.0",
     status: "Ready",
     parameters: 400e9,
     contextLength: 64,
@@ -154,7 +144,6 @@ export const dummyModels: Model[] = [
     id: "12",
     name: "Claude 3.7",
     provider: "Anthropic",
-    version: "3.7",
     status: "Ready",
     parameters: 200e9,
     contextLength: 64,
@@ -166,7 +155,6 @@ export const dummyModels: Model[] = [
     id: "13",
     name: "Grok 3",
     provider: "xAI",
-    version: "3.0",
     status: "Ready",
     parameters: 100e9,
     contextLength: 128,
@@ -178,7 +166,6 @@ export const dummyModels: Model[] = [
     id: "14",
     name: "Grok 3 Mini",
     provider: "xAI",
-    version: "3.0",
     status: "Ready",
     parameters: 30e9,
     contextLength: 32,
@@ -190,7 +177,6 @@ export const dummyModels: Model[] = [
     id: "15",
     name: "DeepSeek R1",
     provider: "DeepSeek",
-    version: "1.0",
     status: "Ready",
     parameters: 100e9,
     contextLength: 32,
@@ -202,7 +188,6 @@ export const dummyModels: Model[] = [
     id: "16",
     name: "GPT-4o",
     provider: "OpenAI",
-    version: "4.0",
     status: "Active",
     parameters: 175e9,
     contextLength: 32,
@@ -215,66 +200,93 @@ export const dummyModels: Model[] = [
 export const createColumns = (toast: any): ColumnDef<Model>[] => [
   {
     id: "quickStart",
-    header: "",
-    cell: ({ row, table }) => <QuickStartCell row={row} table={table} toast={toast} />,
-    size: 50,
+    header: () => <span className="sr-only">Quick Start</span>,
+    cell: ({ row, table }) => (
+      <div className="flex justify-center">
+        <QuickStartCell row={row} table={table} toast={toast} />
+      </div>
+    ),
+    size: 48,
     enableSorting: false,
   },
   {
-    header: "Model Name",
+    header: () => <div className="text-left font-medium">Model Name</div>,
     accessorKey: "name",
-    cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
+    cell: ({ row }) => (
+      <span className="text-left font-medium block">{row.getValue("name")}</span>
+    ),
     size: 200,
   },
   {
-    header: "Provider",
+    header: () => <div className="text-left font-medium">Provider</div>,
     accessorKey: "provider",
+    cell: ({ row }) => (
+      <span className="text-left block">{row.getValue("provider")}</span>
+    ),
     size: 150,
   },
   {
-    header: "Version",
-    accessorKey: "version",
-    size: 100,
-  },
-  {
-    header: "Status",
+    header: () => <div className="text-left font-medium">Status</div>,
     accessorKey: "status",
     cell: ({ row }) => (
-      <Badge
-        className={cn(
-          row.getValue("status") === "Ready" && "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
-          row.getValue("status") === "Active" && "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-          row.getValue("status") === "Quick Start" && "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
-          row.getValue("status") === "Inactive" && "bg-muted text-muted-foreground",
-          row.getValue("status") === "Maintenance" && "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300"
-        )}
-      >
-        {row.getValue("status")}
-      </Badge>
+      <span className="text-left block pl-4">
+        <Badge
+          className={cn(
+            row.getValue("status") === "Ready" && "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+            row.getValue("status") === "Active" && "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+            row.getValue("status") === "Quick Start" && "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+            row.getValue("status") === "Inactive" && "bg-muted text-muted-foreground",
+            row.getValue("status") === "Maintenance" && "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300"
+          )}
+        >
+          {row.getValue("status")}
+        </Badge>
+      </span>
     ),
     size: 120,
   },
   {
-    header: "Parameters",
+    header: () => <div className="text-left font-medium">Parameters</div>,
     accessorKey: "parameters",
     cell: ({ row }) => {
       const params = row.getValue("parameters") as number
-      return `${(params / 1e9).toFixed(1)}B`
+      return <span className="text-left block pl-7">{`${(params / 1e9).toFixed(1)}B`}</span>
     },
     size: 120,
   },
   {
-    header: "Context Length",
+    header: () => <div className="text-left font-medium">Context Length</div>,
     accessorKey: "contextLength",
     cell: ({ row }) => {
       const length = row.getValue("contextLength") as number
-      return `${length}K tokens`
+      return <span className="text-left block pl-4">{`${length}K tokens`}</span>
     },
     size: 120,
   },
   {
-    header: "Last Updated",
+    header: () => <div className="text-left font-medium">Last Updated</div>,
     accessorKey: "lastUpdated",
+    cell: ({ row }) => (
+      <span className="text-left block pl-4">{row.getValue("lastUpdated")}</span>
+    ),
     size: 120,
+  },
+  {
+    id: "configure",
+    header: () => <span className="sr-only">Configure</span>,
+    cell: () => (
+      <div className="flex justify-center">
+        <Button 
+          variant="secondary" 
+          size="sm"
+          className="flex items-center gap-2 bg-muted hover:bg-muted/80"
+        >
+          <Settings2 className="h-4 w-4" />
+          Configure
+        </Button>
+      </div>
+    ),
+    size: 120,
+    enableSorting: false,
   }
 ] 

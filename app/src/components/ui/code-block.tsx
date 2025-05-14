@@ -34,23 +34,24 @@ export type CodeBlockCodeProps = {
 function CodeBlockCode({
   code,
   language = "tsx",
-  theme = "github-light",
+  theme = "github-dark",
   className,
   ...props
 }: CodeBlockCodeProps) {
   const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null)
 
   useEffect(() => {
+    let mounted = true;
     async function highlight() {
       if (!code) {
         setHighlightedHtml("<pre><code></code></pre>")
         return
       }
-
-      const html = await codeToHtml(code, { lang: language, theme })
-      setHighlightedHtml(html)
+      const html = await codeToHtml(code, { lang: language, theme });
+      if (mounted) setHighlightedHtml(html);
     }
-    highlight()
+    highlight();
+    return () => { mounted = false; };
   }, [code, language, theme])
 
   const classNames = cn(
