@@ -2,7 +2,7 @@
 .markdown-content {
   font-size: 1rem;
   line-height: 1.6;
-  color: #e2e8f0;
+  /* color: #e2e8f0; */ /* Remove any color here to avoid overriding code colors */
 }
 
 .markdown-content h1 {
@@ -81,7 +81,7 @@
 
 .markdown-content code:not([class*="language-"]) {
   background-color: #1e293b;
-  color: #f87171;
+  /* color: #f87171; */
   padding: 0.2rem 0.4rem;
   border-radius: 0.25rem;
   font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
@@ -89,95 +89,29 @@
 }
 
 .markdown-content pre {
-  background-color: #1e293b !important;
-  border-radius: 0.5rem;
+  background-color: #1e1e1e !important;
+  border-radius: 0 !important;
   overflow: hidden;
   margin: 1rem 0;
   padding: 1rem;
-  border: 1px solid #334155;
+  border: none !important;
+  /* color: unset !important; */ /* Remove any color here */
 }
 
 .markdown-content pre code {
   background-color: transparent !important;
-  color: #e2e8f0;
   padding: 0;
   font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
   font-size: 0.9em;
   line-height: 1.5;
+  /* color: unset !important; */ /* Remove any color here */
 }
 
-/* Syntax highlighting colors */
-.markdown-content .token.comment,
-.markdown-content .token.prolog,
-.markdown-content .token.doctype,
-.markdown-content .token.cdata {
-  color: #8b9cb5;
+.markdown-content code {
+  /* color: unset !important; */ /* Remove any color here */
 }
 
-.markdown-content .token.punctuation {
-  color: #e2e8f0;
-}
-
-.markdown-content .token.namespace {
-  opacity: 0.7;
-}
-
-.markdown-content .token.property,
-.markdown-content .token.tag,
-.markdown-content .token.boolean,
-.markdown-content .token.number,
-.markdown-content .token.constant,
-.markdown-content .token.symbol,
-.markdown-content .token.deleted {
-  color: #f87171;
-}
-
-.markdown-content .token.selector,
-.markdown-content .token.attr-name,
-.markdown-content .token.string,
-.markdown-content .token.char,
-.markdown-content .token.builtin,
-.markdown-content .token.inserted {
-  color: #4ade80;
-}
-
-.markdown-content .token.operator,
-.markdown-content .token.entity,
-.markdown-content .token.url,
-.markdown-content .language-css .token.string,
-.markdown-content .style .token.string {
-  color: #d1d5db;
-}
-
-.markdown-content .token.atrule,
-.markdown-content .token.attr-value,
-.markdown-content .token.keyword {
-  color: #60a5fa;
-}
-
-.markdown-content .token.function,
-.markdown-content .token.class-name {
-  color: #f59e0b;
-}
-
-.markdown-content .token.regex,
-.markdown-content .token.important,
-.markdown-content .token.variable {
-  color: #ec4899;
-}
-
-.markdown-content .token.important,
-.markdown-content .token.bold {
-  font-weight: bold;
-}
-
-.markdown-content .token.italic {
-  font-style: italic;
-}
-
-.markdown-content .token.entity {
-  cursor: help;
-}
+/* Removed all .token color rules to allow Shiki's inline styles to show */
 
 .markdown-content a {
   color: #3B82F6;
@@ -243,4 +177,10 @@
   .markdown-content hr {
     background-color: #E5E7EB;
   }
+}
+
+/* --- Shiki fix: ensure inline styles are respected for code blocks --- */
+.markdown-content pre code span[style] {
+  color: unset !important;
+  /* This allows Shiki's inline style to take precedence */
 } 

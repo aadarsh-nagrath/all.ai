@@ -4,7 +4,7 @@ import { Search, ExternalLink, Settings, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
-import Link from "next/link"
+// import Link from "next/link"
 import Image from "next/image"
 import React from "react"
 
@@ -147,13 +147,6 @@ function IntegrationCard({ name, description, logo, isActive: initialIsActive }:
               <Settings className="h-3.5 w-3.5" />
               Configure
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 dark:bg-red-400 dark:text-white dark:border-red-400 dark:hover:bg-red-500"
-            >
-              Remove
-            </Button>
           </div>
           <Switch 
             checked={isActive} 
@@ -228,7 +221,7 @@ export default function Plugins() {
           </Button>
         </div>
       </div>
-
+{/* 
       <div className="mb-8">
         <nav className="flex border-b">
           <Link href="/settings/profile" className="px-4 py-3 text-sm text-muted-foreground hover:text-foreground">
@@ -241,7 +234,7 @@ export default function Plugins() {
             Integrations
           </Link>
         </nav>
-      </div>
+      </div> */}
 
       <h1 className="text-xl font-semibold mb-4">All Integrations</h1>
 

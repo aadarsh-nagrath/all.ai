@@ -12,46 +12,80 @@ import {
     Figma,
     FileUp,
     MonitorIcon,
+    Copy,
+    Check,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
-import javascript from 'react-syntax-highlighter/dist/esm/languages/prism/javascript';
-import typescript from 'react-syntax-highlighter/dist/esm/languages/prism/typescript';
-import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
-import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash';
-import css from 'react-syntax-highlighter/dist/esm/languages/prism/css';
-import html from 'react-syntax-highlighter/dist/esm/languages/prism/markup';
-import java from 'react-syntax-highlighter/dist/esm/languages/prism/java';
-import jsx from 'react-syntax-highlighter/dist/esm/languages/prism/jsx';
-import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
-import markdown from 'react-syntax-highlighter/dist/esm/languages/prism/markdown';
-import yaml from 'react-syntax-highlighter/dist/esm/languages/prism/yaml';
+import { CodeBlock, CodeBlockCode, CodeBlockGroup } from "@/components/ui/code-block";
+import { Button } from "@/components/ui/button";
 import "../../../styles/markdown.css";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Register languages
-SyntaxHighlighter.registerLanguage('python', python);
-SyntaxHighlighter.registerLanguage('javascript', javascript);
-SyntaxHighlighter.registerLanguage('typescript', typescript);
-SyntaxHighlighter.registerLanguage('json', json);
-SyntaxHighlighter.registerLanguage('bash', bash);
-SyntaxHighlighter.registerLanguage('css', css);
-SyntaxHighlighter.registerLanguage('html', html);
-SyntaxHighlighter.registerLanguage('java', java);
-SyntaxHighlighter.registerLanguage('jsx', jsx);
-SyntaxHighlighter.registerLanguage('sql', sql);
-SyntaxHighlighter.registerLanguage('markdown', markdown);
-SyntaxHighlighter.registerLanguage('yaml', yaml);
-SyntaxHighlighter.registerLanguage('js', javascript);
-SyntaxHighlighter.registerLanguage('ts', typescript);
-SyntaxHighlighter.registerLanguage('shell', bash);
-SyntaxHighlighter.registerLanguage('sh', bash);
-SyntaxHighlighter.registerLanguage('md', markdown);
-SyntaxHighlighter.registerLanguage('yml', yaml);
+// Define the new MarkdownCodeRenderer component here
+interface MarkdownCodeRendererProps {
+    inline?: boolean;
+    className?: string;
+    children?: React.ReactNode;
+}
+
+const MarkdownCodeRenderer: React.FC<MarkdownCodeRendererProps & React.HTMLAttributes<HTMLElement>> = ({ inline, className, children, ...props }) => {
+    const match = /language-(\w+)/.exec(className || '');
+    const codeText = String(children).replace(/\n$/, '');
+    const language = match ? match[1] : 'plaintext';
+
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(codeText);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    const capitalizeFirstLetter = (string: string) => {
+        if (!string) return '';
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    };
+
+    if (inline || !match) {
+        return (
+            <code className={cn("px-1.5 py-0.5 rounded-md bg-gray-200 dark:bg-gray-700", className)} {...props}>
+                {children}
+            </code>
+        );
+    }
+
+    return (
+        <CodeBlock className="mb-4 !border-0 !bg-transparent">
+            <CodeBlockGroup className="border-border border-b px-4 py-2">
+                <div className="flex items-center gap-2">
+                    <div className="bg-primary/10 text-primary rounded px-2 py-1 text-xs font-medium">
+                        {capitalizeFirstLetter(language)}
+                    </div>
+                </div>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={handleCopy}
+                >
+                    {copied ? (
+                        <Check className="h-4 w-4 text-green-500" />
+                    ) : (
+                        <Copy className="h-4 w-4" />
+                    )}
+                </Button>
+            </CodeBlockGroup>
+            <CodeBlockCode
+                code={codeText}
+                language={language}
+                theme="github-dark"
+                className="!bg-[#1e1e1e] [&>pre]:!bg-[#1e1e1e] [&>pre]:!text-[#d4d4d4] [&>pre]:!border-0 [&>pre]:!rounded-none [&>pre]:!m-0 [&>pre]:!p-4"
+            />
+        </CodeBlock>
+    );
+};
 
 interface UseAutoResizeTextareaProps {
     minHeight: number;
@@ -308,42 +342,8 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
-                    code: ({inline, className, children, ...props}: {
-                        inline?: boolean;
-                        className?: string;
-                        children?: React.ReactNode;
-                    } & React.HTMLAttributes<HTMLElement>) => {
-                        const match = /language-(\w+)/.exec(className || '');
-                        return !inline && match ? (
-                            <SyntaxHighlighter
-                                style={oneDark as any}
-                                language={match[1]}
-                                PreTag="div"
-                                customStyle={{
-                                    borderRadius: '6px',
-                                    padding: '1rem',
-                                    margin: '1rem 0',
-                                    backgroundColor: '#1e293b',
-                                    border: '1px solid #334155'
-                                }}
-                                codeTagProps={{
-                                    style: {
-                                        fontFamily: 'Menlo, Monaco, Courier New, monospace',
-                                        fontSize: '0.9em',
-                                    }
-                                }}
-                                showLineNumbers={match[1] !== 'bash' && match[1] !== 'shell'}
-                                wrapLines={true}
-                                {...props}
-                            >
-                                {String(children).replace(/\n$/, '')}
-                            </SyntaxHighlighter>
-                        ) : (
-                            <code className={cn("px-1.5 py-0.5 rounded-md bg-gray-200 dark:bg-gray-700", className)} {...props}>
-                                {children}
-                            </code>
-                        );
-                    }
+                    // Use the new MarkdownCodeRenderer component
+                    code: MarkdownCodeRenderer
                 }}
             >
                 {content}

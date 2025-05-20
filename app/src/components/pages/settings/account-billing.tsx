@@ -72,7 +72,7 @@ const AccountAndBilling = () => {
 
   if (!session || !user) {
     return (
-      <div className="flex min-h-screen w-full flex-col bg-gradient-to-br from-muted/20 to-background p-8">
+      <div className="flex min-h-screen w-full flex-col p-8">
         <div className="mb-10">
           <h1 className="text-4xl font-bold tracking-tight">Account & Billing</h1>
           <p className="text-muted-foreground mt-2">
@@ -84,7 +84,7 @@ const AccountAndBilling = () => {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-gradient-to-br from-muted/20 to-background p-8">
+    <div className="flex min-h-screen w-full flex-col p-8">
       {/* Hero Section */}
       <div className="mb-10">
         <h1 className="text-4xl font-bold tracking-tight">Account & Billing</h1>

@@ -83,7 +83,7 @@ export const categories = [
       title: "Design",
       items: [
         {
-          image: "/images/blog-image-generator.png",
+          image: "/images/blog-image-generator.jpeg",
           title: "Blog Image Generator",
           description:
             "A blog image generator specialized in creating modern vector illustrations for blog covers.",
@@ -130,13 +130,6 @@ export const categories = [
           description:
             "Create limitless captivating illustrations for children's books in a consistent style focused on various topics (character, animal, places).",
           prompt: "You are a children's book illustrator. Create engaging, age-appropriate illustrations with consistent style. Focus on character development, storytelling, and visual appeal. Include guidelines for color psychology and educational value."
-        },
-        {
-          image: "/images/business-office-vector.png",
-          title: "Businesses & Offices Vector Images",
-          description:
-            "Craft beautiful visuals illustrating common daily activities of office workers and professionals. Perfect for PowerPoint presentations, website graphics, and other uses!",
-          prompt: "You are a business illustration specialist. Create professional vector graphics of office environments and activities. Focus on clean lines, corporate style, and universal appeal. Include guidelines for brand consistency and presentation use."
         },
         {
           image: "/images/graphic-designer.png",
