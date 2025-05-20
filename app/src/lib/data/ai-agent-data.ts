@@ -73,7 +73,7 @@ export const categories = [
       title: "Design",
       items: [
         {
-          image: "/images/blog-image-generator.png",
+          image: "/images/blog-image-generator.jpeg",
           title: "Blog Image Generator",
           description:
             "A blog image generator specialized in creating modern vector illustrations for blog covers.",
@@ -113,12 +113,6 @@ export const categories = [
           title: "Children Book Illustrations",
           description:
             "Create limitless captivating illustrations for children's books in a consistent style focused on various topics (character, animal, places).",
-        },
-        {
-          image: "/images/business-office-vector.png",
-          title: "Businesses & Offices Vector Images",
-          description:
-            "Craft beautiful visuals illustrating common daily activities of office workers and professionals. Perfect for PowerPoint presentations, website graphics, and other uses!",
         },
         {
           image: "/images/graphic-designer.png",
