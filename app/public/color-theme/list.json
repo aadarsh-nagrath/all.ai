@@ -294,13 +294,6 @@
       "textColor": "#3c3836"
     },
     {
-      "name": "monokai",
-      "bgColor": "#272822",
-      "mainColor": "#a6e22e",
-      "subColor": "#e6db74",
-      "textColor": "#e2e2dc"
-    },
-    {
       "name": "sonokai",
       "bgColor": "#2c2e34",
       "mainColor": "#9ed072",
@@ -383,20 +376,6 @@
       "mainColor": "#212222",
       "subColor": "#aaaaaa",
       "textColor": "#212222"
-    },
-    {
-      "name": "solarized_dark",
-      "bgColor": "#002b36",
-      "mainColor": "#859900",
-      "subColor": "#2aa198",
-      "textColor": "#268bd2"
-    },
-    {
-      "name": "solarized_light",
-      "bgColor": "#fdf6e3",
-      "mainColor": "#859900",
-      "subColor": "#2aa198",
-      "textColor": "#181819"
     },
     {
       "name": "terra",
@@ -721,13 +700,6 @@
       "textColor": "#f6f5f5"
     },
     {
-      "name": "rose_pine",
-      "bgColor": "#1f1d27",
-      "mainColor": "#9ccfd8",
-      "subColor": "#c4a7e7",
-      "textColor": "#e0def4"
-    },
-    {
       "name": "rose_pine_moon",
       "bgColor": "#2a273f",
       "mainColor": "#9ccfd8",
@@ -740,13 +712,6 @@
       "mainColor": "#56949f",
       "subColor": "#c4a7e7",
       "textColor": "#286983"
-    },
-    {
-      "name": "copper",
-      "bgColor": "#442f29",
-      "mainColor": "#b46a55",
-      "subColor": "#7ebab5",
-      "textColor": "#e7e0de"
     },
     {
       "name": "grand_prix",
@@ -796,13 +761,6 @@
       "mainColor": "#fc6e83",
       "subColor": "#8e5568",
       "textColor": "#e6d5d3"
-    },
-    {
-      "name": "ez_mode",
-      "bgColor": "#0068c6",
-      "mainColor": "#fa62d5",
-      "subColor": "#138bf7",
-      "textColor": "#ffffff"
     },
     {
       "name": "vscode",
@@ -956,7 +914,7 @@
       "bgColor": "#081426",
       "mainColor": "#f17754",
       "subColor": "#ffbc90",
-      "textColor": "#ffe4bc"
+      "textColor": "#000000"
     },
     {
       "name": "trackday",
@@ -1190,13 +1148,6 @@
       "textColor": "#3d1705"
     },
     {
-      "name": "macroblank",
-      "bgColor": "#b2d2c8",
-      "mainColor": "#c13117",
-      "subColor": "#717977",
-      "textColor": "#490909"
-    },
-    {
       "name": "anti_hero",
       "bgColor": "#00002e",
       "mainColor": "#ffadad",
@@ -1230,20 +1181,6 @@
       "mainColor": " #ffdd6d",
       "subColor": "#779097",
       "textColor": "#E5E5E5"
-    },
-    {
-      "name": "lilac_mist",
-      "bgColor": "#fffbfe",
-      "mainColor": "#b94189",
-      "subColor": "#e094c2",
-      "textColor": "#5c2954"
-    },
-    {
-      "name": "terrazzo",
-      "bgColor": "#f1e5da",
-      "mainColor": "#e0794e",
-      "subColor": "#688e8f",
-      "textColor": "#023e3b"
     },
     {
       "name": "suisei",

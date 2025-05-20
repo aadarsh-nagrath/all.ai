@@ -1,9 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Palette, Search, Settings, Sun, Boxes, Sparkles, Globe, Brush } from "lucide-react"
+import { Palette, Settings, Sun, Boxes, Sparkles, Globe, Brush } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { ThemeList } from "./theme-list"
@@ -63,18 +62,13 @@ export default function ThemeStash() {
   const [mounted, setMounted] = useState(false)
   const [selectedTheme, setSelectedTheme] = useState<Theme | null>(null)
   const [selectedThemeStyle, setSelectedThemeStyle] = useState<ThemeStyle | null>(null)
-  const [searchQuery, setSearchQuery] = useState("")
   const [activeTab, setActiveTab] = useState("themestyle")
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  const filteredThemes = mockThemes.filter((theme) => {
-    return searchQuery === "" ||
-      theme.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      theme.description.toLowerCase().includes(searchQuery.toLowerCase())
-  })
+  const filteredThemes = mockThemes
 
   const handleThemeSelect = (theme: Theme) => {
     setSelectedTheme(theme)
@@ -171,17 +165,6 @@ export default function ThemeStash() {
             <Button variant="outline" className="ml-2">
               Presets
             </Button>
-          </div>
-        </div>
-        <div className="p-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder={`Search ${activeTab}`}
-              className="pl-9"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
           </div>
         </div>
         <div className="flex-1 overflow-auto">

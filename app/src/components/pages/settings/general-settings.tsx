@@ -11,7 +11,7 @@ import { GeneralSettings } from "./components/GeneralSettings";
 import { ApiKeySettings } from "./components/ApiKeySettings";
 import { ProxyOrgIdSettings } from "./components/ProxyOrgIdSettings";
 import { TextToSpeechSettings } from "./components/TextToSpeechSettings";
-import { AppearanceSettings } from "./AppearanceSettings";
+import { AppearanceSettings } from "./components/AppearanceSettings";
 import { VoiceInputSettings } from "./components/VoiceInputSettings";
 import { ExtensionsSettings } from "./components/ExtensionsSettings";
 import { LicenseKeySettings } from "./components/LicenseKeySettings";
