@@ -24,16 +24,21 @@ app.include_router(ws_router)
 
 @app.on_event("startup")
 async def startup_event():
-    if await db.test_connection():
-        print("✅ MongoDB connection successful")
-    else:
-        print("❌ MongoDB connection failed")
+    try:
+        await db.connect()
+        if await db.test_connection():
+            print("✅ MongoDB connection successful")
+        else:
+            print("❌ MongoDB connection failed")
+    except Exception as e:
+        print(f"❌ MongoDB connection failed: {str(e)}")
+        raise
 
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
 
-@app.get("/api/chats/{user_id}")
+@app.get("/api/chats/user/{user_id}")
 async def get_user_chats(user_id: str):
     try:
         # Get all communication sessions for the user
@@ -73,4 +78,43 @@ async def delete_chat(chat_id: str):
             
         return {"status": "success", "message": "Chat deleted successfully"}
     except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/chats/session/{chat_id}")
+async def get_chat(chat_id: str):
+    try:
+        print(f"Fetching chat with ID: {chat_id}")
+        # Get the specific communication session
+        session = await db.communication_sessions.find_one(
+            {"communication_id": chat_id}
+        )
+        
+        if not session:
+            print(f"Chat not found for ID: {chat_id}")
+            raise HTTPException(status_code=404, detail="Chat not found")
+        
+        print(f"Found session: {session}")
+        
+        # Format the messages to match the expected structure
+        formatted_messages = []
+        for msg in session.get("messages", []):
+            if msg["role"] != "system":  # Skip system messages
+                formatted_messages.append({
+                    "role": msg["role"],
+                    "content": msg["content"]
+                })
+        
+        print(f"Formatted messages: {formatted_messages}")
+        
+        response = {
+            "id": session["communication_id"],
+            "messages": formatted_messages,
+            "created_at": session["created_at"],
+            "updated_at": session["updated_at"]
+        }
+        
+        print(f"Returning response: {response}")
+        return response
+    except Exception as e:
+        print(f"Error in get_chat: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
