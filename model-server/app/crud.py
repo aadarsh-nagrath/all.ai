@@ -19,7 +19,8 @@ class MongoDB:
     async def connect(self):
         try:
             self.client = AsyncIOMotorClient(MONGODB_URI)
-            self.db = self.client.get_default_database()
+            # Use the database name directly from the URI
+            self.db = self.client["allai"]
             self.conversations = self.db.conversations
             self.communication_sessions = self.db.communication_sessions
             await self.test_connection()
@@ -30,8 +31,9 @@ class MongoDB:
 
     async def test_connection(self):
         try:
-            await self.client.admin.command('ping')
-            logger.info("✅ MongoDB connection successful")
+            # Test the connection by listing collections
+            collections = await self.db.list_collection_names()
+            logger.info(f"✅ MongoDB connection successful. Collections: {collections}")
             return True
         except Exception as e:
             logger.error(f"❌ MongoDB connection failed: {str(e)}")

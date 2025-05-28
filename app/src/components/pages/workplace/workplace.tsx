@@ -11,6 +11,8 @@ import Subheadline from "./subheadline";
 import { ThemeBadge } from "@/components/theme-badge"
 import { motion} from "framer-motion";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { getChat } from "@/lib/api";
 
 function AnimatedThemeButton() {
   return (
@@ -28,14 +30,47 @@ function AnimatedThemeButton() {
 
 export default function Workplace() {
   const [showHeadings, setShowHeadings] = useState(true);
+  const searchParams = useSearchParams();
+  const chatId = searchParams.get('chatId');
+  const [chatHistory, setChatHistory] = useState<Array<{role: string, content: string}>>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setShowHeadings(prev => !prev);
-    }, 15000); // 15 seconds
+    const loadChatHistory = async () => {
+      if (!chatId) {
+        setChatHistory([]);
+        setShowHeadings(true);
+        return;
+      }
+      
+      setIsLoading(true);
+      setError(null);
+      try {
+        console.log('Loading chat history for chatId:', chatId);
+        const data = await getChat(chatId);
+        console.log('Received chat data:', data);
+        
+        if (data && data.messages && Array.isArray(data.messages)) {
+          console.log('Setting chat history:', data.messages);
+          setChatHistory(data.messages);
+          setShowHeadings(false);
+        } else {
+          console.error('Invalid chat history format:', data);
+          setChatHistory([]);
+          setError('Invalid chat format');
+        }
+      } catch (error) {
+        console.error('Error loading chat history:', error);
+        setChatHistory([]);
+        setError(error instanceof Error ? error.message : 'Failed to load chat');
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    return () => clearInterval(interval);
-  }, []);
+    loadChatHistory();
+  }, [chatId]);
 
   const handleMessageSent = () => {
     setShowHeadings(false);
@@ -60,7 +95,17 @@ export default function Workplace() {
         <Headline />
         <Subheadline />
       </motion.div>
-      <SearchInput onMessageSent={handleMessageSent} />
+      {error && (
+        <div className="text-red-500 text-center p-4">
+          {error}
+        </div>
+      )}
+      <SearchInput 
+        onMessageSent={handleMessageSent} 
+        initialMessages={chatHistory}
+        chatId={chatId}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

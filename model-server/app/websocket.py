@@ -80,18 +80,35 @@ class ConnectionManager:
 
 manager = ConnectionManager()
 
-async def process_message(user_id: str, message: str):
+async def process_message(user_id: str, message: str, conversation_id: str = None):
     try:
         logger.info(f"Processing message for user {user_id}")
         
-        # Get the active session and its messages
-        active_session = await get_active_session(user_id)
-        if not active_session:
-            logger.error(f"No active session found for user {user_id}")
-            return {"error": "No active session found"}
+        # Get the session - either by conversation_id or active session
+        session = None
+        if conversation_id:
+            logger.info(f"Using provided conversation_id: {conversation_id}")
+            session = await db.communication_sessions.find_one({"communication_id": conversation_id})
+            if session:
+                # Make this the active session
+                await db.communication_sessions.update_many(
+                    {"user_id": user_id},
+                    {"$set": {"is_active": False}}
+                )
+                await db.communication_sessions.update_one(
+                    {"communication_id": conversation_id},
+                    {"$set": {"is_active": True}}
+                )
+        
+        if not session:
+            logger.info(f"No session found with conversation_id, getting active session")
+            session = await get_active_session(user_id)
+            if not session:
+                logger.error(f"No active session found for user {user_id}")
+                return {"error": "No active session found"}
             
         # Get the conversation history
-        conversation_history = active_session.get("messages", [])
+        conversation_history = session.get("messages", [])
         
         # Add the new user message to the history
         conversation_history.append({"role": "user", "content": message})
@@ -128,7 +145,11 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
                         continue
                     
                     # Process the message and get AI response
-                    response = await process_message(user_id, message_data["message"])
+                    response = await process_message(
+                        user_id, 
+                        message_data["message"],
+                        message_data.get("conversation_id")
+                    )
                     
                     if "error" in response:
                         logger.error(f"Error in response for user {user_id}: {response['error']}")
@@ -142,7 +163,7 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
                         continue
                     
                     # Update the communication session with the new messages
-                    communication_id = manager.user_sessions.get(user_id)
+                    communication_id = message_data.get("conversation_id") or manager.user_sessions.get(user_id)
                     if communication_id:
                         await update_communication_session(
                             communication_id,
