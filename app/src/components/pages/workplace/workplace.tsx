@@ -11,6 +11,8 @@ import Subheadline from "./subheadline";
 import { ThemeBadge } from "@/components/theme-badge"
 import { motion} from "framer-motion";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 function AnimatedThemeButton() {
   return (
@@ -28,6 +30,31 @@ function AnimatedThemeButton() {
 
 export default function Workplace() {
   const [showHeadings, setShowHeadings] = useState(true);
+  const searchParams = useSearchParams();
+  const chatId = searchParams.get('chatId');
+  const { data: session } = useSession();
+  const [chatHistory, setChatHistory] = useState<Array<{role: string, content: string}>>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const loadChatHistory = async () => {
+      if (!chatId || !session?.user?.email) return;
+      
+      setIsLoading(true);
+      try {
+        const response = await fetch(`http://localhost:8000/api/chats/${chatId}`);
+        if (!response.ok) throw new Error('Failed to load chat history');
+        const data = await response.json();
+        setChatHistory(data.messages || []);
+      } catch (error) {
+        console.error('Error loading chat history:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadChatHistory();
+  }, [chatId, session]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -60,7 +87,12 @@ export default function Workplace() {
         <Headline />
         <Subheadline />
       </motion.div>
-      <SearchInput onMessageSent={handleMessageSent} />
+      <SearchInput 
+        onMessageSent={handleMessageSent} 
+        initialMessages={chatHistory}
+        chatId={chatId}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

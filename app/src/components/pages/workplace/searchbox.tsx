@@ -139,6 +139,9 @@ function useAutoResizeTextarea({
 
 interface SearchInputProps {
     onMessageSent?: () => void;
+    initialMessages?: Array<{role: string, content: string}>;
+    chatId?: string | null;
+    isLoading?: boolean;
 }
 
 interface ActionButtonProps {
@@ -158,10 +161,10 @@ function ActionButton({ icon, label }: ActionButtonProps) {
     );
 }
 
-export default function SearchInput({ onMessageSent }: SearchInputProps) {
+export default function SearchInput({ onMessageSent, initialMessages = [], chatId, isLoading }: SearchInputProps) {
     const [showHeading, setShowHeading] = useState(true);
     const [input, setInput] = useState("");
-    const [messages, setMessages] = useState<Array<{role: string, content: string}>>([]);
+    const [messages, setMessages] = useState<Array<{role: string, content: string}>>(initialMessages);
     const [currentStream, setCurrentStream] = useState("");
     const [isStreaming, setIsStreaming] = useState(false);
     const [isFixed, setIsFixed] = useState(false);
@@ -181,6 +184,13 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
         maxHeight: 200,
     });
     const animationFrameRef = useRef<number | null>(null);
+
+    // Update messages when initialMessages changes
+    useEffect(() => {
+        if (initialMessages.length > 0) {
+            setMessages(initialMessages);
+        }
+    }, [initialMessages]);
 
     const connectWebSocket = useCallback(() => {
         if (!session?.user?.email) return;
@@ -305,7 +315,7 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
     
         const message = {
             message: input,
-            conversation_id: null
+            conversation_id: chatId || null
         };
     
         if (wsRef.current.readyState === WebSocket.OPEN) {
@@ -321,7 +331,7 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
         } else {
             console.error("WebSocket is not open");
         }
-    }, [input, adjustHeight, onMessageSent]);
+    }, [input, adjustHeight, onMessageSent, chatId]);
 
     const handleStopStream = useCallback(() => {
         setShouldStopStream(true);
@@ -415,28 +425,34 @@ export default function SearchInput({ onMessageSent }: SearchInputProps) {
             </AnimatePresence>
 
             <div className="w-full space-y-4 flex-1 overflow-y-auto pb-32" ref={chatContainerRef} onScroll={handleScroll}>
-                {messages.map((msg, i) => (
-                    <div 
-                        key={i} 
-                        className={cn(
-                            "p-4 rounded-lg",
-                            msg.role === 'user' 
-                                ? "bg-primary/10 ml-auto w-fit max-w-[80%]" 
-                                : "bg-transparent mr-auto w-full max-w-[80%]"
-                        )}
-                    >
-                        {msg.role === 'assistant' ? (
-                            <div className="markdown-content">
-                                {renderMarkdown(msg.content)}
-                                {i === messages.length - 1 && isStreaming && (
-                                    <span className="ml-1 inline-block h-4 w-1 bg-muted-foreground animate-pulse"></span>
-                                )}
-                            </div>
-                        ) : (
-                            <p className="whitespace-pre-wrap text-foreground text-right">{msg.content}</p>
-                        )}
+                {isLoading ? (
+                    <div className="flex items-center justify-center p-4">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                     </div>
-                ))}
+                ) : (
+                    messages.map((msg, i) => (
+                        <div 
+                            key={i} 
+                            className={cn(
+                                "p-4 rounded-lg",
+                                msg.role === 'user' 
+                                    ? "bg-primary/10 ml-auto w-fit max-w-[80%]" 
+                                    : "bg-transparent mr-auto w-full max-w-[80%]"
+                            )}
+                        >
+                            {msg.role === 'assistant' ? (
+                                <div className="markdown-content">
+                                    {renderMarkdown(msg.content)}
+                                    {i === messages.length - 1 && isStreaming && (
+                                        <span className="ml-1 inline-block h-4 w-1 bg-muted-foreground animate-pulse"></span>
+                                    )}
+                                </div>
+                            ) : (
+                                <p className="whitespace-pre-wrap text-foreground text-right">{msg.content}</p>
+                            )}
+                        </div>
+                    ))
+                )}
                 <div ref={messagesEndRef} />
             </div>
 

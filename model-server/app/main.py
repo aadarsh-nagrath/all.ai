@@ -74,3 +74,19 @@ async def delete_chat(chat_id: str):
         return {"status": "success", "message": "Chat deleted successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/chats/{chat_id}")
+async def get_chat(chat_id: str):
+    try:
+        # Get the specific communication session
+        session = await db.communication_sessions.find_one(
+            {"communication_id": chat_id},
+            {"_id": 0, "messages": 1, "created_at": 1, "updated_at": 1}
+        )
+        
+        if not session:
+            raise HTTPException(status_code=404, detail="Chat not found")
+            
+        return session
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

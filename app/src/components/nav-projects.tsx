@@ -110,7 +110,7 @@ export function NavProjects() {
             chats.map((chat, index) => (
               <SidebarMenuItem key={chat.id}>
                 <SidebarMenuButton asChild>
-                  <a href={`/chat/${chat.id}`} className="flex items-center gap-2">
+                  <a href={`/workplace?chatId=${chat.id}`} className="flex items-center gap-2">
                     <span className="text-muted-foreground text-sm">#{index + 1}</span>
                     <span className="font-medium text-base truncate">{chat.title}</span>
                   </a>
