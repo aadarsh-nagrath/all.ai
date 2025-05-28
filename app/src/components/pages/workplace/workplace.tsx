@@ -12,7 +12,7 @@ import { ThemeBadge } from "@/components/theme-badge"
 import { motion} from "framer-motion";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { getChat } from "@/lib/api";
 
 function AnimatedThemeButton() {
   return (
@@ -32,37 +32,45 @@ export default function Workplace() {
   const [showHeadings, setShowHeadings] = useState(true);
   const searchParams = useSearchParams();
   const chatId = searchParams.get('chatId');
-  const { data: session } = useSession();
   const [chatHistory, setChatHistory] = useState<Array<{role: string, content: string}>>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadChatHistory = async () => {
-      if (!chatId || !session?.user?.email) return;
+      if (!chatId) {
+        setChatHistory([]);
+        setShowHeadings(true);
+        return;
+      }
       
       setIsLoading(true);
+      setError(null);
       try {
-        const response = await fetch(`http://localhost:8000/api/chats/${chatId}`);
-        if (!response.ok) throw new Error('Failed to load chat history');
-        const data = await response.json();
-        setChatHistory(data.messages || []);
+        console.log('Loading chat history for chatId:', chatId);
+        const data = await getChat(chatId);
+        console.log('Received chat data:', data);
+        
+        if (data && data.messages && Array.isArray(data.messages)) {
+          console.log('Setting chat history:', data.messages);
+          setChatHistory(data.messages);
+          setShowHeadings(false);
+        } else {
+          console.error('Invalid chat history format:', data);
+          setChatHistory([]);
+          setError('Invalid chat format');
+        }
       } catch (error) {
         console.error('Error loading chat history:', error);
+        setChatHistory([]);
+        setError(error instanceof Error ? error.message : 'Failed to load chat');
       } finally {
         setIsLoading(false);
       }
     };
 
     loadChatHistory();
-  }, [chatId, session]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShowHeadings(prev => !prev);
-    }, 15000); // 15 seconds
-
-    return () => clearInterval(interval);
-  }, []);
+  }, [chatId]);
 
   const handleMessageSent = () => {
     setShowHeadings(false);
@@ -87,6 +95,11 @@ export default function Workplace() {
         <Headline />
         <Subheadline />
       </motion.div>
+      {error && (
+        <div className="text-red-500 text-center p-4">
+          {error}
+        </div>
+      )}
       <SearchInput 
         onMessageSent={handleMessageSent} 
         initialMessages={chatHistory}

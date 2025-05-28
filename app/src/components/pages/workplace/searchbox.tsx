@@ -187,8 +187,14 @@ export default function SearchInput({ onMessageSent, initialMessages = [], chatI
 
     // Update messages when initialMessages changes
     useEffect(() => {
-        if (initialMessages.length > 0) {
+        if (initialMessages && initialMessages.length > 0) {
             setMessages(initialMessages);
+            // Scroll to bottom when initial messages are loaded
+            if (messagesEndRef.current) {
+                messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+            }
+            // Hide heading when messages are loaded
+            setShowHeading(false);
         }
     }, [initialMessages]);
 
