@@ -210,7 +210,7 @@ export function OutputPanel({ selectedAgent, loading, output, parsedOutput }: Ou
         {loading ? "Processing..." : "Output"}
       </h2>
       {/* Header with Indicators */}
-      <div className="flex-none flex items-center justify-between w-full px-4 py-2 border-b border-border/50">
+      <div className="flex-none flex items-center justify-between w-full px-4 py-2  border-border/50">
         {!loading && parsedOutput && (
           <CompletionIndicator
             status={parsedOutput?.error ? "error" : "success"}
