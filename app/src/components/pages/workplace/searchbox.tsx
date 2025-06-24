@@ -22,6 +22,15 @@ import { CodeBlock, CodeBlockCode, CodeBlockGroup } from "@/components/ui/code-b
 import { Button } from "@/components/ui/button";
 import "../../../styles/markdown.css";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 
 // Define the new MarkdownCodeRenderer component here
 interface MarkdownCodeRendererProps {
@@ -162,6 +171,7 @@ function ActionButton({ icon, label }: ActionButtonProps) {
 }
 
 export default function SearchInput({ onMessageSent, initialMessages = [], chatId, isLoading }: SearchInputProps) {
+    const router = useRouter();
     const [showHeading, setShowHeading] = useState(true);
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<Array<{role: string, content: string}>>(initialMessages);
@@ -171,6 +181,7 @@ export default function SearchInput({ onMessageSent, initialMessages = [], chatI
     const [isAtBottom, setIsAtBottom] = useState(true);
     const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
     const [shouldStopStream, setShouldStopStream] = useState(false);
+    const [showAuthModal, setShowAuthModal] = useState(false);
     const wsRef = useRef<WebSocket | null>(null);
     const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const reconnectAttemptsRef = useRef(0);
@@ -317,6 +328,11 @@ export default function SearchInput({ onMessageSent, initialMessages = [], chatI
     }, [isStreaming, currentStream, shouldStopStream]);
 
     const handleSend = useCallback(() => {
+        if (!session) {
+            setShowAuthModal(true);
+            return;
+        }
+
         if (!input.trim() || !wsRef.current) return;
     
         const message = {
@@ -337,7 +353,7 @@ export default function SearchInput({ onMessageSent, initialMessages = [], chatI
         } else {
             console.error("WebSocket is not open");
         }
-    }, [input, adjustHeight, onMessageSent, chatId]);
+    }, [input, adjustHeight, onMessageSent, chatId, session]);
 
     const handleStopStream = useCallback(() => {
         setShouldStopStream(true);
@@ -461,6 +477,20 @@ export default function SearchInput({ onMessageSent, initialMessages = [], chatI
                 )}
                 <div ref={messagesEndRef} />
             </div>
+
+            <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Please sign in</DialogTitle>
+                        <DialogDescription>
+                            You need to be signed in to send messages.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button onClick={() => router.push('/login')}>LogIn/SignIn</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             <motion.div 
                 className={cn(
