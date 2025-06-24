@@ -38,8 +38,22 @@ services:
     depends_on:
       - mongodb
       - redis
+      - db-migrator
     networks:
       - app-network
+
+  db-migrator:
+    build:
+      context: .
+      dockerfile: db-migrator/Dockerfile
+    container_name: db_migrator
+    environment:
+      - QWIN_API_KEY=${QWIN_API_KEY}
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+    restart: "no"
 
   mongodb:
     image: mongo:6
