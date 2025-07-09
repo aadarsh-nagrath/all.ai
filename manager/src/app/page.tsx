@@ -12,6 +12,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { User, Package } from 'lucide-react';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerClose } from "@/components/ui/drawer";
 
 // Get credentials from env (using NEXT_PUBLIC_* for client-side)
 const USER_ID = process.env.NEXT_PUBLIC_CONTROLLER_ID || '';
@@ -81,6 +82,35 @@ export default function AddModelsPage() {
   const [addModelLoading, setAddModelLoading] = useState(false);
   const [addModelError, setAddModelError] = useState('');
   const [addModelSuccess, setAddModelSuccess] = useState('');
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerType, setDrawerType] = useState<'model' | 'user' | null>(null);
+  const [drawerId, setDrawerId] = useState<string | null>(null);
+  const [drawerData, setDrawerData] = useState<any>(null);
+  const [drawerLoading, setDrawerLoading] = useState(false);
+  const [drawerError, setDrawerError] = useState('');
+
+  const openDrawer = (type: 'model' | 'user', id: string) => {
+    setDrawerType(type);
+    setDrawerId(id);
+    setDrawerOpen(true);
+  };
+
+  useEffect(() => {
+    if (drawerOpen && drawerType && drawerId) {
+      setDrawerLoading(true);
+      setDrawerError('');
+      setDrawerData(null);
+      const url = drawerType === 'model' ? `/api/models/${drawerId}` : `/api/user/${drawerId}`;
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) setDrawerError(data.error);
+          else setDrawerData(data);
+        })
+        .catch(() => setDrawerError('Failed to fetch details'))
+        .finally(() => setDrawerLoading(false));
+    }
+  }, [drawerOpen, drawerType, drawerId]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -313,6 +343,9 @@ export default function AddModelsPage() {
                         <Badge variant="secondary" className="text-xs">
                           ID: {model._id}
                         </Badge>
+                        <Button size="sm" className="mt-2" onClick={() => openDrawer('model', model._id)}>
+                          View
+                        </Button>
                       </CardContent>
                     </Card>
                   ))}
@@ -380,6 +413,9 @@ export default function AddModelsPage() {
                         <Badge variant="secondary" className="text-xs">
                           ID: {user._id}
                         </Badge>
+                        <Button size="sm" className="mt-2" onClick={() => openDrawer('user', user._id)}>
+                          View
+                        </Button>
                       </CardContent>
                     </Card>
                   ))}
@@ -397,6 +433,60 @@ export default function AddModelsPage() {
           </div>
         )}
       </main>
+      {/* Drawer for details */}
+      <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>
+              {drawerType === 'model' ? drawerData?.model_name || 'Model Details' : drawerData?.name || 'User Details'}
+            </DrawerTitle>
+            <DrawerDescription>
+              {drawerLoading && 'Loading...'}
+              {drawerError && <span className="text-red-500">{drawerError}</span>}
+              {!drawerLoading && !drawerError && drawerData && (
+                <div className="text-left mt-2 space-y-2">
+                  {drawerType === 'model' ? (
+                    <>
+                      <div><b>Description:</b> {drawerData.long_description || drawerData.short_description}</div>
+                      <div><b>Status:</b> {drawerData.status}</div>
+                      <div><b>Provider(s):</b> {drawerData.provider?.map((p: any, i: number) => (
+                        <div key={i} className="ml-2">- {p.name} ({p.region}), Context: {p.context_length}, Latency: {p.latency}, Throughput: {p.throughput}</div>
+                      ))}</div>
+                      <div><b>Parameters:</b> {drawerData.parameters}</div>
+                      <div><b>Context Length:</b> {drawerData.context_length}</div>
+                      <div><b>Max Output Length:</b> {drawerData.max_output_length}</div>
+                      <div><b>Performance:</b> {drawerData.Performance}</div>
+                      <div><b>Response Time:</b> {drawerData.Response_Time}</div>
+                      <div><b>Cost:</b> {drawerData.Cost}</div>
+                      <div><b>Success Rate:</b> {drawerData.Success_Rate}</div>
+                      <div><b>Usecases:</b> {drawerData.usecase?.join(', ')}</div>
+                      <div><b>Key Features:</b> {drawerData.key_features?.join(', ')}</div>
+                      <div><b>Precision:</b> {drawerData.precision}</div>
+                      <div><b>Benchmarks:</b> {drawerData.benchmarks?.join(', ')}</div>
+                      <div><b>Model Weights Available:</b> {drawerData.model_weights_available ? 'Yes' : 'No'}</div>
+                      <div><b>API Compatibility:</b> {drawerData.api_compatibility}</div>
+                      <div><b>Last Updated:</b> {drawerData.last_updated ? new Date(drawerData.last_updated).toLocaleString() : ''}</div>
+                      <div><b>Tag:</b> {drawerData.tag}</div>
+                    </>
+                  ) : (
+                    <>
+                      <div><b>Email:</b> {drawerData.email}</div>
+                      <div><b>Role:</b> {drawerData.role}</div>
+                      <div><b>Status:</b> {drawerData.status}</div>
+                      <div><b>Created At:</b> {drawerData.createdAt ? new Date(drawerData.createdAt).toLocaleString() : ''}</div>
+                      <div><b>Last Login:</b> {drawerData.lastLogin ? new Date(drawerData.lastLogin).toLocaleString() : ''}</div>
+                      {/* Add more user fields as needed */}
+                    </>
+                  )}
+                </div>
+              )}
+            </DrawerDescription>
+          </DrawerHeader>
+          <DrawerClose asChild>
+            <Button className="w-full mt-4" variant="secondary">Close</Button>
+          </DrawerClose>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }
