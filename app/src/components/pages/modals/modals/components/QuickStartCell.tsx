@@ -23,7 +23,6 @@ export function QuickStartCell({ row, table, toast }: QuickStartCellProps) {
         const newStatus: Model["status"] = checked ? "Quick Start" : 
           (model.status === "Active" ? "Active" : 
            model.status === "Maintenance" ? "Maintenance" : "Ready")
-        
         return { 
           ...model, 
           quickStart: checked,
@@ -32,10 +31,22 @@ export function QuickStartCell({ row, table, toast }: QuickStartCellProps) {
       }
       return model
     })
-    
-    // The updateData function is defined in the table meta via type declaration
+    // Update UI immediately
     table.options.meta?.updateData(updatedData)
-    
+    // Get all quick start model ids
+    const quickStartIds = updatedData.filter((m: Model) => m.quickStart).map((m: Model) => m.id)
+    // Store in localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('quick_start_models', JSON.stringify(quickStartIds))
+      // Dispatch custom event for same-tab updates
+      window.dispatchEvent(new Event('quickstart-updated'))
+    }
+    // Sync with backend (fire and forget)
+    fetch('/api/user', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ quick_start: quickStartIds })
+    })
     toast({
       variant: "success",
       title: checked ? "Added to Quick Start" : "Removed from Quick Start",
