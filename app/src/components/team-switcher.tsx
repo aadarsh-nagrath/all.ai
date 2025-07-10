@@ -3,6 +3,7 @@
 import * as React from "react"
 import Image from "next/image";
 import { ChevronsUpDown, Plus } from "lucide-react"
+import { useEffect, useState } from "react";
 
 import {
   DropdownMenu,
@@ -20,17 +21,59 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-export function TeamSwitcher({
-  models,
-}: {
-  models: {
-    name: string
-    logo: string // logo URL
-    version: string
-  }[]
-}) {
+export function TeamSwitcher() {
   const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(models[0])
+  const [models, setModels] = useState<any[]>([])
+  const [activeTeam, setActiveTeam] = useState<any | null>(null)
+
+  useEffect(() => {
+    function updateModels() {
+      let ids: string[] = []
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem('quick_start_models')
+        if (stored) ids = JSON.parse(stored)
+      }
+      fetch('/api/models/list')
+        .then(res => res.json())
+        .then((allModels: any[]) => {
+          let filtered: any[] = []
+          if (ids.length > 0) {
+            filtered = allModels.filter(m => ids.includes(m._id))
+          } else {
+            filtered = allModels.filter(m => (m.status && (m.status.toLowerCase() === 'quick_start' || m.status.toLowerCase() === 'quick start')))
+          }
+          const mapped = filtered.map(m => ({
+            id: m._id,
+            name: m.model_name,
+            logo: m.model_icon,
+            version: m.tag || '',
+          }))
+          setModels(mapped)
+          setActiveTeam(mapped[0] || null)
+        })
+    }
+    updateModels()
+    window.addEventListener('storage', updateModels)
+    window.addEventListener('quickstart-updated', updateModels)
+    return () => {
+      window.removeEventListener('storage', updateModels)
+      window.removeEventListener('quickstart-updated', updateModels)
+    }
+  }, [])
+
+  if (!models.length || !activeTeam) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg" className="opacity-60 cursor-not-allowed">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <span className="text-xs">No Quick Start Models</span>
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    )
+  }
 
   return (
     <SidebarMenu>
@@ -46,8 +89,8 @@ export function TeamSwitcher({
                 <Image
                   src={activeTeam.logo}
                   alt={activeTeam.name}
-                  width={32} // Explicit width
-                  height={32} // Explicit height
+                  width={32}
+                  height={32}
                   unoptimized
                   className="w-full h-full object-cover rounded-lg"
                 />
@@ -72,7 +115,7 @@ export function TeamSwitcher({
             </DropdownMenuLabel>
             {models.map((m, index) => (
               <DropdownMenuItem
-                key={m.name}
+                key={m.id}
                 onClick={() => setActiveTeam(m)}
                 className="gap-2 p-2"
               >
@@ -81,8 +124,8 @@ export function TeamSwitcher({
                   <Image
                     src={m.logo}
                     alt={m.name}
-                    width={32} // Explicit width
-                    height={32} // Explicit height
+                    width={32}
+                    height={32}
                     unoptimized
                     className="w-full h-full object-cover rounded-sm"
                   />
