@@ -8,7 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { ModelTable } from "./components/ModelTable"
 import { ModelHeader } from "./components/ModelHeader"
 import { ModelNavigation } from "./components/ModelNavigation"
@@ -104,6 +104,44 @@ export default function ModelSelection() {
     
     return filtered
   }, [data, activeTab, searchTerm, selectedProvider])
+
+  useEffect(() => {
+    async function fetchModels() {
+      try {
+        const res = await fetch("/api/models/list");
+        if (!res.ok) throw new Error("Failed to fetch models");
+        const apiModels = await res.json();
+        // Map API data to Model type
+        const mapped = apiModels.map((m: any) => {
+          let status = "Ready";
+          if (m.status) {
+            const s = m.status.toLowerCase();
+            if (s === "active") status = "Active";
+            else if (s === "inactive") status = "Inactive";
+            else if (s === "maintenance") status = "Maintenance";
+            else if (s === "quick_start" || s === "quick start") status = "Quick Start";
+            else status = "Ready";
+          }
+          return {
+            id: m._id,
+            name: m.model_name,
+            provider: Array.isArray(m.provider) && m.provider.length > 0 ? m.provider[0].name : "",
+            status,
+            parameters: Number(m.parameters?.replace(/[^\d.]/g, "")) * 1e9 || 0,
+            contextLength: Number(m.context_length?.replace(/[^\d.]/g, "")) || 0,
+            lastUpdated: m.last_updated ? new Date(m.last_updated).toISOString().slice(0, 10) : "",
+            favorite: false,
+            quickStart: status === "Quick Start",
+          }
+        })
+        setData(mapped)
+      } catch {
+        // Optionally show a toast
+        toast({ title: "Error", description: "Could not load models", variant: "destructive" })
+      }
+    }
+    fetchModels()
+  }, [toast])
 
   const table = useReactTable({
     data: filteredData,

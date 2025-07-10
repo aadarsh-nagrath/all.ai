@@ -35,3 +35,31 @@ export async function GET() {
     await client.close();
   }
 }
+
+export async function PATCH(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user?.email) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const { quick_start } = await req.json();
+    if (!Array.isArray(quick_start)) {
+      return NextResponse.json({ error: "quick_start must be an array" }, { status: 400 });
+    }
+    await client.connect();
+    const db = client.db(dbName);
+    const result = await db.collection("users").updateOne(
+      { email: session.user.email },
+      { $set: { "preferences.quick_start": quick_start } }
+    );
+    if (result.matchedCount === 0) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    console.error("Error updating quick_start:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  } finally {
+    await client.close();
+  }
+}

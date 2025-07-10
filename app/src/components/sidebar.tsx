@@ -27,7 +27,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader className="flex">
-        <TeamSwitcher models={sidebarcontent.models} />
+        <TeamSwitcher />
       </SidebarHeader>
       <SidebarContent className="overflow-hidden">
         <NavMain items={sidebarcontent.navMain} />
