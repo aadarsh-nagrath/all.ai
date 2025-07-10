@@ -29,4 +29,5 @@ class LLMModel(BaseModel):
     precision: Optional[str] = None
     benchmarks: Optional[List[str]] = None
     model_weights_available: Optional[bool] = None
-    api_compatibility: Optional[str] = None 
+    api_compatibility: Optional[str] = None
+    model_icon: Optional[str] = None 

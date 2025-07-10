@@ -9,6 +9,9 @@ export async function POST(request: Request) {
   try {
     const data = await request.json();
     data.last_updated = new Date(); // Always set last_updated to now
+    if (!data.model_icon) {
+      data.model_icon = ""; // Default: empty string (frontend will show default icon)
+    }
     await client.connect();
     const db = client.db(dbName);
     const result = await db.collection('llm-models').insertOne(data);

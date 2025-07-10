@@ -116,6 +116,8 @@ export default function AddModelsPage() {
   // Add state for edit mode
   const [editMode, setEditMode] = useState(false);
   const [editModelId, setEditModelId] = useState<string | null>(null);
+  // Add state for model_icon
+  const [modelIcon, setModelIcon] = useState("");
 
   const openDrawer = (type: 'model' | 'user', id: string) => {
     setDrawerType(type);
@@ -176,7 +178,7 @@ export default function AddModelsPage() {
     setEditMode(false);
     setEditModelId(null);
     // Clear all fields
-    setModelName(""); setShortDescription(""); setLongDescription(""); setStatus(""); setParameters(""); setContextLength(""); setMaxOutputLength(""); setTag(""); setPerformance(""); setResponseTime(""); setCost(""); setSuccessRate(""); setUsecase([""]); setKeyFeatures([""]); setPrecision(""); setBenchmarks([""]); setModelWeightsAvailable(false); setApiCompatibility(""); setProviders([{ name: "", region: "", context_length: "", latency: "", throughput: "" }]);
+    setModelName(""); setShortDescription(""); setLongDescription(""); setStatus(""); setParameters(""); setContextLength(""); setMaxOutputLength(""); setTag(""); setPerformance(""); setResponseTime(""); setCost(""); setSuccessRate(""); setUsecase([""]); setKeyFeatures([""]); setPrecision(""); setBenchmarks([""]); setModelWeightsAvailable(false); setApiCompatibility(""); setProviders([{ name: "", region: "", context_length: "", latency: "", throughput: "" }]); setModelIcon("");
     setAddModelModalOpen(true);
   };
   const openEditModelModal = (model: any) => {
@@ -201,6 +203,7 @@ export default function AddModelsPage() {
     setModelWeightsAvailable(!!model.model_weights_available);
     setApiCompatibility(model.api_compatibility || "");
     setProviders(Array.isArray(model.provider) && model.provider.length > 0 ? model.provider : [{ name: "", region: "", context_length: "", latency: "", throughput: "" }]);
+    setModelIcon(model.model_icon || "");
     setAddModelModalOpen(true);
   };
 
@@ -236,6 +239,7 @@ export default function AddModelsPage() {
             benchmarks: benchmarks.filter(Boolean),
             model_weights_available: modelWeightsAvailable,
             api_compatibility: apiCompatibility,
+            model_icon: modelIcon,
           }),
         });
       } else {
@@ -262,6 +266,7 @@ export default function AddModelsPage() {
             benchmarks: benchmarks.filter(Boolean),
             model_weights_available: modelWeightsAvailable,
             api_compatibility: apiCompatibility,
+            model_icon: modelIcon,
           }),
         });
       }
@@ -509,6 +514,10 @@ export default function AddModelsPage() {
                       <label className="block text-sm font-medium mb-1">API Compatibility</label>
                       <Input type="text" value={apiCompatibility} onChange={e => setApiCompatibility(e.target.value)} />
                     </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Model Icon (URL or leave blank for default)</label>
+                      <Input type="text" value={modelIcon} onChange={e => setModelIcon(e.target.value)} placeholder="https://... or icon name" />
+                    </div>
                     {addModelError && (
                       <Alert variant="destructive">
                         <AlertTitle>Error</AlertTitle>
@@ -553,7 +562,11 @@ export default function AddModelsPage() {
                     <Card key={model._id} className="hover:shadow-xl transition-shadow duration-300">
                       <CardHeader>
                         <CardTitle className="text-lg flex items-center gap-2">
-                          <Package className="h-5 w-5" />
+                          {model.model_icon ? (
+                            <img src={model.model_icon} alt="icon" className="h-5 w-5 rounded object-cover" />
+                          ) : (
+                            <Package className="h-5 w-5" />
+                          )}
                           {model.model_name}
                         </CardTitle>
                       </CardHeader>
