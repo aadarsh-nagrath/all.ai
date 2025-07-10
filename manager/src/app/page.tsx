@@ -82,7 +82,6 @@ export default function AddModelsPage() {
   const [parameters, setParameters] = useState("");
   const [contextLength, setContextLength] = useState("");
   const [maxOutputLength, setMaxOutputLength] = useState("");
-  const [lastUpdated, setLastUpdated] = useState("");
   const [tag, setTag] = useState("");
   const [performance, setPerformance] = useState("");
   const [responseTime, setResponseTime] = useState("");
@@ -177,7 +176,7 @@ export default function AddModelsPage() {
     setEditMode(false);
     setEditModelId(null);
     // Clear all fields
-    setModelName(""); setShortDescription(""); setLongDescription(""); setStatus(""); setParameters(""); setContextLength(""); setMaxOutputLength(""); setLastUpdated(""); setTag(""); setPerformance(""); setResponseTime(""); setCost(""); setSuccessRate(""); setUsecase([""]); setKeyFeatures([""]); setPrecision(""); setBenchmarks([""]); setModelWeightsAvailable(false); setApiCompatibility(""); setProviders([{ name: "", region: "", context_length: "", latency: "", throughput: "" }]);
+    setModelName(""); setShortDescription(""); setLongDescription(""); setStatus(""); setParameters(""); setContextLength(""); setMaxOutputLength(""); setTag(""); setPerformance(""); setResponseTime(""); setCost(""); setSuccessRate(""); setUsecase([""]); setKeyFeatures([""]); setPrecision(""); setBenchmarks([""]); setModelWeightsAvailable(false); setApiCompatibility(""); setProviders([{ name: "", region: "", context_length: "", latency: "", throughput: "" }]);
     setAddModelModalOpen(true);
   };
   const openEditModelModal = (model: any) => {
@@ -190,7 +189,6 @@ export default function AddModelsPage() {
     setParameters(model.parameters || "");
     setContextLength(model.context_length?.toString() || "");
     setMaxOutputLength(model.max_output_length?.toString() || "");
-    setLastUpdated(model.last_updated ? new Date(model.last_updated).toISOString().slice(0,10) : "");
     setTag(model.tag || "");
     setPerformance(model.Performance || "");
     setResponseTime(model.Response_Time || "");
@@ -225,7 +223,6 @@ export default function AddModelsPage() {
             parameters,
             context_length: contextLength,
             max_output_length: maxOutputLength,
-            last_updated: lastUpdated ? new Date(lastUpdated) : null,
             tag,
             Performance: performance,
             Response_Time: responseTime,
@@ -252,7 +249,6 @@ export default function AddModelsPage() {
             parameters,
             context_length: contextLength,
             max_output_length: maxOutputLength,
-            last_updated: lastUpdated ? new Date(lastUpdated) : null,
             tag,
             Performance: performance,
             Response_Time: responseTime,
@@ -271,7 +267,7 @@ export default function AddModelsPage() {
       }
       if (res.ok) {
         setAddModelSuccess(editMode ? "Model updated successfully!" : "Model added successfully!");
-        setModelName(""); setShortDescription(""); setLongDescription(""); setStatus(""); setParameters(""); setContextLength(""); setMaxOutputLength(""); setLastUpdated(""); setTag(""); setPerformance(""); setResponseTime(""); setCost(""); setSuccessRate(""); setUsecase([""]); setKeyFeatures([""]); setPrecision(""); setBenchmarks([""]); setModelWeightsAvailable(false); setApiCompatibility(""); setProviders([{ name: "", region: "", context_length: "", latency: "", throughput: "" }]);
+        setModelName(""); setShortDescription(""); setLongDescription(""); setStatus(""); setParameters(""); setContextLength(""); setMaxOutputLength(""); setTag(""); setPerformance(""); setResponseTime(""); setCost(""); setSuccessRate(""); setUsecase([""]); setKeyFeatures([""]); setPrecision(""); setBenchmarks([""]); setModelWeightsAvailable(false); setApiCompatibility(""); setProviders([{ name: "", region: "", context_length: "", latency: "", throughput: "" }]);
         fetch("/api/models/list").then(res => res.json()).then(data => setModels(Array.isArray(data) ? data : []));
         setAddModelModalOpen(false);
       } else {
@@ -434,10 +430,6 @@ export default function AddModelsPage() {
                     <div>
                       <label className="block text-sm font-medium mb-1">Max Output Length</label>
                       <Input type="number" value={maxOutputLength} onChange={e => setMaxOutputLength(e.target.value)} />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Last Updated</label>
-                      <Input type="date" value={lastUpdated} onChange={e => setLastUpdated(e.target.value)} />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1">Tag</label>

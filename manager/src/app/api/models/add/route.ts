@@ -8,6 +8,7 @@ export async function POST(request: Request) {
   const client = new MongoClient(uri!);
   try {
     const data = await request.json();
+    data.last_updated = new Date(); // Always set last_updated to now
     await client.connect();
     const db = client.db(dbName);
     const result = await db.collection('llm-models').insertOne(data);
