@@ -80,6 +80,19 @@ services:
     networks:
       - app-network
 
+  console:
+    build: ./manager
+    container_name: console
+    ports:
+      - "4044:3000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://root:example@mongodb:27017/allai?authSource=admin
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
 volumes:
   mongodb_data:
   redis_data:
