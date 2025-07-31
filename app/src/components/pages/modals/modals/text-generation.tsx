@@ -111,6 +111,20 @@ export default function ModelSelection() {
         const res = await fetch("/api/models/list");
         if (!res.ok) throw new Error("Failed to fetch models");
         const apiModels = await res.json();
+        
+        // Get saved quick start models from localStorage
+        let savedQuickStartIds: string[] = [];
+        if (typeof window !== 'undefined') {
+          const saved = localStorage.getItem('quick_start_models');
+          if (saved) {
+            try {
+              savedQuickStartIds = JSON.parse(saved);
+            } catch (e) {
+              console.warn('Failed to parse saved quick start models:', e);
+            }
+          }
+        }
+        
         // Map API data to Model type
         const mapped = apiModels.map((m: any) => {
           let status = "Ready";
@@ -122,16 +136,20 @@ export default function ModelSelection() {
             else if (s === "quick_start" || s === "quick start") status = "Quick Start";
             else status = "Ready";
           }
+          
+          const modelId = m._id;
+          const isQuickStart = status === "Quick Start" || savedQuickStartIds.includes(modelId);
+          
           return {
-            id: m._id,
+            id: modelId,
             name: m.model_name,
             provider: Array.isArray(m.provider) && m.provider.length > 0 ? m.provider[0].name : "",
-            status,
+            status: isQuickStart ? "Quick Start" : status,
             parameters: Number(m.parameters?.replace(/[^\d.]/g, "")) * 1e9 || 0,
             contextLength: Number(m.context_length?.replace(/[^\d.]/g, "")) || 0,
             lastUpdated: m.last_updated ? new Date(m.last_updated).toISOString().slice(0, 10) : "",
             favorite: false,
-            quickStart: status === "Quick Start",
+            quickStart: isQuickStart,
           }
         })
         setData(mapped)
@@ -142,6 +160,38 @@ export default function ModelSelection() {
     }
     fetchModels()
   }, [toast])
+
+  // Listen for quick start updates from other tabs
+  useEffect(() => {
+    const handleQuickStartUpdate = () => {
+      // Refresh the data to sync with localStorage changes
+      setData(prevData => {
+        const saved = localStorage.getItem('quick_start_models');
+        if (!saved) return prevData;
+        
+        try {
+          const savedQuickStartIds = JSON.parse(saved);
+          return prevData.map(model => ({
+            ...model,
+            quickStart: savedQuickStartIds.includes(model.id),
+            status: savedQuickStartIds.includes(model.id) ? "Quick Start" : 
+              (model.status === "Active" ? "Active" : 
+               model.status === "Maintenance" ? "Maintenance" : "Ready")
+          }));
+        } catch (e) {
+          console.warn('Failed to parse saved quick start models:', e);
+          return prevData;
+        }
+      });
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('quickstart-updated', handleQuickStartUpdate);
+      return () => {
+        window.removeEventListener('quickstart-updated', handleQuickStartUpdate);
+      };
+    }
+  }, []);
 
   const table = useReactTable({
     data: filteredData,
