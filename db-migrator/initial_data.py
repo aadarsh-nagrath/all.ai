@@ -65,7 +65,9 @@ async def migrate():
         precision="bf16",
         benchmarks=["MMMU", "MathVista", "VideoMME", "MMLU"],
         model_weights_available=True,
-        api_compatibility="OpenAI-compatible"
+        api_compatibility="OpenAI-compatible",
+        api_model="qwen2.5-vl-32b",
+        type="multimodal"
     )
 
     # Check if model exists and insert if it doesn't

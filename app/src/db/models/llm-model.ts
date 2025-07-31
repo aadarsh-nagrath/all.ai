@@ -28,6 +28,8 @@ export interface ILlmModel extends Document {
   model_weights_available: boolean;
   api_compatibility: string;
   model_icon: string;
+  api_model: string;
+  type: string;
 }
 
 const LlmModelSchema: Schema = new Schema({
@@ -60,6 +62,8 @@ const LlmModelSchema: Schema = new Schema({
   model_weights_available: Boolean,
   api_compatibility: String,
   model_icon: String,
+  api_model: String,
+  type: String,
 });
 
 export default mongoose.models.LlmModel || mongoose.model<ILlmModel>('LlmModel', LlmModelSchema, 'llm-models'); 
