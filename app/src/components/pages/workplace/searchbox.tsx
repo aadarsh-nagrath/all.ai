@@ -31,6 +31,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import { useActiveModel } from "../../team-switcher";
 
 // Define the new MarkdownCodeRenderer component here
 interface MarkdownCodeRendererProps {
@@ -195,6 +196,50 @@ export default function SearchInput({ onMessageSent, initialMessages = [], chatI
         maxHeight: 200,
     });
     const animationFrameRef = useRef<number | null>(null);
+    const { activeModel } = useActiveModel();
+
+    // Debug logging for active model
+    useEffect(() => {
+        console.log("SearchInput - Active model changed:", activeModel);
+    }, [activeModel]);
+
+    // Fallback: Get active model from localStorage if context is not working
+    const getActiveModelFallback = useCallback(() => {
+        if (activeModel) {
+            return activeModel;
+        }
+        
+        // Try to get from localStorage
+        try {
+            const stored = localStorage.getItem('quick_start_models');
+            if (stored) {
+                const modelIds = JSON.parse(stored);
+                if (modelIds.length > 0) {
+                    // Fetch the first model's details
+                    return fetch('/api/models/list')
+                        .then(res => res.json())
+                        .then((allModels: any[]) => {
+                            const model = allModels.find(m => m._id === modelIds[0]);
+                            if (model) {
+                                return {
+                                    id: model._id,
+                                    name: model.model_name,
+                                    logo: model.model_icon,
+                                    version: model.tag || '',
+                                    type: model.type || '',
+                                    api_model: model.api_model || '',
+                                };
+                            }
+                            return null;
+                        });
+                }
+            }
+        } catch (error) {
+            console.error("Error getting model from localStorage:", error);
+        }
+        
+        return null;
+    }, [activeModel]);
 
     // Update messages when initialMessages changes
     useEffect(() => {
@@ -327,7 +372,7 @@ export default function SearchInput({ onMessageSent, initialMessages = [], chatI
         };
     }, [isStreaming, currentStream, shouldStopStream]);
 
-    const handleSend = useCallback(() => {
+    const handleSend = useCallback(async () => {
         if (!session) {
             setShowAuthModal(true);
             return;
@@ -335,10 +380,22 @@ export default function SearchInput({ onMessageSent, initialMessages = [], chatI
 
         if (!input.trim() || !wsRef.current) return;
     
+        // Get the active model using fallback if context is not working
+        let modelToUse = activeModel;
+        if (!modelToUse) {
+            const fallbackModel = await getActiveModelFallback();
+            modelToUse = fallbackModel;
+        }
+    
         const message = {
             message: input,
-            conversation_id: chatId || null
+            conversation_id: chatId || null,
+            model: modelToUse
         };
+
+        // Debug logging
+        console.log("Sending message with model info:", message);
+        console.log("Active model:", modelToUse);
     
         if (wsRef.current.readyState === WebSocket.OPEN) {
             wsRef.current.send(JSON.stringify(message));
@@ -353,7 +410,7 @@ export default function SearchInput({ onMessageSent, initialMessages = [], chatI
         } else {
             console.error("WebSocket is not open");
         }
-    }, [input, adjustHeight, onMessageSent, chatId, session]);
+    }, [input, adjustHeight, onMessageSent, chatId, session, activeModel, getActiveModelFallback]);
 
     const handleStopStream = useCallback(() => {
         setShouldStopStream(true);

@@ -3,7 +3,7 @@
 import * as React from "react"
 import Image from "next/image";
 import { ChevronsUpDown, Plus } from "lucide-react"
-import { useEffect, useState } from "react";
+import { useEffect, useState, createContext, useContext } from "react";
 
 import {
   DropdownMenu,
@@ -21,10 +21,37 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
+// Create context for active model
+interface ActiveModelContextType {
+  activeModel: any | null;
+  setActiveModel: (model: any | null) => void;
+}
+
+const ActiveModelContext = createContext<ActiveModelContextType | undefined>(undefined);
+
+export const useActiveModel = () => {
+  const context = useContext(ActiveModelContext);
+  if (!context) {
+    throw new Error('useActiveModel must be used within an ActiveModelProvider');
+  }
+  return context;
+};
+
+export function ActiveModelProvider({ children }: { children: React.ReactNode }) {
+  const [activeModel, setActiveModel] = useState<any | null>(null);
+  
+  return (
+    <ActiveModelContext.Provider value={{ activeModel, setActiveModel }}>
+      {children}
+    </ActiveModelContext.Provider>
+  );
+}
+
 export function TeamSwitcher() {
   const { isMobile } = useSidebar()
   const [models, setModels] = useState<any[]>([])
   const [activeTeam, setActiveTeam] = useState<any | null>(null)
+  const { setActiveModel } = useActiveModel()
 
   useEffect(() => {
     function updateModels() {
@@ -47,9 +74,15 @@ export function TeamSwitcher() {
             name: m.model_name,
             logo: m.model_icon,
             version: m.tag || '',
+            type: m.type || '',
+            api_model: m.api_model || '',
           }))
+          console.log("Mapped models:", mapped)
           setModels(mapped)
-          setActiveTeam(mapped[0] || null)
+          const firstModel = mapped[0] || null
+          console.log("Setting first model as active:", firstModel)
+          setActiveTeam(firstModel)
+          setActiveModel(firstModel)
         })
     }
     updateModels()
@@ -59,7 +92,13 @@ export function TeamSwitcher() {
       window.removeEventListener('storage', updateModels)
       window.removeEventListener('quickstart-updated', updateModels)
     }
-  }, [])
+  }, [setActiveModel])
+
+  const handleModelChange = (model: any) => {
+    console.log("Model changed to:", model)
+    setActiveTeam(model)
+    setActiveModel(model)
+  }
 
   if (!models.length || !activeTeam) {
     return (
@@ -116,7 +155,7 @@ export function TeamSwitcher() {
             {models.map((m, index) => (
               <DropdownMenuItem
                 key={m.id}
-                onClick={() => setActiveTeam(m)}
+                onClick={() => handleModelChange(m)}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-sm border">
