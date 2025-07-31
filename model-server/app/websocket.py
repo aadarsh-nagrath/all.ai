@@ -80,7 +80,7 @@ class ConnectionManager:
 
 manager = ConnectionManager()
 
-async def process_message(user_id: str, message: str, conversation_id: str = None):
+async def process_message(user_id: str, message: str, conversation_id: str = None, model_info: dict = None):
     try:
         logger.info(f"Processing message for user {user_id}")
         
@@ -113,8 +113,8 @@ async def process_message(user_id: str, message: str, conversation_id: str = Non
         # Add the new user message to the history
         conversation_history.append({"role": "user", "content": message})
         
-        # Process the message with AI using the full conversation history
-        ai_response = await chat_with_ai(conversation_history)
+        # Process the message with AI using the full conversation history and model info
+        ai_response = await chat_with_ai(conversation_history, model_info)
         logger.info(f"AI response generated for user {user_id}")
         
         return {
@@ -140,15 +140,26 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
                 
                 try:
                     message_data = json.loads(data)
+                    logger.info(f"Received message data: {message_data}")
+                    
                     if "message" not in message_data:
                         logger.warning(f"Message missing 'message' field from user {user_id}")
                         continue
+                    
+                    # Extract model information from the message
+                    model_info = message_data.get("model")
+                    if model_info:
+                        logger.info(f"Received model info for user {user_id}: {model_info}")
+                        logger.info(f"Model type: {model_info.get('type')}, API model: {model_info.get('api_model')}")
+                    else:
+                        logger.info(f"No model info provided for user {user_id}, using default")
                     
                     # Process the message and get AI response
                     response = await process_message(
                         user_id, 
                         message_data["message"],
-                        message_data.get("conversation_id")
+                        message_data.get("conversation_id"),
+                        model_info
                     )
                     
                     if "error" in response:
