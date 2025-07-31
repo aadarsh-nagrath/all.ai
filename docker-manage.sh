@@ -44,7 +44,7 @@ show_usage() {
     echo "  stop [service] [compose]      - Stop all services or specific service"
     echo "  restart [service] [compose]   - Restart all services or specific service"
     echo "  up [service] [compose]        - Create and start services (same as start)"
-    echo "  down [compose]               - Stop and remove containers, networks"
+    echo "  down [service] [compose]               - Stop and remove containers, networks"
     echo "  build [service] [compose]     - Build all services or specific service"
     echo "  logs [service] [compose]      - Show logs for all services or specific service"
     echo "  status [compose]             - Show status of all services"
@@ -579,10 +579,23 @@ case "${1:-help}" in
         check_all_health
         ;;
     down)
-        local compose_type=$2
-        local compose_file=$(get_compose_file "$compose_type")
-        print_status "Stopping and removing containers from $compose_file..."
-        run_compose "$compose_file" down
+        service=$2
+        compose_type=$3
+        compose_file=$(get_compose_file "$compose_type")
+        
+        if [ -n "$service" ]; then
+            if service_exists "$compose_file" "$service"; then
+                print_status "Stopping and removing service: $service (from $compose_file)"
+                run_compose "$compose_file" stop "$service"
+                run_compose "$compose_file" rm -f "$service"
+            else
+                print_error "Service '$service' not found in $compose_file"
+                exit 1
+            fi
+        else
+            print_status "Stopping and removing containers from $compose_file..."
+            run_compose "$compose_file" down
+        fi
         ;;
     help|--help|-h)
         show_usage
