@@ -16,6 +16,7 @@ interface QuickStartCellProps {
 
 export function QuickStartCell({ row, table, toast }: QuickStartCellProps) {
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.stopPropagation()
     const checked = event.target.checked
     const updatedData = table.options.data.map((model: Model) => {
       if (model.id === row.original.id) {

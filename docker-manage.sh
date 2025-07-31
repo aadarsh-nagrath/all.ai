@@ -55,11 +55,14 @@ show_usage() {
     echo "  backup [compose]             - Backup database data"
     echo "  restore [file] [compose]     - Restore database data from backup"
     echo "  health [compose]             - Check health of all services"
+    echo "  push [service] [compose]     - Push images to registry aadarshnagrath/allai"
     echo "  start-all                    - Start all services from both compose files"
     echo "  stop-all                     - Stop all services from both compose files"
     echo "  restart-all                  - Restart all services from both compose files"
     echo "  status-all                   - Show status of all services from both compose files"
     echo "  health-all                   - Check health of all services from both compose files"
+    echo "  push-all                     - Push all images from both compose files to registry"
+    echo "  build-all                    - Build all images from both compose files"
     echo "  help                         - Show this help message"
     echo ""
     echo "Compose Files:"
@@ -81,6 +84,10 @@ show_usage() {
     echo "  $0 exec frontend npm install # Run npm install in frontend container"
     echo "  $0 start-all                # Start all services from both compose files"
     echo "  $0 status-all               # Show status of all services from both compose files"
+    echo "  $0 push frontend            # Push frontend image to registry"
+    echo "  $0 push flux-server selenium # Push flux-server from selenium compose"
+    echo "  $0 push-all                 # Push all images from both compose files"
+    echo "  $0 build-all                # Build all images from both compose files"
 }
 
 # Function to get compose file path
@@ -354,7 +361,7 @@ backup_postgres() {
     mkdir -p "$backup_dir"
     
     print_status "Creating PostgreSQL backup..."
-    run_compose "$compose_file" exec postgres pg_dump -U user -d iptable > "$backup_file"
+    run_compose "$compose_file" exec -T postgres psql -U user -d iptable > "$backup_file"
     
     print_status "Backup created: $backup_file"
 }
@@ -521,6 +528,87 @@ check_all_health() {
     check_health "selenium"
 }
 
+# Function to push images to registry
+push_images() {
+    local service=$1
+    local compose_type=$2
+    local compose_file=$(get_compose_file "$compose_type")
+    local registry="aadarshnagrath/allai"
+    
+    if [ -n "$service" ]; then
+        if service_exists "$compose_file" "$service"; then
+            print_status "Pushing service: $service (from $compose_file) to $registry"
+            
+            # Get the image name and tag from docker-compose images
+            local image_info=$(run_compose "$compose_file" images -q "$service" 2>/dev/null | head -1)
+            if [ -n "$image_info" ]; then
+                # Tag the image with registry
+                local full_image_name="${registry}:${service}"
+                print_status "Tagging image as: $full_image_name"
+                docker tag "$image_info" "$full_image_name"
+                
+                # Push the image
+                print_status "Pushing image: $full_image_name"
+                docker push "$full_image_name"
+                
+                print_status "Successfully pushed: $full_image_name"
+            else
+                print_error "Could not find image for service: $service"
+                print_error "Make sure the service is built and running"
+                exit 1
+            fi
+        else
+            print_error "Service '$service' not found in $compose_file"
+            exit 1
+        fi
+    else
+        print_status "Pushing all images from $compose_file to $registry..."
+        
+        # Get all services and push each one
+        for service_name in $(run_compose "$compose_file" config --services); do
+            print_status "Processing service: $service_name"
+            
+            # Get the image ID for this service
+            local image_id=$(run_compose "$compose_file" images -q "$service_name" 2>/dev/null | head -1)
+            if [ -n "$image_id" ]; then
+                # Tag the image with registry
+                local full_image_name="${registry}:${service_name}"
+                print_status "Tagging image as: $full_image_name"
+                docker tag "$image_id" "$full_image_name"
+                
+                # Push the image
+                print_status "Pushing image: $full_image_name"
+                docker push "$full_image_name"
+                
+                print_status "Successfully pushed: $full_image_name"
+            else
+                print_warning "Could not find image for service: $service_name"
+                print_warning "Make sure the service is built and running"
+            fi
+        done
+    fi
+}
+
+# Function to push all images from both compose files
+push_all_images() {
+    print_header "Pushing All Images to Registry"
+    print_status "Pushing main services..."
+    push_images "" "main"
+    print_status "Pushing selenium services..."
+    push_images "" "selenium"
+    print_status "All images pushed to registry!"
+}
+
+# Function to build all images from both compose files
+build_all_images() {
+    print_header "Building All Images"
+    print_status "Building main services..."
+    build_services "" "main"
+    print_status "Building selenium services..."
+    build_services "" "selenium"
+    print_status "All images built!"
+}
+
 # Main script logic
 case "${1:-help}" in
     start|up)
@@ -577,6 +665,15 @@ case "${1:-help}" in
         ;;
     health-all)
         check_all_health
+        ;;
+    push)
+        push_images "$2" "$3"
+        ;;
+    push-all)
+        push_all_images
+        ;;
+    build-all)
+        build_all_images
         ;;
     down)
         service=$2

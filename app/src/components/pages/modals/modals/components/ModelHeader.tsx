@@ -1,7 +1,21 @@
 import { SplitGradientButton } from "@/components/ui/gradient-button"
 import { Cpu, Zap, Brain, Clock, Server } from "lucide-react"
+import { Model } from "./models"
 
-export function ModelHeader() {
+interface ModelHeaderProps {
+  selectedModel?: Model | null
+}
+
+export function ModelHeader({ selectedModel }: ModelHeaderProps) {
+  // Default model if none selected
+  const model = selectedModel || {
+    name: "GPT-4 Turbo",
+    provider: "OpenAI",
+    contextLength: 128,
+    lastUpdated: "Mar 2024",
+    tag: "Latest"
+  }
+
   return (
     <header className="border-b p-4 bg-transparent from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       <div className="flex items-center justify-between">
@@ -17,25 +31,25 @@ export function ModelHeader() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold">GPT-4 Turbo</h1>
+                <h1 className="text-2xl font-bold">{model.name}</h1>
                 <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
-                  Latest
+                  {model.tag}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                 <span className="flex items-center gap-1">
                   <Zap className="h-3.5 w-3.5" />
-                  <span>128k context</span>
+                  <span>{model.contextLength}k context</span>
                 </span>
                 <span>•</span>
                 <span className="flex items-center gap-1">
                   <Server className="h-3.5 w-3.5" />
-                  <span>OpenAI</span>
+                  <span>{model.provider}</span>
                 </span>
                 <span>•</span>
                 <span className="flex items-center gap-1">
                   <Clock className="h-3.5 w-3.5" />
-                  <span>Mar 2024</span>
+                  <span>{model.lastUpdated}</span>
                 </span>
               </div>
             </div>

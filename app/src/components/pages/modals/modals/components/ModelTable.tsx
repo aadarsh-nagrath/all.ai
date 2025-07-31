@@ -7,9 +7,11 @@ import { Model } from "./models"
 interface ModelTableProps {
   table: TableType<Model>
   columns: ColumnDef<Model>[]
+  onRowClick?: (model: Model) => void
+  selectedModel?: Model | null
 }
 
-export function ModelTable({ table, columns }: ModelTableProps) {
+export function ModelTable({ table, columns, onRowClick, selectedModel }: ModelTableProps) {
   const rowCount = table.getRowModel().rows.length
   const showScroll = rowCount > 12
   
@@ -91,9 +93,11 @@ export function ModelTable({ table, columns }: ModelTableProps) {
                   key={row.id} 
                   data-state={row.getIsSelected() && "selected"}
                   className={cn(
-                    "transition-all duration-300",
-                    row.original.quickStart && "bg-primary/5 hover:bg-primary/10 animate-pulse-once"
+                    "transition-all duration-300 cursor-pointer hover:bg-muted/50",
+                    row.original.quickStart && "bg-primary/5 hover:bg-primary/10 animate-pulse-once",
+                    selectedModel?.id === row.original.id && "bg-primary/10 border-l-4 border-l-primary"
                   )}
+                  onClick={() => onRowClick?.(row.original)}
                 >
                   {row.getVisibleCells().map((cell: Cell<Model, unknown>) => (
                     <TableCell key={cell.id}>
