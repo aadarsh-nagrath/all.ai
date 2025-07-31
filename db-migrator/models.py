@@ -30,4 +30,6 @@ class LLMModel(BaseModel):
     benchmarks: Optional[List[str]] = None
     model_weights_available: Optional[bool] = None
     api_compatibility: Optional[str] = None
-    model_icon: Optional[str] = None 
+    model_icon: Optional[str] = None
+    api_model: Optional[str] = None
+    type: Optional[str] = None 

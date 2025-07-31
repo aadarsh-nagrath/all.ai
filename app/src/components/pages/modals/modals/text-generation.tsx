@@ -8,7 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { ModelTable } from "./components/ModelTable"
 import { ModelHeader } from "./components/ModelHeader"
 import { ModelNavigation } from "./components/ModelNavigation"
@@ -104,6 +104,94 @@ export default function ModelSelection() {
     
     return filtered
   }, [data, activeTab, searchTerm, selectedProvider])
+
+  useEffect(() => {
+    async function fetchModels() {
+      try {
+        const res = await fetch("/api/models/list");
+        if (!res.ok) throw new Error("Failed to fetch models");
+        const apiModels = await res.json();
+        
+        // Get saved quick start models from localStorage
+        let savedQuickStartIds: string[] = [];
+        if (typeof window !== 'undefined') {
+          const saved = localStorage.getItem('quick_start_models');
+          if (saved) {
+            try {
+              savedQuickStartIds = JSON.parse(saved);
+            } catch (e) {
+              console.warn('Failed to parse saved quick start models:', e);
+            }
+          }
+        }
+        
+        // Map API data to Model type
+        const mapped = apiModels.map((m: any) => {
+          let status = "Ready";
+          if (m.status) {
+            const s = m.status.toLowerCase();
+            if (s === "active") status = "Active";
+            else if (s === "inactive") status = "Inactive";
+            else if (s === "maintenance") status = "Maintenance";
+            else if (s === "quick_start" || s === "quick start") status = "Quick Start";
+            else status = "Ready";
+          }
+          
+          const modelId = m._id;
+          const isQuickStart = status === "Quick Start" || savedQuickStartIds.includes(modelId);
+          
+          return {
+            id: modelId,
+            name: m.model_name,
+            provider: Array.isArray(m.provider) && m.provider.length > 0 ? m.provider[0].name : "",
+            status: isQuickStart ? "Quick Start" : status,
+            parameters: Number(m.parameters?.replace(/[^\d.]/g, "")) * 1e9 || 0,
+            contextLength: Number(m.context_length?.replace(/[^\d.]/g, "")) || 0,
+            lastUpdated: m.last_updated ? new Date(m.last_updated).toISOString().slice(0, 10) : "",
+            favorite: false,
+            quickStart: isQuickStart,
+          }
+        })
+        setData(mapped)
+      } catch {
+        // Optionally show a toast
+        toast({ title: "Error", description: "Could not load models", variant: "destructive" })
+      }
+    }
+    fetchModels()
+  }, [toast])
+
+  // Listen for quick start updates from other tabs
+  useEffect(() => {
+    const handleQuickStartUpdate = () => {
+      // Refresh the data to sync with localStorage changes
+      setData(prevData => {
+        const saved = localStorage.getItem('quick_start_models');
+        if (!saved) return prevData;
+        
+        try {
+          const savedQuickStartIds = JSON.parse(saved);
+          return prevData.map(model => ({
+            ...model,
+            quickStart: savedQuickStartIds.includes(model.id),
+            status: savedQuickStartIds.includes(model.id) ? "Quick Start" : 
+              (model.status === "Active" ? "Active" : 
+               model.status === "Maintenance" ? "Maintenance" : "Ready")
+          }));
+        } catch (e) {
+          console.warn('Failed to parse saved quick start models:', e);
+          return prevData;
+        }
+      });
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('quickstart-updated', handleQuickStartUpdate);
+      return () => {
+        window.removeEventListener('quickstart-updated', handleQuickStartUpdate);
+      };
+    }
+  }, []);
 
   const table = useReactTable({
     data: filteredData,
