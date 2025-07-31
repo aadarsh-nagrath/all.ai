@@ -12,33 +12,6 @@ export const sidebarcontent = {
     email: "v.0.0.1",
     avatar: "https://i.pinimg.com/736x/46/42/6d/46426d4d7b3f760caa2bde62dc8e8923.jpg",
   },
-  models: [
-    {
-      name: "Gemini",
-      logo: "https://th.bing.com/th/id/OIP.Bqw6FHMHNiPMibmTbRm38AAAAA?w=133&h=159&c=7&r=0&o=5&dpr=1.4&pid=1.7",
-      version: "Enterprise",
-    },
-    {
-      name: "ChatGPT",
-      logo: "https://th.bing.com/th/id/OIP.z1E8uxTDBci7RVDO5ZX6SQHaHa?w=171&h=180&c=7&r=0&o=5&dpr=1.4&pid=1.7",
-      version: "Startup",
-    },
-    {
-      name: "DeevSeek-r1",
-      logo: "https://www.mx-xz.com/ai-xzs/data-images/deepseek.png",
-      version: "Free",
-    },
-    {
-      name: "Perplexity",
-      logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4eO4Crj6yrRt9eT-3bFIzdd0ANK_KdbcCxBbiFAcGFtRnWxjZOqVJIXZY_RZTIA47bVE&usqp=CAU",
-      version: "Free",
-    },
-    {
-      name: "Grok",
-      logo: "https://logosandtypes.com/wp-content/uploads/2025/02/Grok.png",
-      version: "Free",
-    },
-  ],
   navMain: [
     {
       title: "Plugins & Themes",

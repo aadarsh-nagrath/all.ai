@@ -36,6 +36,21 @@ export function ThemeBadge() {
   const [isOpen, setIsOpen] = useState(false);
   const { setCustomTheme } = useTheme();
 
+  // Load theme from localStorage on mount
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("colored_theme");
+    if (storedTheme) {
+      try {
+        const parsedTheme = JSON.parse(storedTheme);
+        setSelectedTheme(parsedTheme.name);
+        setCustomTheme(parsedTheme);
+      } catch {
+        // fallback: clear invalid localStorage
+        localStorage.removeItem("colored_theme");
+      }
+    }
+  }, [setCustomTheme]);
+
   useEffect(() => {
     fetch("/color-theme/list.json")
       .then((response) => response.json())
@@ -47,6 +62,8 @@ export function ThemeBadge() {
     setSelectedTheme(theme.name);
     setCustomTheme(theme);
     setIsOpen(false);
+    // Persist theme in localStorage
+    localStorage.setItem("colored_theme", JSON.stringify(theme));
   };
 
   const handleThemeHover = (theme: Theme) => {
@@ -108,6 +125,23 @@ export function ThemeBadge() {
     });
   };
 
+  // Prepend Light and Dark themes to the list
+  const lightTheme = {
+    name: "Light",
+    bgColor: "#ffffff",
+    mainColor: "#e5e7eb",
+    subColor: "#f2f2f2",
+    textColor: "#111827"
+  };
+  const darkTheme = {
+    name: "Dark",
+    bgColor: "#0d0d0d",
+    mainColor: "#27272a",
+    subColor: "#262626",
+    textColor: "#f4f4f5"
+  };
+  const allThemes = [darkTheme, lightTheme, ...themes];
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -127,7 +161,7 @@ export function ThemeBadge() {
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandSeparator />
             <CommandGroup heading="Themes">
-              {themes.map((theme) => (
+              {allThemes.map((theme) => (
                 <CommandItem
                   key={theme.name}
                   value={theme.name}

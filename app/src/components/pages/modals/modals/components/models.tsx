@@ -16,6 +16,12 @@ export type Model = {
   lastUpdated: string
   favorite: boolean
   quickStart: boolean
+  short_description?: string
+  key_features?: string[]
+  usecase?: string[]
+  Response_Time?: string
+  Success_Rate?: string
+  tag?: string
 }
 
 export const dummyModels: Model[] = [
@@ -197,7 +203,7 @@ export const dummyModels: Model[] = [
   },
 ]
 
-export const createColumns = (toast: any): ColumnDef<Model>[] => [
+export const createColumns = (toast: any, onConfigureClick?: (model: Model) => void): ColumnDef<Model>[] => [
   {
     id: "quickStart",
     header: () => <span className="sr-only">Quick Start</span>,
@@ -274,12 +280,16 @@ export const createColumns = (toast: any): ColumnDef<Model>[] => [
   {
     id: "configure",
     header: () => <span className="sr-only">Configure</span>,
-    cell: () => (
+    cell: ({ row }) => (
       <div className="flex justify-center">
         <Button 
           variant="secondary" 
           size="sm"
           className="flex items-center gap-2 bg-muted hover:bg-muted/80"
+          onClick={(e) => {
+            e.stopPropagation()
+            onConfigureClick?.(row.original)
+          }}
         >
           <Settings2 className="h-4 w-4" />
           Configure

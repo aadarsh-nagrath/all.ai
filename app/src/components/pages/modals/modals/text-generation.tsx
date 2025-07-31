@@ -14,6 +14,7 @@ import { ModelHeader } from "./components/ModelHeader"
 import { ModelNavigation } from "./components/ModelNavigation"
 import { ModelSearch } from "./components/ModelSearch"
 import { ModelSettings } from "./components/ModelSettings"
+import { ModelConfigDrawer } from "./components/ModelConfigDrawer"
 import { Model, createColumns, dummyModels } from "./components/models"
 
 const ToggleHeader = ({ activeSection, setActiveSection }: { activeSection: 'performance' | 'info', setActiveSection: (section: 'performance' | 'info') => void }) => {
@@ -69,10 +70,23 @@ export default function ModelSelection() {
       desc: false,
     },
   ])
+  const [isConfigDrawerOpen, setIsConfigDrawerOpen] = useState(false)
+  const [selectedModel, setSelectedModel] = useState<Model | null>(null)
 
   const [data, setData] = useState<Model[]>(dummyModels)
-  const columns = useMemo(() => createColumns(toast), [toast])
+  const columns = useMemo(() => createColumns(toast, handleConfigureClick), [toast])
   
+  // Handle configure button click
+  function handleConfigureClick(model: Model) {
+    setSelectedModel(model)
+    setIsConfigDrawerOpen(true)
+  }
+
+  // Handle row click to select model
+  function handleRowClick(model: Model) {
+    setSelectedModel(model)
+  }
+
   // Extract unique providers for the filter dropdown
   const availableProviders = useMemo(() => {
     const providers = new Set<string>()
@@ -150,6 +164,12 @@ export default function ModelSelection() {
             lastUpdated: m.last_updated ? new Date(m.last_updated).toISOString().slice(0, 10) : "",
             favorite: false,
             quickStart: isQuickStart,
+            short_description: m.short_description || "",
+            key_features: m.key_features || [],
+            usecase: m.usecase || [],
+            Response_Time: m.Response_Time || "0.7s",
+            Success_Rate: m.Success_Rate || "97.5%",
+            tag: m.tag || "Latest",
           }
         })
         setData(mapped)
@@ -262,7 +282,7 @@ export default function ModelSelection() {
         </div>
       </div>
 
-      <ModelHeader />
+      <ModelHeader selectedModel={selectedModel} />
       <ModelNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Content Sections */}
@@ -280,7 +300,7 @@ export default function ModelSelection() {
                   setSelectedProvider={setSelectedProvider}
                   availableProviders={availableProviders}
                 />
-                <ModelTable table={table} columns={columns} />
+                <ModelTable table={table} columns={columns} onRowClick={handleRowClick} selectedModel={selectedModel} />
               </div>
               <div className="space-y-4">
                 <ToggleHeader activeSection={activeSection} setActiveSection={setActiveSection} />
@@ -321,7 +341,7 @@ export default function ModelSelection() {
                           <div className="bg-muted/50 rounded-lg p-4">
                             <div className="flex justify-between items-center">
                               <div className="text-sm text-muted-foreground">Response Time</div>
-                              <div className="text-sm font-medium">245ms</div>
+                              <div className="text-sm font-medium">{selectedModel?.Response_Time || "0.7s"}</div>
                             </div>
                             <div className="h-2 bg-muted rounded-full mt-2">
                               <div className="h-2 bg-primary rounded-full" style={{ width: '75%' }}></div>
@@ -330,10 +350,10 @@ export default function ModelSelection() {
                           <div className="bg-muted/50 rounded-lg p-4">
                             <div className="flex justify-between items-center">
                               <div className="text-sm text-muted-foreground">Success Rate</div>
-                              <div className="text-sm font-medium">99.8%</div>
+                              <div className="text-sm font-medium">{selectedModel?.Success_Rate || "97.5%"}</div>
                             </div>
                             <div className="h-2 bg-muted rounded-full mt-2">
-                              <div className="h-2 bg-primary rounded-full" style={{ width: '99.8%' }}></div>
+                              <div className="h-2 bg-primary rounded-full" style={{ width: selectedModel?.Success_Rate && selectedModel.Success_Rate !== 'Unknown' ? selectedModel.Success_Rate.replace('%', '') + '%' : '97.5%' }}></div>
                             </div>
                           </div>
                         </div>
@@ -352,89 +372,93 @@ export default function ModelSelection() {
                             </svg>
                           </div>
                           <div>
-                            <h4 className="text-sm font-medium">Advanced Language Model</h4>
-                            <p className="text-sm text-muted-foreground mt-1">State-of-the-art text generation model optimized for various use cases, from creative writing to technical documentation.</p>
+                            <h4 className="text-sm font-medium">Details</h4>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {selectedModel?.short_description || "State-of-the-art text generation model optimized for various use cases, from creative writing to technical documentation."}
+                            </p>
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="bg-muted/50 rounded-lg p-4">
-                            <h4 className="text-sm font-medium mb-2">Key Features</h4>
-                            <ul className="text-sm text-muted-foreground space-y-2">
-                              <li className="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
-                                  <polyline points="20 6 9 17 4 12"/>
-                                </svg>
-                                Context-aware responses
-                              </li>
-                              <li className="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
-                                  <polyline points="20 6 9 17 4 12"/>
-                                </svg>
-                                Multi-language support
-                              </li>
-                              <li className="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
-                                  <polyline points="20 6 9 17 4 12"/>
-                                </svg>
-                                Code understanding
-                              </li>
-                            </ul>
-                          </div>
-                          <div className="bg-muted/50 rounded-lg p-4">
-                            <h4 className="text-sm font-medium mb-2">Best Practices</h4>
-                            <ul className="text-sm text-muted-foreground space-y-2">
-                              <li className="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
-                                  <polyline points="20 6 9 17 4 12"/>
-                                </svg>
-                                Clear prompt structure
-                              </li>
-                              <li className="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
-                                  <polyline points="20 6 9 17 4 12"/>
-                                </svg>
-                                Context management
-                              </li>
-                              <li className="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
-                                  <polyline points="20 6 9 17 4 12"/>
-                                </svg>
-                                Regular validation
-                              </li>
-                            </ul>
-                          </div>
+                        <div className="bg-muted/50 rounded-lg p-4">
+                          <h4 className="text-sm font-medium mb-2">Key Features</h4>
+                          <ul className="text-sm text-muted-foreground space-y-2">
+                            {selectedModel?.key_features && selectedModel.key_features.length > 0 ? (
+                              selectedModel.key_features.slice(0, 3).map((feature, index) => (
+                                <li key={index} className="flex items-center gap-2">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                  </svg>
+                                  {feature}
+                                </li>
+                              ))
+                            ) : (
+                              <>
+                                <li className="flex items-center gap-2">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                  </svg>
+                                  Context-aware responses
+                                </li>
+                                <li className="flex items-center gap-2">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                  </svg>
+                                  Multi-language support
+                                </li>
+                                <li className="flex items-center gap-2">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                  </svg>
+                                  Code understanding
+                                </li>
+                              </>
+                            )}
+                          </ul>
                         </div>
 
                         <div className="bg-muted/50 rounded-lg p-4">
                           <h4 className="text-sm font-medium mb-2">Use Cases</h4>
                           <div className="grid grid-cols-2 gap-3">
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
-                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
-                                <polyline points="14 2 14 8 20 8"/>
-                              </svg>
-                              Content Creation
-                            </div>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
-                                <path d="m18 15-6-6-6 6"/>
-                              </svg>
-                              Code Generation
-                            </div>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                              </svg>
-                              Chat Support
-                            </div>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
-                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-                              </svg>
-                              Data Analysis
-                            </div>
+                            {selectedModel?.usecase && selectedModel.usecase.length > 0 ? (
+                              selectedModel.usecase.slice(0, 3).map((useCase, index) => (
+                                <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
+                                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                  </svg>
+                                  {useCase}
+                                </div>
+                              ))
+                            ) : (
+                              <>
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
+                                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                  </svg>
+                                  Content Creation
+                                </div>
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
+                                    <path d="m18 15-6-6-6 6"/>
+                                  </svg>
+                                  Code Generation
+                                </div>
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                  </svg>
+                                  Chat Support
+                                </div>
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-primary">
+                                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                                  </svg>
+                                  Data Analysis
+                                </div>
+                              </>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -465,6 +489,13 @@ export default function ModelSelection() {
           </>
         )}
       </div>
+      
+      {/* Configuration Drawer */}
+      <ModelConfigDrawer
+        model={selectedModel}
+        isOpen={isConfigDrawerOpen}
+        onClose={() => setIsConfigDrawerOpen(false)}
+      />
     </div>
   )
 }
