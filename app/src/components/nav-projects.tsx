@@ -105,7 +105,7 @@ export function NavProjects() {
           ) : error ? (
             <div className="px-4 py-2 text-sm text-red-500">{error}</div>
           ) : chats.length === 0 ? (
-            <div className="px-4 py-2 text-sm text-muted-foreground">No chats yet</div>
+            <div className="px-4 py-2 text-sm text-muted-foreground group-data-[collapsible=icon]:hidden">No chats yet</div>
           ) : (
             chats.map((chat, index) => (
               <SidebarMenuItem key={chat.id}>

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 // import Link from "next/link"
 import Image from "next/image"
 import React from "react"
+import { Drawer, DrawerContent, DrawerClose } from "@/components/ui/drawer"
 
 type Category = 'Search' | 'AI' | 'Productivity' | 'Development' | 'Communication' | 'Document' | 'Data'
 
@@ -187,9 +188,10 @@ interface IntegrationCardProps {
   description: string
   logo: string
   isActive: boolean
+  onConfigure: () => void // Add this prop
 }
 
-function IntegrationCard({ name, description, logo, isActive: initialIsActive }: IntegrationCardProps) {
+function IntegrationCard({ name, description, logo, isActive: initialIsActive, onConfigure }: IntegrationCardProps) {
   const [isActive, setIsActive] = React.useState(initialIsActive);
 
   const handleToggle = () => {
@@ -220,7 +222,7 @@ function IntegrationCard({ name, description, logo, isActive: initialIsActive }:
         <p className="text-sm text-muted-foreground mb-4">{description}</p>
         <div className="flex items-center justify-between border-t pt-3">
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="gap-1">
+            <Button variant="outline" size="sm" className="gap-1" onClick={onConfigure}>
               <Settings className="h-3.5 w-3.5" />
               Configure
             </Button>
@@ -240,6 +242,8 @@ export default function Plugins() {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedCategory, setSelectedCategory] = React.useState<Category | 'All'>('All');
   const [showFilter, setShowFilter] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [selectedIntegration, setSelectedIntegration] = React.useState<Integration | null>(null);
 
   const categories: (Category | 'All')[] = ['All', 'Search', 'AI', 'Productivity', 'Development', 'Communication', 'Document', 'Data'];
 
@@ -250,8 +254,43 @@ export default function Plugins() {
     return matchesSearch && matchesCategory;
   });
 
+  const handleConfigure = (integration: Integration) => {
+    setSelectedIntegration(integration);
+    setDrawerOpen(true);
+  };
+
   return (
     <div className="container mx-auto px-4 pt-0 pb-2">
+      {/* Drawer for Configure */}
+      <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+        <DrawerContent className="flex flex-col h-[80vh] min-h-[400px]">
+          <div className="flex-grow">
+            <div className="flex items-start gap-4 p-6 pb-2">
+              <Image src={selectedIntegration?.logo || ''} alt="logo" width={56} height={56} className="w-14 h-14 object-contain rounded-md bg-gray-100" />
+              <div className="flex flex-col justify-center">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-semibold">{selectedIntegration?.name}</span>
+                  {selectedIntegration?.category && (
+                    <span className="text-xs bg-gray-100 text-gray-700 rounded px-2 py-0.5 ml-2">{selectedIntegration.category}</span>
+                  )}
+                </div>
+                <span className="text-sm text-muted-foreground mt-1">{selectedIntegration?.description}</span>
+              </div>
+            </div>
+            {/* Divider */}
+            <div className="border-b mx-6 my-2" />
+            {/* You can add more configuration UI here */}
+            <div className="p-6 flex flex-col items-start">
+              {/* Example: Add configuration fields here */}
+            </div>
+          </div>
+          <div className="flex justify-center pb-6">
+            <DrawerClose asChild>
+              <Button>Close</Button>
+            </DrawerClose>
+          </div>
+        </DrawerContent>
+      </Drawer>
       <div className="flex items-center justify-between mb-0">
         <div className="flex items-center gap-2 text-muted-foreground">
           <span className="text-foreground font-medium">Plugin</span>
@@ -366,6 +405,7 @@ export default function Plugins() {
             description={integration.description}
             logo={integration.logo}
             isActive={integration.isActive}
+            onConfigure={() => handleConfigure(integration)}
           />
         ))}
       </div>
