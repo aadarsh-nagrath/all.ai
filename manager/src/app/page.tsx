@@ -93,6 +93,8 @@ export default function AddModelsPage() {
   const [benchmarks, setBenchmarks] = useState([""]);
   const [modelWeightsAvailable, setModelWeightsAvailable] = useState(false);
   const [apiCompatibility, setApiCompatibility] = useState("");
+  const [apiModel, setApiModel] = useState("");
+  const [type, setType] = useState("");
   // Provider array state
   const [providers, setProviders] = useState([
     { name: "", region: "", context_length: "", latency: "", throughput: "" }
@@ -178,7 +180,7 @@ export default function AddModelsPage() {
     setEditMode(false);
     setEditModelId(null);
     // Clear all fields
-    setModelName(""); setShortDescription(""); setLongDescription(""); setStatus(""); setParameters(""); setContextLength(""); setMaxOutputLength(""); setTag(""); setPerformance(""); setResponseTime(""); setCost(""); setSuccessRate(""); setUsecase([""]); setKeyFeatures([""]); setPrecision(""); setBenchmarks([""]); setModelWeightsAvailable(false); setApiCompatibility(""); setProviders([{ name: "", region: "", context_length: "", latency: "", throughput: "" }]); setModelIcon("");
+    setModelName(""); setShortDescription(""); setLongDescription(""); setStatus(""); setParameters(""); setContextLength(""); setMaxOutputLength(""); setTag(""); setPerformance(""); setResponseTime(""); setCost(""); setSuccessRate(""); setUsecase([""]); setKeyFeatures([""]); setPrecision(""); setBenchmarks([""]); setModelWeightsAvailable(false); setApiCompatibility(""); setApiModel(""); setType(""); setProviders([{ name: "", region: "", context_length: "", latency: "", throughput: "" }]); setModelIcon("");
     setAddModelModalOpen(true);
   };
   const openEditModelModal = (model: any) => {
@@ -202,6 +204,8 @@ export default function AddModelsPage() {
     setBenchmarks(Array.isArray(model.benchmarks) ? model.benchmarks : [""]);
     setModelWeightsAvailable(!!model.model_weights_available);
     setApiCompatibility(model.api_compatibility || "");
+    setApiModel(model.api_model || "");
+    setType(model.type || "");
     setProviders(Array.isArray(model.provider) && model.provider.length > 0 ? model.provider : [{ name: "", region: "", context_length: "", latency: "", throughput: "" }]);
     setModelIcon(model.model_icon || "");
     setAddModelModalOpen(true);
@@ -240,6 +244,8 @@ export default function AddModelsPage() {
             model_weights_available: modelWeightsAvailable,
             api_compatibility: apiCompatibility,
             model_icon: modelIcon,
+            api_model: apiModel,
+            type: type,
           }),
         });
       } else {
@@ -267,12 +273,14 @@ export default function AddModelsPage() {
             model_weights_available: modelWeightsAvailable,
             api_compatibility: apiCompatibility,
             model_icon: modelIcon,
+            api_model: apiModel,
+            type: type,
           }),
         });
       }
       if (res.ok) {
         setAddModelSuccess(editMode ? "Model updated successfully!" : "Model added successfully!");
-        setModelName(""); setShortDescription(""); setLongDescription(""); setStatus(""); setParameters(""); setContextLength(""); setMaxOutputLength(""); setTag(""); setPerformance(""); setResponseTime(""); setCost(""); setSuccessRate(""); setUsecase([""]); setKeyFeatures([""]); setPrecision(""); setBenchmarks([""]); setModelWeightsAvailable(false); setApiCompatibility(""); setProviders([{ name: "", region: "", context_length: "", latency: "", throughput: "" }]);
+        setModelName(""); setShortDescription(""); setLongDescription(""); setStatus(""); setParameters(""); setContextLength(""); setMaxOutputLength(""); setTag(""); setPerformance(""); setResponseTime(""); setCost(""); setSuccessRate(""); setUsecase([""]); setKeyFeatures([""]); setPrecision(""); setBenchmarks([""]); setModelWeightsAvailable(false); setApiCompatibility(""); setApiModel(""); setType(""); setProviders([{ name: "", region: "", context_length: "", latency: "", throughput: "" }]);
         fetch("/api/models/list").then(res => res.json()).then(data => setModels(Array.isArray(data) ? data : []));
         setAddModelModalOpen(false);
       } else {
@@ -513,6 +521,14 @@ export default function AddModelsPage() {
                     <div>
                       <label className="block text-sm font-medium mb-1">API Compatibility</label>
                       <Input type="text" value={apiCompatibility} onChange={e => setApiCompatibility(e.target.value)} />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">API Model</label>
+                      <Input type="text" value={apiModel} onChange={e => setApiModel(e.target.value)} placeholder="gpt-4, claude-3, etc." />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Type</label>
+                      <Input type="text" value={type} onChange={e => setType(e.target.value)} placeholder="text-generation, vision, etc." />
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-1">Model Icon (URL or leave blank for default)</label>
