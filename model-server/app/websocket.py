@@ -80,7 +80,7 @@ class ConnectionManager:
 
 manager = ConnectionManager()
 
-async def process_message(user_id: str, message: str, conversation_id: str = None, model_info: dict = None):
+async def process_message(user_id: str, message: str, conversation_id: str = None, model_info: dict = None, agent_name: str = None):
     try:
         logger.info(f"Processing message for user {user_id}")
         
@@ -109,6 +109,25 @@ async def process_message(user_id: str, message: str, conversation_id: str = Non
             
         # Get the conversation history
         conversation_history = session.get("messages", [])
+        
+        # Check if we have an agent selected and get its prompt
+        system_prompt = None
+        if agent_name:
+            try:
+                logger.info(f"Fetching agent prompt for: {agent_name}")
+                agent = await db.agents.find_one({"title": agent_name})
+                if agent:
+                    system_prompt = agent["prompt"]
+                    logger.info(f"Using agent prompt for {agent_name}")
+                else:
+                    logger.warning(f"Agent {agent_name} not found in database")
+            except Exception as e:
+                logger.error(f"Error fetching agent prompt: {str(e)}")
+        
+        # Add system prompt if we have one and it's not already in the conversation
+        if system_prompt and not any(msg.get("role") == "system" for msg in conversation_history):
+            conversation_history.insert(0, {"role": "system", "content": system_prompt})
+            logger.info(f"Added system prompt for agent: {agent_name}")
         
         # Add the new user message to the history
         conversation_history.append({"role": "user", "content": message})
@@ -154,12 +173,20 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
                     else:
                         logger.info(f"No model info provided for user {user_id}, using default")
                     
+                    # Extract agent name from the message
+                    agent_name = message_data.get("agent_name")
+                    if agent_name:
+                        logger.info(f"Received agent name for user {user_id}: {agent_name}")
+                    else:
+                        logger.info(f"No agent name provided for user {user_id}, using default system prompt")
+                    
                     # Process the message and get AI response
                     response = await process_message(
                         user_id, 
                         message_data["message"],
                         message_data.get("conversation_id"),
-                        model_info
+                        model_info,
+                        agent_name
                     )
                     
                     if "error" in response:
@@ -191,7 +218,7 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
                         }),
                         user_id
                     )
-                    logger.info(f"Response sent to user {user_id}")
+                    logger.info(f"Response sent to user {user_id} with agent: {agent_name}")
                     
                 except json.JSONDecodeError:
                     logger.error(f"Invalid JSON received from {user_id}")

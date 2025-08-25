@@ -13,6 +13,7 @@ import { motion} from "framer-motion";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { getChat } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 function AnimatedThemeButton() {
   return (
@@ -35,6 +36,19 @@ export default function Workplace() {
   const [chatHistory, setChatHistory] = useState<Array<{role: string, content: string}>>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [agentCleared, setAgentCleared] = useState(false);
+  const router = useRouter();
+
+  const agentTitle = searchParams.get('title');
+  const agentDescription = searchParams.get('description');
+  const agentImage = searchParams.get('image');
+  const agentPrompt = searchParams.get('prompt');
+  const activeAgent = !agentCleared && agentTitle ? {
+    title: agentTitle,
+    description: agentDescription || undefined,
+    image: agentImage || undefined,
+    prompt: agentPrompt || undefined
+  } : null;
 
   useEffect(() => {
     const loadChatHistory = async () => {
@@ -76,6 +90,17 @@ export default function Workplace() {
     setShowHeadings(false);
   };
 
+  const handleClearAgent = () => {
+    setAgentCleared(true);
+    // Remove agent info from URL
+    const params = new URLSearchParams(window.location.search);
+    params.delete('title');
+    params.delete('description');
+    params.delete('image');
+    params.delete('prompt');
+    router.replace(`/workplace${params.toString() ? '?' + params.toString() : ''}`);
+  };
+
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0 relative min-h-screen">
       <div className="sticky top-0 z-10 flex justify-end pb-4">
@@ -105,6 +130,8 @@ export default function Workplace() {
         initialMessages={chatHistory}
         chatId={chatId}
         isLoading={isLoading}
+        activeAgent={activeAgent}
+        onClearAgent={handleClearAgent}
       />
     </div>
   );

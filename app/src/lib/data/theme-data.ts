@@ -145,6 +145,23 @@ export const mockThemeStyles: ThemeStyle[] = [
     createdAt: "last week",
   },
   {
+    id: "gradient",
+    title: "Gradient",
+    description: "Animated multi-color gradient background for the workspace.",
+    styles: {
+      borderRadius: "0.5rem",
+      boxShadow: "0 10px 25px -5px rgb(0 0 0 / 0.25)",
+      spacing: "1rem",
+      typography: {
+        fontFamily: "Inter, sans-serif",
+        fontSize: "1rem",
+        lineHeight: "1.5",
+      }
+    },
+    tags: ["Creative", "Vivid", "Animated"],
+    createdAt: "today",
+  },
+  {
     id: "2",
     title: "Bold & Playful",
     description: "Energetic design system with dramatic shadows and dynamic spacing.",

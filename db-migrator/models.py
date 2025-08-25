@@ -33,3 +33,10 @@ class LLMModel(BaseModel):
     model_icon: Optional[str] = None
     api_model: Optional[str] = None
     type: Optional[str] = None 
+
+class Agent(BaseModel):
+    title: str
+    image: str
+    description: str
+    prompt: str
+    category: str 

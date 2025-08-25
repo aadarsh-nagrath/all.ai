@@ -1,8 +1,6 @@
 "use client";
 
 import Image from "next/image";
-// import Link from "next/link";
-import { categories } from "@/lib/data/ai-agent-data";
 import { Button } from "@/components/ui/button";
 import { ButtonColorful } from "@/components/ui/button-colorful";
 import {
@@ -22,8 +20,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Upload } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Agent = {
   title: string;
@@ -32,10 +31,40 @@ type Agent = {
   prompt?: string;
 };
 
+type Category = {
+  title: string;
+  items: Agent[];
+};
+
 export default function BrowseAgents() {
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    fetchAgents();
+  }, []);
+
+  const fetchAgents = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/agents');
+      if (!response.ok) {
+        throw new Error('Failed to fetch agents');
+      }
+      const data = await response.json();
+      setCategories(data);
+    } catch (err) {
+      console.error('Error fetching agents:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch agents');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleImageDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -59,6 +88,30 @@ export default function BrowseAgents() {
       reader.readAsDataURL(file);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading agents...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500 mb-4">Error: {error}</p>
+          <Button onClick={fetchAgents} variant="outline">
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -194,8 +247,8 @@ export default function BrowseAgents() {
                     <div className="flex gap-6 mt-8">
                       <div className="h-24 aspect-square shrink-0 rounded-lg overflow-hidden bg-muted">
                         <Image
-                          src={item.image}
-                          alt={item.image ? item.title : "Agent Image"}
+                          src={item.image || '/images/default-agent.png'}
+                          alt={item.title}
                           width={96}
                           height={96}
                           className="w-full h-full object-cover"
@@ -225,15 +278,13 @@ export default function BrowseAgents() {
             <div className="mt-4 space-y-6">
               <div className="flex gap-6">
                 <div className="h-32 aspect-square shrink-0 rounded-lg overflow-hidden bg-muted">
-                  {selectedAgent?.image && (
-                    <Image
-                      src={selectedAgent.image}
-                      alt={selectedAgent.title}
-                      width={128}
-                      height={128}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
+                  <Image
+                    src={selectedAgent?.image || '/images/default-agent.png'}
+                    alt={selectedAgent?.title || 'Agent'}
+                    width={128}
+                    height={128}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="flex-1">
                   <p className="text-muted-foreground">{selectedAgent?.description}</p>
@@ -258,6 +309,17 @@ export default function BrowseAgents() {
                 </Button>
                 <Button 
                   className="bg-primary/90 hover:bg-primary text-primary-foreground"
+                  onClick={() => {
+                    if (selectedAgent) {
+                      const params = new URLSearchParams({
+                        title: selectedAgent.title,
+                        description: selectedAgent.description,
+                        image: selectedAgent.image || '',
+                        prompt: selectedAgent.prompt || ''
+                      });
+                      router.push(`/workplace?${params.toString()}`);
+                    }
+                  }}
                 >
                   Start Using
                 </Button>

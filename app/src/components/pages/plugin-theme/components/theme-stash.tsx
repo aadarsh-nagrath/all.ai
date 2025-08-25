@@ -9,6 +9,8 @@ import { ThemeList } from "./theme-list"
 import { ThemeDetail } from "./theme-detail"
 import { mockThemes, mockThemeStyles, Theme, ThemeStyle } from "@/lib/data/theme-data"
 import { cn } from "@/lib/utils"
+import { getThemeStyleController } from "@/themes/styles/registry"
+import { useToast } from "@/hooks/use-toast"
 
 function ThemeTabs({ activeTab, onTabChange }: { activeTab: string; onTabChange: (value: string) => void }) {
   return (
@@ -63,10 +65,25 @@ export default function ThemeStash() {
   const [selectedTheme, setSelectedTheme] = useState<Theme | null>(null)
   const [selectedThemeStyle, setSelectedThemeStyle] = useState<ThemeStyle | null>(null)
   const [activeTab, setActiveTab] = useState("themestyle")
+  const { toast } = useToast()
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  // Initialize selection from persisted style or default to Modern Minimal (id: "1")
+  useEffect(() => {
+    if (!mounted) return
+    try {
+      const v = typeof window !== 'undefined' ? window.localStorage.getItem('pluginThemeStyle') : null
+      const id = v || "1"
+      const style = mockThemeStyles.find(s => s.id === id) || mockThemeStyles.find(s => s.id === "1") || null
+      setSelectedThemeStyle(style || null)
+    } catch {
+      const style = mockThemeStyles.find(s => s.id === "1") || null
+      setSelectedThemeStyle(style)
+    }
+  }, [mounted])
 
   const filteredThemes = mockThemes
 
@@ -160,11 +177,14 @@ export default function ThemeStash() {
       <div className="flex-1 flex flex-col border-r border-border">
         <div className="p-4 border-b border-border flex justify-between items-center">
           <h1 className="text-xl font-semibold">{activeTab === "themestyle" ? "ThemeStyle" : "Themes"}</h1>
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 items-center">
             <FilterTabs />
             <Button variant="outline" className="ml-2">
               Presets
             </Button>
+            {selectedThemeStyle && (
+              <span className="ml-2 text-xs text-muted-foreground">Selected: <span className="font-medium text-foreground">{selectedThemeStyle.title}</span></span>
+            )}
           </div>
         </div>
         <div className="flex-1 overflow-auto">
@@ -286,7 +306,19 @@ export default function ThemeStash() {
                   </div>
 
                   <div className="pt-4">
-                    <Button className="w-full">
+                    <Button
+                      className="w-full"
+                      onClick={() => {
+                        if (!selectedThemeStyle) return
+                        const controller = getThemeStyleController(selectedThemeStyle.id) || getThemeStyleController('1')
+                        controller?.apply()
+                        toast({
+                          title: "Theme applied",
+                          description: `${selectedThemeStyle.title} is now active`,
+                          variant: "highlight",
+                        } as any)
+                      }}
+                    >
                       <Sparkles className="w-4 h-4 mr-2" />
                       Apply Theme Style
                     </Button>

@@ -3,6 +3,7 @@
 import * as React from "react"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { createContext, useContext, useEffect, useState } from "react"
+import { initPersistedThemeStyle } from "@/themes/styles/registry"
 
 type CustomTheme = {
   name: string
@@ -35,6 +36,11 @@ export function ThemeProvider({
 
   React.useEffect(() => {
     setMounted(true)
+  }, [])
+
+  // Initialize persisted plugin theme style (e.g., gradient) and apply body class
+  useEffect(() => {
+    initPersistedThemeStyle()
   }, [])
 
   useEffect(() => {

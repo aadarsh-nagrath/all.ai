@@ -13,7 +13,7 @@ export default function Subheadline() {
 
   return (
     <div className="text-xs sm:text-sm md:text-base flex items-start justify-center bg-background font-normal overflow-hidden p-1 w-fit mx-auto">
-      <span className="whitespace-nowrap flex-shrink-0">EXPLORE</span>
+      <span className="whitespace-nowrap flex-shrink-0 gradient-force-white">EXPLORE</span>
 
       <div className="ml-1 inline-flex">
         {isMounted ? ( // Render Typewriter only after mounting (client-side)
