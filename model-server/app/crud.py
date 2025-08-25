@@ -15,6 +15,7 @@ class MongoDB:
         self.db = None
         self.conversations = None
         self.communication_sessions = None
+        self.agents = None
 
     async def connect(self):
         try:
@@ -23,6 +24,7 @@ class MongoDB:
             self.db = self.client["allai"]
             self.conversations = self.db.conversations
             self.communication_sessions = self.db.communication_sessions
+            self.agents = self.db.agents
             await self.test_connection()
             logger.info("MongoDB client initialized")
         except Exception as e:

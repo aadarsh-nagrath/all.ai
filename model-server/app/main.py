@@ -38,6 +38,24 @@ async def startup_event():
 def health_check():
     return {"status": "healthy"}
 
+@app.get("/api/agent/{agent_name}")
+async def get_agent_by_name(agent_name: str):
+    try:
+        # Get agent information from the agents collection
+        agent = await db.agents.find_one({"title": agent_name})
+        
+        if not agent:
+            raise HTTPException(status_code=404, detail="Agent not found")
+        
+        return {
+            "title": agent["title"],
+            "description": agent["description"],
+            "prompt": agent["prompt"],
+            "category": agent["category"]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/api/chats/user/{user_id}")
 async def get_user_chats(user_id: str):
     try:

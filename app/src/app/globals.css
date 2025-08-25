@@ -130,6 +130,62 @@ body::-webkit-scrollbar {
   }
 }
 
+/* Animated Gradient Workspace Theme (vivid, multi-layer, smooth motion) */
+.gradient-workspace-theme {
+  /* Make tailwind bg-background transparent so the gradient shows through */
+  --background: 0 0% 100% / 0 !important;
+  /* Force all text/icon foregrounds to white for readability over gradient */
+  --foreground: 0 0% 100% !important;
+  --muted-foreground: 0 0% 100% !important;
+  --secondary-foreground: 0 0% 100% !important;
+  --accent-foreground: 0 0% 100% !important;
+  --card-foreground: 0 0% 100% !important;
+  --popover-foreground: 0 0% 100% !important;
+  --sidebar-foreground: 0 0% 100% !important;
+  position: relative;
+}
+
+.gradient-workspace-theme::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 60rem at 10% 10%, rgba(255, 128, 181, 0.65), transparent 60%),
+    radial-gradient(60rem 60rem at 90% 10%, rgba(144, 137, 252, 0.65), transparent 60%),
+    radial-gradient(60rem 60rem at 10% 90%, rgba(52, 211, 153, 0.60), transparent 60%),
+    radial-gradient(60rem 60rem at 90% 90%, rgba(96, 165, 250, 0.60), transparent 60%),
+    conic-gradient(from 0deg at 50% 50%, rgba(255, 0, 127, 0.25), rgba(0, 179, 255, 0.25), rgba(0, 255, 170, 0.25), rgba(255, 0, 127, 0.25));
+  background-size: 200% 200%, 200% 200%, 200% 200%, 200% 200%, 160% 160%;
+  background-position: 0% 50%, 100% 50%, 0% 50%, 100% 50%, 50% 50%;
+  filter: blur(24px) saturate(120%) brightness(1.10);
+  transform: translateZ(0);
+  animation: gradientMove 22s ease-in-out infinite alternate, gradientHue 36s linear infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%, 100% 50%, 0% 50%, 100% 50%, 50% 50%; }
+  50% { background-position: 50% 0%, 50% 100%, 50% 100%, 50% 0%, 40% 60%; }
+  100% { background-position: 100% 50%, 0% 50%, 100% 50%, 0% 50%, 60% 40%; }
+}
+
+@keyframes gradientHue {
+  0% { filter: blur(32px) saturate(120%) hue-rotate(0deg); }
+  100% { filter: blur(32px) saturate(120%) hue-rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-workspace-theme::before {
+    animation: none;
+  }
+}
+
+/* Utilities for gradient theme specific tweaks */
+.gradient-workspace-theme .gradient-force-white {
+  color: #ffffff !important;
+}
+
 /* Preview theme styles */
 body.preview-theme {
   --background: var(--preview-background);

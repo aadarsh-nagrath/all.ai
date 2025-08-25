@@ -11,6 +11,7 @@ services:
       - MONGODB_URI=mongodb://root:example@mongodb:27017/allai?authSource=admin
       - NEXT_PUBLIC_API_URL=http://localhost:8000
       - NEXT_PUBLIC_WS_URL=ws://localhost:8000/ws
+      - OPENAI_API_KEY=
     depends_on:
       - mongodb
     networks:
