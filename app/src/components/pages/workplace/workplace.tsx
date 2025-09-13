@@ -86,6 +86,7 @@ export default function Workplace() {
     loadChatHistory();
   }, [chatId]);
 
+
   const handleMessageSent = () => {
     setShowHeadings(false);
   };

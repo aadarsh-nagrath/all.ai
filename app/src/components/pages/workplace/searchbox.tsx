@@ -317,6 +317,16 @@ export default function SearchInput({ onMessageSent, initialMessages = [], chatI
         };
     }, [connectWebSocket]);
 
+    // Toggle performance mode during streaming to pause heavy background animation
+    useEffect(() => {
+        const body = document.body
+        if (isStreaming) {
+            body.classList.add('gradient-performance-mode')
+        } else {
+            body.classList.remove('gradient-performance-mode')
+        }
+    }, [isStreaming])
+
     const messagesRef = useRef(messages);
     messagesRef.current = messages;
 

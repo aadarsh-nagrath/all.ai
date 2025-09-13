@@ -9,7 +9,7 @@ import { ThemeList } from "./theme-list"
 import { ThemeDetail } from "./theme-detail"
 import { mockThemes, mockThemeStyles, Theme, ThemeStyle } from "@/lib/data/theme-data"
 import { cn } from "@/lib/utils"
-import { getThemeStyleController } from "@/themes/styles/registry"
+import { applyThemeStyle } from "@/themes/styles/registry"
 import { useToast } from "@/hooks/use-toast"
 
 function ThemeTabs({ activeTab, onTabChange }: { activeTab: string; onTabChange: (value: string) => void }) {
@@ -310,8 +310,7 @@ export default function ThemeStash() {
                       className="w-full"
                       onClick={() => {
                         if (!selectedThemeStyle) return
-                        const controller = getThemeStyleController(selectedThemeStyle.id) || getThemeStyleController('1')
-                        controller?.apply()
+                        applyThemeStyle(selectedThemeStyle.id)
                         toast({
                           title: "Theme applied",
                           description: `${selectedThemeStyle.title} is now active`,

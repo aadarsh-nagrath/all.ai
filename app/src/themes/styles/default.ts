@@ -1,6 +1,6 @@
 import { ThemeStyleController } from "./types"
 
-const CLASS_NAMES = ['gradient-workspace-theme']
+const CLASS_NAMES = ['gradient-swift-workspace-theme', 'universal-theme', 'skyfall-theme', 'flare-theme']
 const PERSIST_KEY = 'pluginThemeStyle'
 
 function removeAll() {
@@ -13,6 +13,12 @@ export const DefaultThemeController: ThemeStyleController = {
   persistKey: PERSIST_KEY,
   apply: () => {
     removeAll()
+    // Remove all video elements
+    const videos = ['universal-bg-video', 'skyfall-bg-video', 'flare-bg-video']
+    videos.forEach(id => {
+      const video = document.getElementById(id) as HTMLVideoElement | null
+      if (video && video.parentElement) video.parentElement.removeChild(video)
+    })
     try { window.localStorage.removeItem(PERSIST_KEY) } catch {}
   },
   remove: () => {

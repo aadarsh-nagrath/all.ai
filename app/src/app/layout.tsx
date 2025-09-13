@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import SessionWrapper from "@/components/session-wrapper";
 import SessionCheck from "@/components/SessionCheck";
 import { ActiveModelProvider } from "@/components/team-switcher";
+import ThemeNavigationCleanup from "@/components/theme-navigation-cleanup";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster"
 
@@ -36,6 +37,7 @@ export default function RootLayout({
           <SessionWrapper>
             <SessionCheck>
               <ActiveModelProvider>
+                <ThemeNavigationCleanup />
                 {children}
               </ActiveModelProvider>
             </SessionCheck>

@@ -130,11 +130,10 @@ body::-webkit-scrollbar {
   }
 }
 
-/* Animated Gradient Workspace Theme (vivid, multi-layer, smooth motion) */
-.gradient-workspace-theme {
-  /* Make tailwind bg-background transparent so the gradient shows through */
+
+.gradient-swift-workspace-theme {
+  /* Same readable overrides for swift theme */
   --background: 0 0% 100% / 0 !important;
-  /* Force all text/icon foregrounds to white for readability over gradient */
   --foreground: 0 0% 100% !important;
   --muted-foreground: 0 0% 100% !important;
   --secondary-foreground: 0 0% 100% !important;
@@ -145,46 +144,98 @@ body::-webkit-scrollbar {
   position: relative;
 }
 
-.gradient-workspace-theme::before {
+
+/* Optimized GPU-friendly gradient */
+.gradient-swift-workspace-theme::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background:
-    radial-gradient(60rem 60rem at 10% 10%, rgba(255, 128, 181, 0.65), transparent 60%),
-    radial-gradient(60rem 60rem at 90% 10%, rgba(144, 137, 252, 0.65), transparent 60%),
-    radial-gradient(60rem 60rem at 10% 90%, rgba(52, 211, 153, 0.60), transparent 60%),
-    radial-gradient(60rem 60rem at 90% 90%, rgba(96, 165, 250, 0.60), transparent 60%),
-    conic-gradient(from 0deg at 50% 50%, rgba(255, 0, 127, 0.25), rgba(0, 179, 255, 0.25), rgba(0, 255, 170, 0.25), rgba(255, 0, 127, 0.25));
-  background-size: 200% 200%, 200% 200%, 200% 200%, 200% 200%, 160% 160%;
-  background-position: 0% 50%, 100% 50%, 0% 50%, 100% 50%, 50% 50%;
-  filter: blur(24px) saturate(120%) brightness(1.10);
-  transform: translateZ(0);
-  animation: gradientMove 22s ease-in-out infinite alternate, gradientHue 36s linear infinite;
+  /* Optimized single-layer gradient (GPU-friendly) */
+  background: linear-gradient(120deg,
+    rgba(255, 128, 181, 0.55),
+    rgba(144, 137, 252, 0.55),
+    rgba(96, 165, 250, 0.50),
+    rgba(52, 211, 153, 0.50)
+  );
+  background-size: 400% 400%;
+  animation: gradientMove 18s ease-in-out infinite;
+  will-change: background-position, transform, opacity;
+  backface-visibility: hidden;
+  contain: paint;
 }
 
 @keyframes gradientMove {
-  0% { background-position: 0% 50%, 100% 50%, 0% 50%, 100% 50%, 50% 50%; }
-  50% { background-position: 50% 0%, 50% 100%, 50% 100%, 50% 0%, 40% 60%; }
-  100% { background-position: 100% 50%, 0% 50%, 100% 50%, 0% 50%, 60% 40%; }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-@keyframes gradientHue {
-  0% { filter: blur(32px) saturate(120%) hue-rotate(0deg); }
-  100% { filter: blur(32px) saturate(120%) hue-rotate(360deg); }
+
+/* Pause gradient animation in performance mode (e.g., while streaming text) */
+.gradient-performance-mode.gradient-swift-workspace-theme::before {
+  animation: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .gradient-workspace-theme::before {
-    animation: none;
-  }
+
+/* Universal Video Theme */
+.universal-theme {
+  --background: 0 0% 100% / 0 !important;
+  --foreground: 0 0% 98% !important;
+  --muted-foreground: 0 0% 92% !important;
+  position: relative;
 }
 
-/* Utilities for gradient theme specific tweaks */
-.gradient-workspace-theme .gradient-force-white {
-  color: #ffffff !important;
+.universal-theme #universal-bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+  pointer-events: none;
+  filter: none; /* avoid heavy filters */
 }
+
+/* Skyfall Video Theme */
+.skyfall-theme {
+  --background: 0 0% 100% / 0 !important;
+  --foreground: 0 0% 98% !important;
+  --muted-foreground: 0 0% 92% !important;
+  position: relative;
+}
+
+.skyfall-theme #skyfall-bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+  pointer-events: none;
+  filter: none;
+}
+
+/* Flare Video Theme */
+.flare-theme {
+  --background: 0 0% 100% / 0 !important;
+  --foreground: 0 0% 98% !important;
+  --muted-foreground: 0 0% 92% !important;
+  position: relative;
+}
+
+.flare-theme #flare-bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+  pointer-events: none;
+  filter: none;
+}
+
 
 /* Preview theme styles */
 body.preview-theme {

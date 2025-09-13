@@ -145,12 +145,12 @@ export const mockThemeStyles: ThemeStyle[] = [
     createdAt: "last week",
   },
   {
-    id: "gradient",
-    title: "Gradient",
-    description: "Animated multi-color gradient background for the workspace.",
+    id: "gradient-swift",
+    title: "Gradient Swift",
+    description: "GPU-friendly animated gradient for maximum performance.",
     styles: {
       borderRadius: "0.5rem",
-      boxShadow: "0 10px 25px -5px rgb(0 0 0 / 0.25)",
+      boxShadow: "0 6px 18px -8px rgb(0 0 0 / 0.25)",
       spacing: "1rem",
       typography: {
         fontFamily: "Inter, sans-serif",
@@ -158,7 +158,58 @@ export const mockThemeStyles: ThemeStyle[] = [
         lineHeight: "1.5",
       }
     },
-    tags: ["Creative", "Vivid", "Animated"],
+    tags: ["Performance", "Animated", "Smooth"],
+    createdAt: "today",
+  },
+  {
+    id: "universal",
+    title: "Universal",
+    description: "Video background (starry-night) for smooth, high-fidelity visuals.",
+    styles: {
+      borderRadius: "0.5rem",
+      boxShadow: "0 6px 18px -8px rgb(0 0 0 / 0.3)",
+      spacing: "1rem",
+      typography: {
+        fontFamily: "Inter, sans-serif",
+        fontSize: "1rem",
+        lineHeight: "1.5",
+      }
+    },
+    tags: ["Video", "Smooth", "Performance"],
+    createdAt: "today",
+  },
+  {
+    id: "skyfall",
+    title: "Skyfall",
+    description: "Dramatic skyfall video background for immersive experience.",
+    styles: {
+      borderRadius: "0.5rem",
+      boxShadow: "0 6px 18px -8px rgb(0 0 0 / 0.45)",
+      spacing: "1rem",
+      typography: {
+        fontFamily: "Inter, sans-serif",
+        fontSize: "1rem",
+        lineHeight: "1.5",
+      }
+    },
+    tags: ["Video", "Dramatic", "Immersive"],
+    createdAt: "today",
+  },
+  {
+    id: "flare",
+    title: "Flare",
+    description: "Dynamic flare video background with vibrant energy.",
+    styles: {
+      borderRadius: "0.5rem",
+      boxShadow: "0 6px 18px -8px rgb(0 0 0 / 0.45)",
+      spacing: "1rem",
+      typography: {
+        fontFamily: "Inter, sans-serif",
+        fontSize: "1rem",
+        lineHeight: "1.5",
+      }
+    },
+    tags: ["Video", "Dynamic", "Energetic"],
     createdAt: "today",
   },
   {
